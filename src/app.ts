@@ -10,4 +10,7 @@ const Routes = {
 }
 
 app.use(bodyParser())
+app.get(Routes.default,(req,res)=>{
+    res.send("hello, is my blogger platform API")
+})
 app.use(Routes.videos, getVideosRouter(db))
