@@ -14,3 +14,8 @@ app.get(Routes.default,(req,res)=>{
     res.send("hello, is my blogger platform API")
 })
 app.use(Routes.videos, getVideosRouter(db))
+
+app.delete("/testing/all-data", (req: Request, res: Response) => {
+    db.videos = []
+    res.sendStatus(204)
+})
