@@ -5,6 +5,7 @@ import {getVideosRouter} from "./features/videos/videos.router";
 export const app = express()
 
 const Routes = {
+    default:'/',
     videos: '/videos'
 }
 
