@@ -8,5 +8,5 @@ export type VideoViewModel =  {
     minAgeRestriction?: any;
     createdAt: Date;
     publicationDate: Date;
-    availableResolution: AvailableResolutionsType[];
+    availableResolution?: AvailableResolutionsType[] | null;
 }

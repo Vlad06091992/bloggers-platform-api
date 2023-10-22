@@ -8,7 +8,7 @@ export type VideoType = {
   minAgeRestriction: null | number;
   createdAt: Date;
   publicationDate: Date;
-  availableResolution: AvailableResolutionsType[];
+  availableResolution?: AvailableResolutionsType[] | null;
 }
 
 export type RootDBType = {
