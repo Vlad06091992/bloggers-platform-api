@@ -68,7 +68,7 @@ export const validateUpdateVideoData = ( {author, title, availableResolutions,mi
 
 
     if(publicationDate != undefined){
-        if ( !(publicationDate instanceof Date)) {
+        if ( typeof publicationDate != "string") {
             return createErrorObject(`invalid quality`, 'publicationDate')
         }
     }
