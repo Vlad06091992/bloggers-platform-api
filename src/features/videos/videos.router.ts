@@ -98,6 +98,12 @@ export const getVideosRouter = (db: RootDBType) => {
     router.put('/:id', (req: RequestWithParamsAndBody<URIParamsVideoIdModel, VideoUpdateModel>, res: Response<VideoViewModel | any>) => {
         const id = req.params.id
         const indexVideo = db.videos.findIndex(el => el.id == +id)
+
+        if(indexVideo < 0){
+            res.send(HTTP_STATUSES.NOT_FOUND_404)
+        }
+
+
         const dataForUpdate = req.body
 
         let errorObject = validateUpdateVideoData(req.body)
@@ -116,6 +122,9 @@ export const getVideosRouter = (db: RootDBType) => {
 
     router.delete('/:id', (req: RequestWithParams<URIParamsVideoIdModel>, res: Response<number>) => {
         const id = req.params.id
+
+
+
         const indexItem = db.videos.findIndex(v => v.id === +id)
 
         if (indexItem > -1) {
