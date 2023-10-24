@@ -34,9 +34,12 @@ const checkVideoQuality = (videoQuality:Array<string> | null | undefined) => {
 }
 
 export const validateCreateVideoData = ({author, title, availableResolutions}: VideoCreateModel) => {
+    debugger
     if (author.length > 40 || !author) {
+        if(!author) return "no valid field"
         return createErrorObject(`${author.length > 20 ? "length more then 20" : "Too short name"}`, 'author')
-    } else if (title.length > 40 || !title) {
+    } else if (!title || title.length > 40) {
+        if(!title) return "no valid field"
         return createErrorObject(`${title.length > 40 ? "length more then 40" : "Too short name"}`, 'title')
     }
 if(availableResolutions){}
