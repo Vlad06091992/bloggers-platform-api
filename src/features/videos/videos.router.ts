@@ -35,9 +35,12 @@ class Video {
         this.minAgeRestriction = null
         this.canBeDownloaded = false
         this.createdAt = new Date().toISOString()
-        this.publicationDate = new Date().toISOString()
+        this.publicationDate = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
     }
 }
+
+
+
 
 const UpdateVideo = (video: VideoType, updateData: VideoUpdateModel): VideoType => {
     return {
