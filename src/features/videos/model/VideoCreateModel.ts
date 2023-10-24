@@ -1,6 +1,6 @@
 import {AvailableResolutionsType} from "../../../types";
 
-export type VideoCreateModel = {
+export type gVideoCreateModel = {
     title: string
     author: string
     availableResolutions?: AvailableResolutionsType[] | null
