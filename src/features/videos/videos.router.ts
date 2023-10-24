@@ -24,8 +24,8 @@ class Video {
     availableResolution?: AvailableResolutionsType[] | null | undefined
     id: number
     minAgeRestriction: null | number
-    createdAt: Date
-    publicationDate: Date
+    createdAt: string
+    publicationDate: string
 
     constructor({title, author, availableResolutions}: VideoCreateModel) {
         this.title = title
@@ -33,9 +33,9 @@ class Video {
         this.availableResolution = availableResolutions
         this.id = +new Date()
         this.minAgeRestriction = null
-        this.canBeDownloaded = true
-        this.createdAt = new Date()
-        this.publicationDate = new Date()
+        this.canBeDownloaded = false
+        this.createdAt = new Date().toISOString()
+        this.publicationDate = new Date().toISOString()
     }
 }
 
