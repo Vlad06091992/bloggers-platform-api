@@ -71,7 +71,7 @@ export const getVideosRouter = (db: RootDBType) => {
     router.get('/:id', (req: RequestWithParams<URIParamsVideoIdModel>, res: Response<VideoViewModel | number>) => {
         const id = req.params.id
         const video = db.videos.find((v: VideoType) => v.id === +id)
-        if (video) {
+        if (video && id) {
             // res.send(getCourseViewModel(course))
             res.send(video)
 
