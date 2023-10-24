@@ -35,12 +35,12 @@ const checkVideoQuality = (videoQuality: Array<string> | null | undefined) => {
 
 export const validateCreateVideoData = ({author, title, availableResolutions}: VideoCreateModel) => {
     debugger
-    if (author.length > 40 || !author || typeof author != 'string') {
+    if (author.length > 20 || !author || typeof author != 'string') {
         if (!author || typeof author != 'string') return createErrorObject('no valid filed', 'author')
         return createErrorObject(`${author.length > 20 ? "length more then 20" : "Too short name"}`, 'author')
-    } else if (!title || title.length > 20 || typeof title != 'string') {
+    } else if (!title || title.length > 40 || typeof title != 'string') {
         if (!title || typeof title != 'string') return createErrorObject('no valid filed', 'title')
-        return createErrorObject(`${title.length > 20 ? "length more then 40" : "Too short name"}`, 'title')
+        return createErrorObject(`${title.length > 40 ? "length more then 40" : "Too short name"}`, 'title')
     }
     if (availableResolutions) {
     }
@@ -58,7 +58,7 @@ export const validateUpdateVideoData = ({
                                             canBeDownloaded,
                                             publicationDate
                                         }: VideoUpdateModel) => {
-    if (author.length > 40 || !author || typeof author != 'string') {
+    if (author.length > 20 || !author || typeof author != 'string') {
         if (!author || typeof author != 'string') return createErrorObject('no valid filed', 'author')
         return createErrorObject(`${author.length > 20 ? "length more then 20" : "Too short name"}`, 'author')
     } else if (!title || title.length > 40 || typeof title != 'string') {
