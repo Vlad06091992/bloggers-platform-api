@@ -103,8 +103,7 @@ export const getVideosRouter = (db: RootDBType) => {
             res.send(HTTP_STATUSES.NOT_FOUND_404)
         }
 
-
-        const dataForUpdate = req.body
+        debugger
 
         let errorObject = validateUpdateVideoData(req.body)
         if (errorObject) {
@@ -112,7 +111,7 @@ export const getVideosRouter = (db: RootDBType) => {
         } else {
             let video = db.videos.find((v: VideoType) => v.id === +id)
             if (video !== undefined) {
-                db.videos[indexVideo] = UpdateVideo(video, dataForUpdate)
+                db.videos[indexVideo] = UpdateVideo(video, req.body)
                 res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
             }
         }

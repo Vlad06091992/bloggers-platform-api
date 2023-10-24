@@ -1,4 +1,5 @@
 import {Request, Response, Router} from "express";
+import exp from "constants";
 
 export type VideoType = {
   id: number;
@@ -13,6 +14,10 @@ export type VideoType = {
 
 export type RootDBType = {
   videos:VideoType[]
+}
+
+export type ErrorResponseType = {
+  errorsMessages:Array<{message:string,field:string}>
 }
 
 export type AvailableResolutionsType = 'P144'| 'P240'| 'P360'| 'P480'| 'P720'| 'P1080'| 'P1440'| 'P2160'
