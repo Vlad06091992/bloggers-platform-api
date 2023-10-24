@@ -21,7 +21,7 @@ class Video {
     canBeDownloaded: boolean;
     title: string;
     author: string;
-    availableResolution?: AvailableResolutionsType[] | null | undefined
+    availableResolutions?: AvailableResolutionsType[] | null | undefined
     id: number
     minAgeRestriction: null | number
     createdAt: string
@@ -30,7 +30,7 @@ class Video {
     constructor({title, author, availableResolutions}: VideoCreateModel) {
         this.title = title
         this.author = author
-        this.availableResolution = availableResolutions
+        this.availableResolutions = availableResolutions
         this.id = +new Date()
         this.minAgeRestriction = null
         this.canBeDownloaded = false
@@ -46,7 +46,7 @@ const UpdateVideo = (video: VideoType, updateData: VideoUpdateModel): VideoType 
     return {
         title: updateData.title,
         author: updateData.author,
-        availableResolution: updateData.availableResolutions || video.availableResolution,
+        availableResolutions: updateData.availableResolutions || video.availableResolutions,
         publicationDate: updateData.publicationDate || video.publicationDate,
         createdAt: video.createdAt,
         id: video.id,

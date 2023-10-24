@@ -7,9 +7,9 @@ export const db: RootDBType = {
         author: "author",
         minAgeRestriction: null,
         canBeDownloaded: true,
-        createdAt: new Date(),
-        publicationDate: new Date(),
-        availableResolution: ['P144']
+        createdAt: new Date().toISOString(),
+        publicationDate: new Date().toISOString(),
+        availableResolutions: ['P144']
     },
         {
             title: 'new video2',
@@ -17,9 +17,9 @@ export const db: RootDBType = {
             author: "author2",
             minAgeRestriction: null,
             canBeDownloaded: true,
-            createdAt: new Date(),
-            publicationDate: new Date(),
-            availableResolution: ['P360']
+            createdAt: new Date().toDateString(),
+            publicationDate: new Date().toDateString(),
+            availableResolutions: ['P360']
         }]
 }
 
