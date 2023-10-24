@@ -6,7 +6,7 @@ export type VideoUpdateModel = {
     availableResolutions?: AvailableResolutionsType[] | null
     canBeDownloaded?: boolean
     minAgeRestriction?: number
-    publicationDate?: Date
+    publicationDate?: string
 }
 
 

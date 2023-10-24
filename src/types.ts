@@ -6,8 +6,8 @@ export type VideoType = {
   author: string;
   canBeDownloaded: boolean;
   minAgeRestriction: null | number;
-  createdAt: Date;
-  publicationDate: Date;
+  createdAt: string;
+  publicationDate: string;
   availableResolution?: AvailableResolutionsType[] | null;
 }
 
