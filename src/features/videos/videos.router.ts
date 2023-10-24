@@ -84,12 +84,11 @@ export const getVideosRouter = (db: RootDBType) => {
         let {title, author, availableResolutions} = req.body
         let errorObject = validateCreateVideoData(req.body)
 
-        if (errorObject) {
+        if (errorObject.errorsMessages.length > 0) {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(errorObject)
         } else {
             const video = new Video({author, availableResolutions, title})
             db.videos.push(video)
-            // res.status(HTTP_STATUSES.CREATED_201).send(getCourseViewModel(course))
             res.status(HTTP_STATUSES.CREATED_201).send(video)
         }
     })
@@ -103,10 +102,9 @@ export const getVideosRouter = (db: RootDBType) => {
             res.send(HTTP_STATUSES.NOT_FOUND_404)
         }
 
-        debugger
 
         let errorObject = validateUpdateVideoData(req.body)
-        if (errorObject) {
+        if (errorObject.errorsMessages.length > 0) {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(errorObject)
         } else {
             let video = db.videos.find((v: VideoType) => v.id === +id)
