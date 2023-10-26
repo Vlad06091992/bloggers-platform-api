@@ -1,5 +1,5 @@
 import {VideoCreateModel} from "./features/videos/model/VideoCreateModel";
-import {AvailableResolutionsType, ErrorResponseType} from "./types";
+import {ErrorResponseType} from "./types";
 import {VideoUpdateModel} from "./features/videos/model/VideoUpdateModel";
 
 
@@ -58,22 +58,10 @@ export const validateCreateVideoData = ({author, title, availableResolutions}: V
     return errObj
 }
 
-export const validateUpdateVideoData = ({
-                                            author,
-                                            title,
-                                            availableResolutions,
-                                            minAgeRestriction,
-                                            canBeDownloaded,
-                                            publicationDate
-                                        }: VideoUpdateModel) => {
-
-    debugger
-
-
+export const validateUpdateVideoData = ({author, title, availableResolutions, minAgeRestriction, canBeDownloaded, publicationDate}: VideoUpdateModel) => {
     const errObj: ErrorResponseType = {
         errorsMessages: []
     }
-
 
     if (!author || author.length > 20 || typeof author != 'string') {
         if (!author || typeof author != 'string') errObj.errorsMessages.push(new CreateError('no valid filed', 'author'))
@@ -101,19 +89,14 @@ export const validateUpdateVideoData = ({
         }
     }
 
-
     if (publicationDate != undefined) {
         if (typeof publicationDate != "string") {
             errObj.errorsMessages.push(new CreateError(`invalid quality`, 'publicationDate'))
         }
     }
 
-
     if (!checkVideoQuality(availableResolutions)) {
         errObj.errorsMessages.push(new CreateError(`incorrect quality video`, 'availableResolution'))
     }
-debugger
     return errObj
-
-
 }
