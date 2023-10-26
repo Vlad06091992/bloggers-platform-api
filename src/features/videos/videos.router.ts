@@ -100,6 +100,7 @@ export const getVideosRouter = (db: RootDBType) => {
 
         if(indexVideo < 0){
             res.send(HTTP_STATUSES.NOT_FOUND_404)
+            return
         }
 
         let errorObject = validateUpdateVideoData(req.body)
