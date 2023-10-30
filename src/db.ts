@@ -20,6 +20,80 @@ export const db: RootDBType = {
             createdAt: new Date().toDateString(),
             publicationDate: new Date().toDateString(),
             availableResolutions: ['P360']
-        }]
+        }],
+    blogs:[
+        {
+            id: "1",
+            name: "Tech Blog",
+            description: "A blog about technology and gadgets",
+            websiteUrl: "https://example.com/tech-blog"
+        },
+        {
+            id: "2",
+            name: "Travel Adventures",
+            description: "Exploring the world, one adventure at a time",
+            websiteUrl: "https://example.com/travel-adventures"
+        },
+        {
+            id: "3",
+            name: "Cooking Creations",
+            description: "Delicious recipes and culinary experiments",
+            websiteUrl: "https://example.com/cooking-creations"
+        },
+        {
+            id: "4",
+            name: "Fashion Forward",
+            description: "The latest trends and style inspiration",
+            websiteUrl: "https://example.com/fashion-forward"
+        },
+        {
+            id: "5",
+            name: "Fitness Fanatics",
+            description: "Get fit and stay healthy with our tips",
+            websiteUrl: "https://example.com/fitness-fanatics"
+        }
+    ],
+    posts:[
+        {
+            id: "1",
+            title: "Introduction to JavaScript",
+            shortDescription: "A brief introduction to JavaScript programming",
+            content: "JavaScript is a versatile programming language...",
+            blogId: "1",
+            blogName: "Tech Blog"
+        },
+        {
+            id: "2",
+            title: "Exploring Europe's Hidden Gems",
+            shortDescription: "Discover the beauty of lesser-known European destinations",
+            content: "Europe offers a wealth of hidden gems for travelers...",
+            blogId: "2",
+            blogName: "Travel Adventures"
+        },
+        {
+            id: "3",
+            title: "Delicious Chocolate Cake Recipe",
+            shortDescription: "Learn how to make a mouthwatering chocolate cake",
+            content: "Indulge in the rich and decadent flavors of this chocolate cake...",
+            blogId: "3",
+            blogName: "Cooking Creations"
+        },
+        {
+            id: "4",
+            title: "Latest Fashion Trends for Fall",
+            shortDescription: "Stay stylish with the latest fashion trends this fall",
+            content: "Discover the hottest fashion trends for the autumn season...",
+            blogId: "4",
+            blogName: "Fashion Forward"
+        },
+        {
+            id: "5",
+            title: "Effective Workout Routine for Beginners",
+            shortDescription: "Start your fitness journey with this beginner's workout routine",
+            content: "Get in shape and build a healthy fitness foundation with these exercises...",
+            blogId: "5",
+            blogName: "Fitness Fanatics"
+        }
+    ]
 }
 
