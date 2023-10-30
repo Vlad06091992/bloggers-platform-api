@@ -66,7 +66,7 @@ describe('test for /videos', () => {
     }));
     let createdEntity1;
     it('should added new video(car review)', () => __awaiter(void 0, void 0, void 0, function* () {
-        const data = { title: 'vue', author: 'Vlad', availableResolutions: ['P144'] };
+        const data = { title: 'new Car', author: 'Vlad', availableResolutions: ['P144'] };
         const response = yield (0, supertest_1.default)(app_1.app)
             .post(app_1.Routes.videos)
             .send(data)
@@ -87,63 +87,71 @@ describe('test for /videos', () => {
             .get(`${app_1.Routes.videos}/${createdEntity1.id}`);
         expect(createResponse.body.title).toBe(createdEntity1.title);
     }));
-    it('should not updated new video with incorrect data', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('should not updated new video with incorrect data(body)', () => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, supertest_1.default)(app_1.app)
-            .put(`${app_1.Routes.videos}/35`)
-            .send({ title: 'newtitle' });
-        expect(http_statuses_1.HTTP_STATUSES.BAD_REQUEST_400);
+            .put(`${app_1.Routes.videos}/${createdEntity1.id}`)
+            .send({ title: 'newtitle' })
+            .expect(http_statuses_1.HTTP_STATUSES.BAD_REQUEST_400, {
+            "errorsMessages": [
+                {
+                    "message": "no valid filed",
+                    "field": "author"
+                }
+            ]
+        });
     }));
-    // it('video should be updated', async () => {
-    //     const data: any = {title: 'new title!!!'};
-    //     const createResponse = await request(app)
-    //         .put(`${Routes.videos}/${createdEntity1.id}`)
-    //         .send(data)
-    //     expect(HTTP_STATUSES.OK_200)
-    //
-    //     // let updatedEntity = createResponse.body
-    //
-    //     // expect(updatedEntity.title).toBe('new title!!!')
-    // })
+    it('should not updated new video with incorrect data(body)', () => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, supertest_1.default)(app_1.app)
+            .put(`${app_1.Routes.videos}/${createdEntity1.id}`)
+            .send({})
+            .expect(http_statuses_1.HTTP_STATUSES.BAD_REQUEST_400, {
+            errorsMessages: [
+                { message: 'no valid filed', field: 'author' },
+                { message: 'no valid filed', field: 'title' }
+            ]
+        });
+    }));
     it('video should be updated', () => __awaiter(void 0, void 0, void 0, function* () {
-        const data = { title: 'new title!!!' };
+        let dateForTesting = new Date().toISOString();
+        const data = {
+            title: 'new title!!!',
+            canBeDownloaded: true,
+            author: "Super Vlad",
+            publicationDate: dateForTesting,
+            minAgeRestriction: 10,
+            availableResolutions: ["P360", "P480", "P720"]
+        };
         const createResponse = yield (0, supertest_1.default)(app_1.app)
-            .put(`/videos/2`)
-            .send(data);
-        expect({});
+            .put(`${app_1.Routes.videos}/${createdEntity1.id}`)
+            .send(data)
+            .expect(http_statuses_1.HTTP_STATUSES.NO_CONTENT_204);
+        let updatedEntity = yield (0, supertest_1.default)(app_1.app).get(`${app_1.Routes.videos}/${createdEntity1.id}`);
+        expect(updatedEntity.body.title).toBe('new title!!!');
+        expect(updatedEntity.body.canBeDownloaded).toBeTruthy();
+        expect(updatedEntity.body.author).toBe("Super Vlad");
+        expect(updatedEntity.body.publicationDate).toBe(dateForTesting);
+        expect(updatedEntity.body.minAgeRestriction).toBe(10);
+        expect(updatedEntity.body.availableResolutions).toEqual(["P360", "P480", "P720"]);
     }));
-    //
-    // let createdCourse2: any = null
-    //
-    // it('should added new course(angular)', async () => {
-    //     const data: CourseCreateModel = {title: 'angular', studentsCount: 0};
-    //     const {response, createdEntity} = await courseTestManager.createCourse(data)
-    //     createdCourse2 = createdEntity
-    //     const coursesResponse = await request(app).get(Routes.courses)
-    //     expect(coursesResponse.body.length).toBe(2)
-    // })
-    //
-    //
-    // it('course should be updated', async () => {
-    //     const data1: CourseUpdateModel = {title: 'ANGULAR!!!', studentsCount: 0};
-    //     const createResponse = await request(app)
-    //         .put(`${Routes.courses}/${createdCourse2.id}`)
-    //         .send(data1)
-    //     expect(HTTP_STATUSES.CREATED_201)
-    //     expect(createResponse.body).toEqual({id: expect.any(Number), title: 'ANGULAR!!!'})
-    // })
-    //
-    // it('all courses should be deleted', async () => {
-    //     await request(app)
-    //         .delete(`${Routes.courses}/${createdCourse1.id}`)
-    //         .expect(HTTP_STATUSES.NO_CONTENT_204)
-    //     await request(app)
-    //         .get(`${Routes.courses}/${createdCourse1.id}`)
-    //         .expect(HTTP_STATUSES.NOT_FOUND_404)
-    //     await request(app)
-    //         .delete(`${Routes.courses}/${createdCourse2.id}`)
-    //         .expect(HTTP_STATUSES.NO_CONTENT_204)
-    //     await request(app)
-    //         .get(Routes.courses)
-    //         .expect(HTTP_STATUSES.OK_200, [])
-    // })
+    it('should return status 200 and one items', () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .get(app_1.Routes.videos)
+            .expect(http_statuses_1.HTTP_STATUSES.OK_200);
+        expect(response.body.length === 1);
+    }));
+    it('should not delete no existing video', () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .delete(`${app_1.Routes.videos}/3`)
+            .expect(http_statuses_1.HTTP_STATUSES.NOT_FOUND_404);
+    }));
+    it('should delete existing video', () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app_1.app)
+            .delete(`${app_1.Routes.videos}/${createdEntity1.id}`)
+            .expect(http_statuses_1.HTTP_STATUSES.NO_CONTENT_204);
+    }));
+    it('all courses should be deleted', () => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, supertest_1.default)(app_1.app)
+            .get(app_1.Routes.videos)
+            .expect(http_statuses_1.HTTP_STATUSES.OK_200, []);
+    }));
 });

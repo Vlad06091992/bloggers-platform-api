@@ -1,13 +1,11 @@
 import express, {Response} from "express";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {
-    AvailableResolutionsType,
     RequestWithBody,
     RequestWithParams,
     RequestWithParamsAndBody,
     RequestWithQuery,
-    RootDBType,
-    VideoType
+    RootDBType
 } from "../../../src/types";
 import {QueryVideoModel} from "./model/QueryVideoModel";
 import {VideoViewModel} from "./model/VideoViewModel";
@@ -15,64 +13,21 @@ import {URIParamsVideoIdModel} from "./model/URIParamsVideoIdModel";
 import {VideoCreateModel} from "./model/VideoCreateModel";
 import {VideoUpdateModel} from "./model/VideoUpdateModel";
 import {validateCreateVideoData, validateUpdateVideoData} from "../../utils";
+import {videosRepository} from "./videos-repository";
 
-
-class Video {
-    canBeDownloaded: boolean;
-    title: string;
-    author: string;
-    availableResolutions?: AvailableResolutionsType[] | null | undefined
-    id: number
-    minAgeRestriction: null | number
-    createdAt: string
-    publicationDate: string
-
-    constructor({title, author, availableResolutions}: VideoCreateModel) {
-        this.title = title
-        this.author = author
-        this.availableResolutions = availableResolutions
-        this.id = +new Date()
-        this.minAgeRestriction = null
-        this.canBeDownloaded = false
-        this.createdAt = new Date().toISOString()
-        this.publicationDate = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
-    }
-}
-
-
-
-
-const UpdateVideo = (video: VideoType, updateData: VideoUpdateModel): VideoType => {
-    return {
-        title: updateData.title,
-        author: updateData.author,
-        availableResolutions: updateData.availableResolutions || video.availableResolutions,
-        publicationDate: updateData.publicationDate || video.publicationDate,
-        createdAt: video.createdAt,
-        id: video.id,
-        canBeDownloaded: updateData.canBeDownloaded ?? video.canBeDownloaded,
-        minAgeRestriction: updateData.minAgeRestriction || video.minAgeRestriction,
-    }
-}
 
 export const getVideosRouter = (db: RootDBType) => {
     const router = express.Router()
 
     router.get('/', (req: RequestWithQuery<QueryVideoModel>, res: Response<VideoViewModel[]>) => {
-        let foundedVideos = db.videos
+        let foundedVideos = videosRepository.findVideos(req.query.title)
 
-        if (req.query.title) {
-            foundedVideos = foundedVideos.filter(v => v.title.indexOf(req.query.title) > -1)
-        }
-        // res.status(200).send(foundedCourses.map(el=>(getCourseViewModel(el))))
         res.status(200).send(foundedVideos)
     })
 
     router.get('/:id', (req: RequestWithParams<URIParamsVideoIdModel>, res: Response<VideoViewModel | number>) => {
-        const id = req.params.id
-        const video = db.videos.find((v: VideoType) => v.id === +id)
-        if (video && id) {
-            // res.send(getCourseViewModel(course))
+        const video = videosRepository.getVideoById(req.params.id)
+        if (video) {
             res.send(video)
 
         } else {
@@ -81,56 +36,35 @@ export const getVideosRouter = (db: RootDBType) => {
     })
 
     router.post('/', (req: RequestWithBody<VideoCreateModel>, res: Response<VideoViewModel | any>) => {
-        let {title, author, availableResolutions} = req.body
         let errorObject = validateCreateVideoData(req.body)
-
         if (errorObject.errorsMessages.length > 0) {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(errorObject)
         } else {
-            const video = new Video({author, availableResolutions, title})
-            db.videos.push(video)
+            const video = videosRepository.createVideo(req.body)
             res.status(HTTP_STATUSES.CREATED_201).send(video)
         }
     })
 
-
     router.put('/:id', (req: RequestWithParamsAndBody<URIParamsVideoIdModel, VideoUpdateModel>, res: Response<VideoViewModel | any>) => {
         const id = req.params.id
-        const indexVideo = db.videos.findIndex(el => el.id == +id)
-
-        if(indexVideo < 0){
-            res.send(HTTP_STATUSES.NOT_FOUND_404)
-            return
-        }
-
         let errorObject = validateUpdateVideoData(req.body)
         if (errorObject.errorsMessages.length > 0) {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(errorObject)
         } else {
-            let video = db.videos.find((v: VideoType) => v.id === +id)
-            if (video !== undefined) {
-                db.videos[indexVideo] = UpdateVideo(video, req.body)
+            let updatedVideo = videosRepository.updateVideo(id, req.body)
+            if (updatedVideo) {
                 res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+            } else {
+                res.sendStatus(404)
             }
         }
-
     })
-
 
     router.delete('/:id', (req: RequestWithParams<URIParamsVideoIdModel>, res: Response<number>) => {
-        const id = req.params.id
-        const indexItem = db.videos.findIndex(v => v.id === +id)
-
-        if (indexItem > -1) {
-            db.videos.splice(indexItem, 1)
-            res.send(HTTP_STATUSES.NO_CONTENT_204)
-        } else {
-            res.send(HTTP_STATUSES.NOT_FOUND_404)
-        }
+        const isDeleted = videosRepository.deleteVideo(req.params.id)
+        isDeleted ? res.send(HTTP_STATUSES.NO_CONTENT_204) : res.send(HTTP_STATUSES.NOT_FOUND_404)
     })
-
     return router
-
 }
 
 
