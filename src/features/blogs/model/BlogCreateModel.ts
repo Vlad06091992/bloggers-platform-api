@@ -1,7 +1,5 @@
-import {AvailableResolutionsType} from "../../../types";
-
 export type BlogCreateModel = {
-    title: string
-    author: string
-    availableResolutions?: AvailableResolutionsType[] | null
+    name:string,
+    description:string,
+    websiteUrl:string
 }

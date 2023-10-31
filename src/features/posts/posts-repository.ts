@@ -10,11 +10,12 @@ export const postsRepository = {
         }
         return foundedPosts
     },
-    getPostsById(id: string) {
+    getPostById(id: string) {
         const post = db.posts.find((el: PostType) => el.id === id)
         if (post) {
             return post
 
         }
     },
+    createPost(data:any){}
 }

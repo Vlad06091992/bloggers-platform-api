@@ -40,8 +40,8 @@ export const getVideosRouter = (db: RootDBType) => {
         if (errorObject.errorsMessages.length > 0) {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(errorObject)
         } else {
-            const video = videosRepository.createVideo(req.body)
-            res.status(HTTP_STATUSES.CREATED_201).send(video)
+            const newVideo = videosRepository.createVideo(req.body)
+            res.status(HTTP_STATUSES.CREATED_201).send(newVideo)
         }
     })
 
