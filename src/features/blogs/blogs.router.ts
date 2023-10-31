@@ -6,7 +6,17 @@ import {blogsRepository} from "./blogs-repository";
 import {URIParamsBlogIdModel} from "./model/URIParamsBlogIdModel";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {BlogCreateModel} from "./model/BlogCreateModel";
-import {checkSchema, cookie, header, validationResult} from "express-validator";
+import {checkSchema, validationResult} from "express-validator"
+
+import basicAuth from "express-basic-auth"
+
+const authGuardMiddleware2 = basicAuth({
+    users: {'admin': 'qwerty'}
+})
+
+function createErrorResponse(errors: any) {
+    return {errorsMessages: errors.map((el: any) => ({message: el.msg, field: el.path}))}
+}
 
 let authGuardMiddleware = (req: any, res: Response, next: NextFunction) => {
     if (req.headers.authorization != "Basic YWRtaW46cXdlcnR5") {
@@ -39,7 +49,7 @@ const createBlogValidationBody =
             matches: {
                 options: /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
                 errorMessage: 'you may only use valid website URLs starting with "https://"'
-            }
+            },
         }
     }, ['body'])
 
@@ -55,9 +65,9 @@ export const getBlogsRouter = (db: RootDBType) => {
 
     router.post('/', authGuardMiddleware, createBlogValidationBody, (req: RequestWithBody<BlogCreateModel>, res: Response<BlogViewModel | any>) => {
 
-        const errors = validationResult(req);
+        const errors = validationResult(req).array({onlyFirstError:true});
         if (errors) {
-            res.send(errors)
+            res.send(createErrorResponse(errors))
         }
         let newBlog = blogsRepository.createBlog(req.body)
         res.status(200).send(newBlog)
