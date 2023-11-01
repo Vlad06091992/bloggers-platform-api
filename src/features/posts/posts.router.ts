@@ -23,7 +23,7 @@ export const getPostsRouter = () => {
     })
 
 
-    router.post('/', validateCreatePostData,(req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
+    router.post('/', authGuardMiddleware, validateCreatePostData,(req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
         const errors = validationResult(req).array({onlyFirstError: true});
         if (errors.length) {
             res.status(400).send(createErrorResponse(errors))
