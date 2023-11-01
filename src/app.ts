@@ -25,5 +25,7 @@ app.use(Routes.blogs, getBlogsRouter())
 
 app.delete(Routes.testing, (req: Request, res: Response) => {
     db.videos = []
+    db.posts = []
+    db.blogs = []
     res.sendStatus(204)
 })
