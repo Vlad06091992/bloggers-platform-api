@@ -1,7 +1,8 @@
 import {AvailableResolutionsType} from "../../../types";
 
 export type PostCreateModel = {
-    title: string
-    author: string
-    availableResolutions?: AvailableResolutionsType[] | null
+    title: string;
+    shortDescription: string;
+    content: string;
+    blogId: string;
 }

@@ -1,6 +1,8 @@
 import {db} from "../../db";
-import {BlogType, PostType} from "../../types";
+import {BlogType} from "../../types";
 import {BlogCreateModel} from "./model/BlogCreateModel";
+import {BlogUpdateModel} from "./model/BlogUpdateModel";
+import {findIndexBlogById} from "./blogs-utils/blogs-utils";
 
 class Blog {
     id: string
@@ -32,9 +34,22 @@ export const blogsRepository = {
         }
     },
     createBlog(data: BlogCreateModel) {
-        debugger
         const newBlog = new Blog(data)
         db.blogs.push(newBlog)
         return newBlog
+    },
+    updateBlog(id: string, data: BlogUpdateModel) {
+        const blogIndex = findIndexBlogById(id)
+        db.blogs[blogIndex] = {...db.blogs[blogIndex], ...data}
+    },
+    deleteBlog(id: string) {
+        const blogIndex = findIndexBlogById(id)
+
+        if (blogIndex > -1) {
+            db.blogs.splice(blogIndex, 1)
+            return true
+        } else {
+            return false
+        }
     }
 }

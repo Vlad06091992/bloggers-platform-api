@@ -1,6 +1,6 @@
 export type URIParamsBlogIdModel = {
     /**
-   * id of existing video
+   * id of existing blog
      */
     id:string
 }

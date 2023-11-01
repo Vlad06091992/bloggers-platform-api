@@ -3,29 +3,27 @@ import {findBlogById} from "../blogs-utils/blogs-utils";
 
 export const validateUpdateBlogData =
     checkSchema({
-        title: {
-            errorMessage: "The 'title' field is required and must be no more than 30 characters.",
+        name: {
+            errorMessage: "The 'title' field is required and must be no more than 15 characters.",
             isLength: {
-                options: {min: 1, max: 30}
+                options: {min: 1, max: 15}
 
             }, exists: true
         },
-        shortDescription: {
+        description: {
             errorMessage: "The 'short description' field is required and must be no more than 100 characters.",
             isLength: {
                 options: {min: 1, max: 500}
             }, exists: true
         },
-        content: {
-            errorMessage: "The 'description' field is required and must be no more than 100 characters.",
+        websiteUrl: {
+            errorMessage: "The 'websitUrl' field is required and must be no more than 100 characters.",
             isLength: {
-                options: {min: 1, max: 1000}
-            }, exists: true
-        },
-        blogId: {
-            custom: {
-                options: (id: string) => findBlogById(id),
-                errorMessage: 'blog is not found'
-            }
+                options: {min: 1, max: 100}
+            }, exists: true,
+            matches: {
+                options: /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
+                errorMessage: 'you may only use valid website URLs starting with "https://"'
+            },
         },
     }, ['body', 'query', "params"])
