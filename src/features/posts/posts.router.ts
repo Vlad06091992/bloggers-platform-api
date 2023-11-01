@@ -6,7 +6,7 @@ import {PostViewModel} from "./model/PostViewModel";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {URIParamsPostIdModel} from "./model/URIParamsPostIdModel";
 
-export const getPostsRouter = (db: RootDBType) => {
+export const getPostsRouter = () => {
     const router = express.Router()
 
     router.get('/', (req: RequestWithQuery<QueryPostModel>, res: Response<PostViewModel[]>) => {

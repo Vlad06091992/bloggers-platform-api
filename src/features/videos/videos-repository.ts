@@ -1,29 +1,9 @@
 import {db} from "../../db";
-import {AvailableResolutionsType, VideoType} from "../../types";
+import {VideoType} from "../../types";
 import {VideoCreateModel} from "../videos/model/VideoCreateModel";
 import {VideoUpdateModel} from "../videos/model/VideoUpdateModel";
+import {Video} from "./videos-utils/video-utils"
 
-class Video {
-    canBeDownloaded: boolean;
-    title: string;
-    author: string;
-    availableResolutions?: AvailableResolutionsType[] | null | undefined
-    id: number
-    minAgeRestriction: null | number
-    createdAt: string
-    publicationDate: string
-
-    constructor({title, author, availableResolutions}: VideoCreateModel) {
-        this.title = title
-        this.author = author
-        this.availableResolutions = availableResolutions
-        this.id = +new Date()
-        this.minAgeRestriction = null
-        this.canBeDownloaded = false
-        this.createdAt = new Date().toISOString()
-        this.publicationDate = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
-    }
-}
 
 const UpdateVideo = (video: VideoType, updateData: VideoUpdateModel): VideoType => {
     return {
@@ -53,6 +33,7 @@ export const videosRepository = {
         }
     },
     createVideo(data: VideoCreateModel) {
+        debugger
         const video = new Video(data)
         db.videos.push(video)
         return video

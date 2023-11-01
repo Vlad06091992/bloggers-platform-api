@@ -9,7 +9,7 @@ class Blog {
     description: string
 
     constructor({name, websiteUrl, description}: BlogCreateModel) {
-        this.id = new Date().toString()
+        this.id = new Date().getTime().toString()
         this.name = name
         this.description = description
         this.websiteUrl = websiteUrl

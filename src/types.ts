@@ -1,5 +1,4 @@
-import {Request, Response, Router} from "express";
-import exp from "constants";
+import {Request} from "express";
 
 export type VideoType = {
     id: number;

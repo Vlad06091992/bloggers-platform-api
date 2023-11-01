@@ -19,9 +19,9 @@ app.use(bodyParser())
 app.get(Routes.default, (req, res) => {
     res.send("hello, is my blogger platform API")
 })
-app.use(Routes.videos, getVideosRouter(db))
-app.use(Routes.posts, getPostsRouter(db))
-app.use(Routes.blogs, getBlogsRouter(db))
+app.use(Routes.videos, getVideosRouter())
+app.use(Routes.posts, getPostsRouter())
+app.use(Routes.blogs, getBlogsRouter())
 
 app.delete(Routes.testing, (req: Request, res: Response) => {
     db.videos = []

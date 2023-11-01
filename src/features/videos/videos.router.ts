@@ -1,22 +1,17 @@
 import express, {Response} from "express";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {
-    RequestWithBody,
-    RequestWithParams,
-    RequestWithParamsAndBody,
-    RequestWithQuery,
-    RootDBType
-} from "../../../src/types";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../../../src/types";
 import {QueryVideoModel} from "./model/QueryVideoModel";
 import {VideoViewModel} from "./model/VideoViewModel";
 import {URIParamsVideoIdModel} from "./model/URIParamsVideoIdModel";
 import {VideoCreateModel} from "./model/VideoCreateModel";
 import {VideoUpdateModel} from "./model/VideoUpdateModel";
-import {validateCreateVideoData, validateUpdateVideoData} from "../../utils";
+import {validateUpdateVideoData} from "./validators/validateUpdateVideoData";
+import {validateCreateVideoData} from "./validators/validateCreateVideoData";
 import {videosRepository} from "./videos-repository";
 
 
-export const getVideosRouter = (db: RootDBType) => {
+export const getVideosRouter = () => {
     const router = express.Router()
 
     router.get('/', (req: RequestWithQuery<QueryVideoModel>, res: Response<VideoViewModel[]>) => {
