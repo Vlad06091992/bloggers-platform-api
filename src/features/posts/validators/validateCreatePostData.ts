@@ -33,10 +33,10 @@ export const validateCreatePostData =
                 options: {min: 1, max: 100}
             }, exists: true,
         },
-        BlogId: {
+        blogId: {
             custom: {
                 options: (id: string) => findBlogById(id),
                 errorMessage: 'blog is not found'
             }
         }
-    }, ['body'])
+    }, ['body', 'query', "params"])
