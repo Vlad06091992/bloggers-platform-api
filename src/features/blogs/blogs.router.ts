@@ -31,6 +31,8 @@ export const getBlogsRouter = () => {
             res.status(400).send(createErrorResponse(errors))
         }
         let newBlog = blogsRepository.createBlog(req.body)
+
+        //TODO проверка что отправляем именно блог
         res.status(201).send(newBlog)
     })
 
