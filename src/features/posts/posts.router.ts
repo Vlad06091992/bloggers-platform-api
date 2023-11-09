@@ -23,13 +23,16 @@ export const getPostsRouter = () => {
     })
 
 
-    router.post('/', authGuardMiddleware, validateCreatePostData,(req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
+    router.post('/', authGuardMiddleware, validateCreatePostData, (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
         const errors = validationResult(req).array({onlyFirstError: true});
         if (errors.length) {
             res.status(400).send(createErrorResponse(errors))
+        } else {
+            let newBlog = postsRepository.createPost(req.body)
+            res.status(201).send(newBlog)
         }
-        let newBlog = postsRepository.createPost(req.body)
-        res.status(201).send(newBlog)
+
+
     })
 
 
@@ -45,7 +48,7 @@ export const getPostsRouter = () => {
     router.put('/:id', authGuardMiddleware, validateUpdatePostData, (req: RequestWithParamsAndBody<URIParamsPostIdModel, PostUpdateModel>, res: Response<PostViewModel | any>) => {
         const isExistsPost = findPostById(req.params.id, "boolean")
 
-        if(!isExistsPost){
+        if (!isExistsPost) {
             res.sendStatus(404)
         }
         const errors = validationResult(req).array({onlyFirstError: true});
@@ -57,7 +60,7 @@ export const getPostsRouter = () => {
         res.sendStatus(204)
     })
 
-    router.delete('/:id',authGuardMiddleware, (req: RequestWithParams<URIParamsPostIdModel>, res: Response<number>) => {
+    router.delete('/:id', authGuardMiddleware, (req: RequestWithParams<URIParamsPostIdModel>, res: Response<number>) => {
         const isDeleted = postsRepository.deletePost(req.params.id)
         isDeleted ? res.send(HTTP_STATUSES.NO_CONTENT_204) : res.send(HTTP_STATUSES.NOT_FOUND_404)
     })

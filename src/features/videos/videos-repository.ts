@@ -33,7 +33,6 @@ export const videosRepository = {
         }
     },
     createVideo(data: VideoCreateModel) {
-        debugger
         const video = new Video(data)
         db.videos.push(video)
         return video

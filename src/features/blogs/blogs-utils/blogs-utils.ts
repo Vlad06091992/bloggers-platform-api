@@ -4,7 +4,7 @@ import {BlogType} from "../../../types";
 type ResultType = "object" | "boolean"
 
 export const findBlogById = (id: string, result: ResultType = "boolean") => {
-    debugger
+
     const blog = db.blogs.find((blog: BlogType) => blog.id === id!)
     return result == "boolean" ? !!blog : blog
 }
