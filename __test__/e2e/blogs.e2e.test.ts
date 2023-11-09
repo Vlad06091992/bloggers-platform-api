@@ -1,6 +1,7 @@
 import request from "supertest";
 import {app, Routes} from "../../src/app";
 import {HTTP_STATUSES} from "../../src/http_statuses/http_statuses";
+// @ts-ignore
 import {blogsTestManager} from "../utils/blogs.test.manager";
 import {BlogCreateModel} from "../../src/features/blogs/model/BlogCreateModel";
 
@@ -42,18 +43,40 @@ describe('test for /blogs', () => {
         )
     })
 
-    it('blog should be created', async () => {
-        const data: BlogCreateModel = {websiteUrl: "https://samurai.it-incubator.io", name: "Vlad", description: "desc"};
-        await blogsTestManager.createBlog(data, authData, HTTP_STATUSES.CREATED_201, {
+
+    it('blog do not create because name and description is not valid', async () => {
+        const data: BlogCreateModel = {websiteUrl: "https://ekaterinburg.hh.ru/", name: "", description: ""};
+        await blogsTestManager.createBlog(data, authData, HTTP_STATUSES.BAD_REQUEST_400, {
                 "errorsMessages":
                     [
                         {
-                            "field": "websiteUrl",
-                            "message": "The 'websitUrl' field is required and must be no more than 100 characters.",
+                            "field": "name",
+                            "message": "The 'name' field is required and must be no more than 15 characters.",
+                        },
+                        {
+                            "field": "description",
+                            "message": "The 'description' field is required and must be no more than 500 characters.",
                         },
                     ],
             }
         )
+    })
+
+
+    let createdBlog:any = null
+
+    it('blog should be created', async () => {
+        const data: BlogCreateModel = {websiteUrl: "https://samurai.it-incubator.io", name: "Vlad", description: "desc"};
+       const result =  await blogsTestManager.createBlog(data, authData, HTTP_STATUSES.CREATED_201)
+        createdBlog = result
+    })
+
+    it('blog must be found by id', async () => {
+        await blogsTestManager.getBlogById(createdBlog.id,createdBlog.name)
+    })
+
+    it('blog should not be found by id', async () => {
+        await blogsTestManager.getBlogById("id","some name", HTTP_STATUSES.NOT_FOUND_404)
     })
 
 
