@@ -14,14 +14,14 @@ const noValidAuthData = {
     user: 'not valid user',
     password: 'qwerty'
 }
-describe('test for /blogs', () => {
+describe('test for /posts', () => {
     beforeAll(async () => {
         await request(app).delete(Routes.testing)
     })
 
     it('should return status 200 and empty', async () => {
         await request(app)
-            .get(Routes.blogs)
+            .get(Routes.videos)
             .expect(HTTP_STATUSES.OK_200, [])
     })
 
@@ -143,7 +143,7 @@ describe('test for /blogs', () => {
     })
     it('should return status 200 and empty', async () => {
         await request(app)
-            .get(Routes.blogs)
+            .get(Routes.videos)
             .expect(HTTP_STATUSES.OK_200, [])
     })
 })
