@@ -15,7 +15,6 @@ import {findBlogById} from "./blogs-utils/blogs-utils";
 import {createErrorResponse} from "../../utils";
 
 
-
 export const getBlogsRouter = () => {
     const router = express.Router()
 
@@ -30,6 +29,7 @@ export const getBlogsRouter = () => {
         debugger
         if (errors.length) {
             res.status(400).send(createErrorResponse(errors))
+            return
         }
         let newBlog = blogsRepository.createBlog(req.body)
 
@@ -48,10 +48,11 @@ export const getBlogsRouter = () => {
     })
 
     router.put('/:id', authGuardMiddleware, validateUpdateBlogData, (req: RequestWithParamsAndBody<URIParamsBlogIdModel, BlogUpdateModel>, res: Response<BlogViewModel | any>) => {
-      const isExistsBlog = findBlogById(req.params.id, "boolean")
+        const isExistsBlog = findBlogById(req.params.id, "boolean")
 
-        if(!isExistsBlog){
+        if (!isExistsBlog) {
             res.sendStatus(404)
+            return
         }
         const errors = validationResult(req).array({onlyFirstError: true});
         if (errors.length) {
@@ -62,7 +63,7 @@ export const getBlogsRouter = () => {
         res.sendStatus(204)
     })
 
-    router.delete('/:id',authGuardMiddleware, (req: RequestWithParams<URIParamsBlogIdModel>, res: Response<number>) => {
+    router.delete('/:id', authGuardMiddleware, (req: RequestWithParams<URIParamsBlogIdModel>, res: Response<number>) => {
         const isDeleted = blogsRepository.deleteBlog(req.params.id)
         isDeleted ? res.send(HTTP_STATUSES.NO_CONTENT_204) : res.send(HTTP_STATUSES.NOT_FOUND_404)
     })

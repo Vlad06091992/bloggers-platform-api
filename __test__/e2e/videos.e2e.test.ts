@@ -1,8 +1,8 @@
 import request from "supertest";
-import {app, Routes} from "src/app";
-import {HTTP_STATUSES} from "src/http_statuses/http_statuses";
-import {VideoCreateModel} from "src/features/videos/model/VideoCreateModel";
-import {VideoUpdateModel} from "src/features/videos/model/VideoUpdateModel";
+import {app, Routes} from "../../src/app";
+import {HTTP_STATUSES} from "../../src/http_statuses/http_statuses";
+import {VideoCreateModel} from "../../src/features/videos/model/VideoCreateModel";
+import {VideoUpdateModel} from "../../src/features/videos/model/VideoUpdateModel";
 
 
 describe('test for /videos', () => {
