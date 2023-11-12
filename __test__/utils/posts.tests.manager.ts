@@ -9,34 +9,40 @@ type AuthDataType = {
 }
 
 export const postsTestManager = {
-    async createPost(data: any, {user, password}: AuthDataType, HTTPStatus = HTTP_STATUSES.CREATED_201, errorsObject?: ErrorResponseType | {}): Promise<BlogType | ErrorResponseType> {
+    async createPost(data: any, blogName: string, {
+        user,
+        password
+    }: AuthDataType, HTTPStatus = HTTP_STATUSES.CREATED_201, errorsObject?: ErrorResponseType | {}): Promise<PostType | ErrorResponseType> {
         const response = await request(app)
             .post(Routes.posts)
             .auth(user, password)
             .send(data)
+        expect(response.status).toEqual(HTTPStatus)
+
         if (HTTPStatus === HTTP_STATUSES.CREATED_201) {
-            const {id, ...responseBodyWithoutId} = response.body
-            expect(responseBodyWithoutId).toEqual(data)
+            expect(response.body).toEqual({...data, blogName, id: expect.any(String)})
             return response.body
         } else {
-            expect(response.status).toEqual(HTTPStatus)
             expect(response.body).toEqual(errorsObject)
             return response.body
         }
     },
-    async getPostById(id: string, name: string, HTTPStatus = HTTP_STATUSES.OK_200): Promise<PostType | undefined> {
+    async getPostById(id: string, title: string, HTTPStatus = HTTP_STATUSES.OK_200): Promise<PostType | undefined> {
         const response = await request(app)
             .get(`${Routes.posts}/${id}`)
         if (HTTPStatus === HTTP_STATUSES.OK_200) {
-            expect(response.body.name).toEqual(name)
+            expect(response.body.title).toEqual(title)
             return response.body
         } else {
             expect(response.status).toEqual(HTTPStatus)
         }
     },
-    async updatePost(id:string,data: any, {user, password}: AuthDataType, HTTPStatus = HTTP_STATUSES.CREATED_201, errorsObject?: ErrorResponseType | {}): Promise<void | ErrorResponseType> {
+    async updatePost(id: string, data: any, {
+        user,
+        password
+    }: AuthDataType, HTTPStatus = HTTP_STATUSES.CREATED_201, errorsObject?: ErrorResponseType | {}): Promise<void | ErrorResponseType> {
         const response = await request(app)
-            .put(`${Routes.blogs}/${id}`)
+            .put(`${Routes.posts}/${id}`)
             .auth(user, password)
             .send(data)
         if (HTTPStatus === HTTP_STATUSES.NO_CONTENT_204) {
@@ -47,9 +53,12 @@ export const postsTestManager = {
             return response.body
         }
     },
-    async deletePost(id: string,{user, password}: AuthDataType, HTTPStatus = HTTP_STATUSES.NO_CONTENT_204): Promise<void> {
+    async deletePost(id: string, {
+        user,
+        password
+    }: AuthDataType, HTTPStatus = HTTP_STATUSES.NO_CONTENT_204): Promise<void> {
         const response = await request(app)
-            .delete(`${Routes.blogs}/${id}`)
+            .delete(`${Routes.posts}/${id}`)
             .auth(user, password)
             .expect(HTTPStatus)
     },

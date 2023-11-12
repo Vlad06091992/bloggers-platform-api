@@ -50,7 +50,6 @@ export const postsRepository = {
     },
     deletePost(id: string) {
         const postIndex = findIndexPostById(id)
-
         if (postIndex > -1) {
             db.posts.splice(postIndex, 1)
             return true

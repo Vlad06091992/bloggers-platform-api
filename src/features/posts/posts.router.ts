@@ -26,11 +26,12 @@ export const getPostsRouter = () => {
     router.post('/', authGuardMiddleware, validateCreatePostData, (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
         const errors = validationResult(req).array({onlyFirstError: true});
         if (errors.length) {
-            res.status(400).send(createErrorResponse(errors))
-        } else {
-            let newBlog = postsRepository.createPost(req.body)
-            res.status(201).send(newBlog)
+            res.status(HTTP_STATUSES.BAD_REQUEST_400).send(createErrorResponse(errors))
+            return
         }
+            let newBlog = postsRepository.createPost(req.body)
+            res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
+
     })
 
 
@@ -47,16 +48,16 @@ export const getPostsRouter = () => {
         const isExistsPost = findPostById(req.params.id, "boolean")
 
         if (!isExistsPost) {
-            res.sendStatus(404)
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
         const errors = validationResult(req).array({onlyFirstError: true});
         if (errors.length) {
-            res.status(400).send(createErrorResponse(errors))
+            res.status(HTTP_STATUSES.BAD_REQUEST_400).send(createErrorResponse(errors))
             return
         }
         postsRepository.updatePost(req.params.id, req.body)
-        res.sendStatus(204)
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
     router.delete('/:id', authGuardMiddleware, (req: RequestWithParams<URIParamsPostIdModel>, res: Response<number>) => {

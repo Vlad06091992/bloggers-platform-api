@@ -14,12 +14,14 @@ export const blogsTestManager = {
             .post(Routes.blogs)
             .auth(user, password)
             .send(data)
+
+        expect(response.status).toEqual(HTTPStatus)
+
         if (HTTPStatus === HTTP_STATUSES.CREATED_201) {
             const {id, ...responseBodyWithoutId} = response.body
             expect(responseBodyWithoutId).toEqual(data)
             return response.body
         } else {
-            expect(response.status).toEqual(HTTPStatus)
             expect(response.body).toEqual(errorsObject)
             return response.body
         }

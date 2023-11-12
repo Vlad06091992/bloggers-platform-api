@@ -26,7 +26,6 @@ export const getBlogsRouter = () => {
 
     router.post('/', authGuardMiddleware, validateCreateBlogData, (req: RequestWithBody<BlogCreateModel>, res: Response<BlogViewModel | any>) => {
         const errors = validationResult(req).array({onlyFirstError: true});
-        debugger
         if (errors.length) {
             res.status(400).send(createErrorResponse(errors))
             return
