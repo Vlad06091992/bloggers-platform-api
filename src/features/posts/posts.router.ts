@@ -31,8 +31,6 @@ export const getPostsRouter = () => {
             let newBlog = postsRepository.createPost(req.body)
             res.status(201).send(newBlog)
         }
-
-
     })
 
 
@@ -50,6 +48,7 @@ export const getPostsRouter = () => {
 
         if (!isExistsPost) {
             res.sendStatus(404)
+            return
         }
         const errors = validationResult(req).array({onlyFirstError: true});
         if (errors.length) {
