@@ -6,7 +6,7 @@ import {blogsTestManager} from "../utils/blogs.test.manager";
 // @ts-ignore
 import {postsTestManager} from "../utils/posts.tests.manager";
 import {PostCreateModel} from "../../src/features/posts/model/PostCreateModel";
-import {BlogType} from "../../src/types";
+import {BlogViewModel} from "../../src/features/blogs/model/BlogViewModel";
 
 const authData = {
     user: 'admin',
@@ -81,7 +81,7 @@ describe('test for /posts', () => {
             websiteUrl: "https://samurai.it-incubator.io",
             name: blogName,
             description: "desc"
-        }, authData) as BlogType
+        }, authData) as BlogViewModel
         const data: PostCreateModel = {
             title: 'new title',
             blogId: createdBlog.id,

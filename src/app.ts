@@ -4,6 +4,7 @@ import {db} from "./db";
 import {getVideosRouter} from "./features/videos/videos.router";
 import {getPostsRouter} from "./features/posts/posts.router";
 import {getBlogsRouter} from "./features/blogs/blogs.router";
+import {blogsRepository} from "./features/blogs/blogs-repository";
 
 export const app = express()
 
@@ -23,9 +24,10 @@ app.use(Routes.videos, getVideosRouter())
 app.use(Routes.posts, getPostsRouter())
 app.use(Routes.blogs, getBlogsRouter())
 
-app.delete(Routes.testing, (req: Request, res: Response) => {
+app.delete(Routes.testing, async (req: Request, res: Response) => {
     db.videos = []
     db.posts = []
-    db.blogs = []
+    // db.blogs = []
+    await blogsRepository.deleteAllBlogs()
     res.sendStatus(204)
 })

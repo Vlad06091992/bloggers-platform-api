@@ -5,8 +5,8 @@ export type VideoViewModel =  {
     title: string;
     author: string;
     canBeDownloaded: boolean;
-    minAgeRestriction?: any;
+    minAgeRestriction: null | number;
     createdAt: string;
     publicationDate: string;
-    availableResolution?: AvailableResolutionsType[] | null;
+    availableResolutions?: AvailableResolutionsType[] | null;
 }

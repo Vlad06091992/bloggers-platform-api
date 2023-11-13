@@ -1,55 +1,67 @@
-import {db} from "../../db";
-import {BlogType} from "../../types";
+import {blogsCollection} from "../../db-mongo";
 import {BlogCreateModel} from "./model/BlogCreateModel";
 import {BlogUpdateModel} from "./model/BlogUpdateModel";
-import {findIndexBlogById} from "./blogs-utils/blogs-utils";
+import {getBlogViewModel} from "../blogs/blogs-utils/blogs-utils";
+import {BlogViewModel} from "../blogs/model/BlogViewModel";
+import {BlogType} from "./types/types";
 
 class Blog {
     id: string
     name: string
     websiteUrl: string
     description: string
+    isMembership: boolean
+    createdAt: string
 
     constructor({name, websiteUrl, description}: BlogCreateModel) {
         this.id = new Date().getTime().toString()
         this.name = name
         this.description = description
         this.websiteUrl = websiteUrl
+        this.isMembership = true
+        this.createdAt = new Date().toISOString()
     }
 }
 
 export const blogsRepository = {
-    findBlogs(name: string | null) {
-        let foundedBlogs = db.blogs
+    async findBlogs(name: string | null) {
+        let filter = {}
         if (name) {
-            foundedBlogs = foundedBlogs.filter(el => el.name.indexOf(name) > -1)
+            filter = {name: {regex: name}};
         }
-        return foundedBlogs
+        let res = await blogsCollection.find(filter).toArray()
+       let hz = res.map(el => {
+            const {_id, ...blogWithoutPrefixId} = el
+           debugger
+            return blogWithoutPrefixId
+        })
+return hz
     },
-    getBlogById(id: string) {
-        const blog = db.blogs.find((el: BlogType) => el.id === id)
+    async getBlogById(id: string) {
+        const blog = await blogsCollection.findOne({id})
         if (blog) {
-            return blog
-
+            const {_id, ...blogWithoutPrefixId} = blog
+            return blogWithoutPrefixId
         }
     },
-    createBlog(data: BlogCreateModel) {
-        const newBlog = new Blog(data)
-        db.blogs.push(newBlog)
+    async createBlog(data: BlogCreateModel) {
+        const newBlog: BlogViewModel = new Blog(data)
+        if (newBlog) {
+            await blogsCollection.insertOne({...newBlog})
+        }
+
         return newBlog
     },
-    updateBlog(id: string, data: BlogUpdateModel) {
-        const blogIndex = findIndexBlogById(id)
-        db.blogs[blogIndex] = {...db.blogs[blogIndex], ...data}
+    async updateBlog(id: string, data: BlogUpdateModel) {
+        let result = await blogsCollection.updateOne({id}, {$set: data})
+        return result.matchedCount == 1
     },
-    deleteBlog(id: string) {
-        const blogIndex = findIndexBlogById(id)
-
-        if (blogIndex > -1) {
-            db.blogs.splice(blogIndex, 1)
-            return true
-        } else {
-            return false
-        }
+    async deleteBlog(id: string) {
+        let result = await blogsCollection.deleteOne({id})
+        return result.deletedCount === 1
+    },
+    async deleteAllBlogs() {
+        await blogsCollection.deleteMany({})
+        return true
     }
 }

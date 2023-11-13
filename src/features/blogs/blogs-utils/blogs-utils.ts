@@ -1,15 +1,21 @@
 import {db} from "../../../db";
-import {BlogType} from "../../../types";
+import {BlogViewModel} from "../model/BlogViewModel";
+import {blogsCollection} from "../../../db-mongo";
+import {BlogType} from "../types/types";
 
 type ResultType = "object" | "boolean"
 
-export const findBlogById = (id: string, result: ResultType = "boolean") => {
-
-    const blog = db.blogs.find((blog: BlogType) => blog.id === id!)
+export const findBlogById = async (id: string, result: ResultType = "boolean") => {
+    const blog = await blogsCollection.findOne({id})
     return result == "boolean" ? !!blog : blog
 }
 
 export const findIndexBlogById = (id: string) => {
-    const blogId = db.blogs.findIndex((blog: BlogType) => blog.id === id!)
+    const blogId = db.blogs.findIndex((blog: BlogViewModel) => blog.id === id!)
     return blogId
+}
+
+export const getBlogViewModel = (blog: BlogType): BlogViewModel => {
+    const {_id, ...blogWithoutPrefixId} = blog
+    return blog
 }

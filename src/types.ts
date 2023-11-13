@@ -1,4 +1,9 @@
 import {Request} from "express";
+import {BlogViewModel} from "./features/blogs/model/BlogViewModel";
+import {PostViewModel} from "./features/posts/model/PostViewModel";
+import {VideoViewModel} from "./features/videos/model/VideoViewModel";
+
+
 
 export type VideoType = {
     id: number;
@@ -11,26 +16,11 @@ export type VideoType = {
     availableResolutions?: AvailableResolutionsType[] | null;
 }
 
-export type BlogType = {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string
-}
-
-export type PostType = {
-    id: string;
-    title: string;
-    shortDescription: string;
-    content: string;
-    blogId: string;
-    blogName: string;
-}
 
 export type RootDBType = {
-    videos: VideoType[],
-    posts: PostType[],
-    blogs: BlogType[]
+    videos: VideoViewModel[],
+    posts: PostViewModel[],
+    blogs: BlogViewModel[]
 }
 
 export type ErrorResponseType = {

@@ -26,31 +26,41 @@ export const db: RootDBType = {
             id: "1",
             name: "Tech Blog",
             description: "A blog about technology and gadgets",
-            websiteUrl: "https://example.com/tech-blog"
+            websiteUrl: "https://example.com/tech-blog",
+            createdAt: new Date().toDateString(),
+            isMembership:true
         },
         {
             id: "2",
             name: "Travel Adventures",
             description: "Exploring the world, one adventure at a time",
-            websiteUrl: "https://example.com/travel-adventures"
+            websiteUrl: "https://example.com/travel-adventures",
+            createdAt: new Date().toDateString(),
+            isMembership:true
         },
         {
             id: "3",
             name: "Cooking Creations",
             description: "Delicious recipes and culinary experiments",
-            websiteUrl: "https://example.com/cooking-creations"
+            websiteUrl: "https://example.com/cooking-creations",
+            createdAt: new Date().toDateString(),
+            isMembership:true
         },
         {
             id: "4",
             name: "Fashion Forward",
             description: "The latest trends and style inspiration",
-            websiteUrl: "https://example.com/fashion-forward"
+            websiteUrl: "https://example.com/fashion-forward",
+            createdAt: new Date().toDateString(),
+            isMembership:true
         },
         {
             id: "5",
             name: "Fitness Fanatics",
             description: "Get fit and stay healthy with our tips",
-            websiteUrl: "https://example.com/fitness-fanatics"
+            websiteUrl: "https://example.com/fitness-fanatics",
+            createdAt: new Date().toDateString(),
+            isMembership:true
         }
     ],
     posts:[

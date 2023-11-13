@@ -1,8 +1,7 @@
-import {db} from "../../db";
-import {PostType} from "../../types";
 import {PostCreateModel} from "./model/PostCreateModel";
 import {PostUpdateModel} from "./model/PostUpdateModel";
-import {findBlogNameByBlogId, findIndexPostById} from "./posts-utils/posts-utils";
+import {findBlogNameByBlogId} from "./posts-utils/posts-utils";
+import {postsCollection} from "../../db-mongo";
 
 class Post {
     id: string;
@@ -11,6 +10,7 @@ class Post {
     content: string;
     blogId: string;
     blogName: string;
+    createdAt: string
 
     constructor({blogId, title, shortDescription, content}: PostCreateModel) {
         this.id = new Date().getTime().toString()
@@ -19,42 +19,39 @@ class Post {
         this.title = title
         this.content = content
         this.shortDescription = shortDescription
-
+        this.createdAt = new Date().toISOString()
     }
 }
 
 export const postsRepository = {
-    findPosts(title: string | null) {
-        let foundedPosts = db.posts
-
+    async findPosts(title: string | null) {
+        let filter = {}
         if (title) {
-            foundedPosts = foundedPosts.filter(el => el.title.indexOf(title) > -1)
+            filter = {title: {regex: title}}
         }
-        return foundedPosts
+        return await postsCollection.find(filter).toArray();
     },
-    getPostById(id: string) {
-        const post = db.posts.find((el: PostType) => el.id === id)
+    async getPostById(id: string) {
+        const post = await postsCollection.findOne({id});
         if (post) {
             return post
-
         }
     },
-    createPost(data: PostCreateModel) {
+    async createPost(data: PostCreateModel) {
         const newPost = new Post(data)
-        db.posts.push(newPost)
+        await postsCollection.insertOne(newPost)
         return newPost
     },
-    updatePost(id: string, data: PostUpdateModel) {
-        const postIndex = findIndexPostById(id)
-        db.posts[postIndex] = {...db.posts[postIndex], ...data}
+    async updatePost(id: string, data: PostUpdateModel) {
+        let result = await postsCollection.updateOne({id}, {data})
+        return result.matchedCount === 1
     },
-    deletePost(id: string) {
-        const postIndex = findIndexPostById(id)
-        if (postIndex > -1) {
-            db.posts.splice(postIndex, 1)
-            return true
-        } else {
-            return false
-        }
+    async deletePost(id: string) {
+        let result = await postsCollection.deleteOne({id} )
+        return result.deletedCount === 1
+    },
+    async deleteAllPosts() {
+        await postsCollection.deleteMany({})
+        return true
     }
 }

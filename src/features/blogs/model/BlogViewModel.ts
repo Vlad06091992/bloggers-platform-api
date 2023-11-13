@@ -1,8 +1,3 @@
 import {AvailableResolutionsType} from "../../../../src/types";
-
-export type BlogViewModel =  {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string
-}
+import {BlogType} from "../../../../src/types";
+export type BlogViewModel = Omit<BlogType, "_id">

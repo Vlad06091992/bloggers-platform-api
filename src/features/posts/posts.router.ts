@@ -1,6 +1,6 @@
 import express, {Response} from "express";
 import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../../types";
-import {postsRepository} from "./posts-repository";
+
 import {QueryPostModel} from "./model/QueryPostModel";
 import {PostViewModel} from "./model/PostViewModel";
 import {PostCreateModel} from "./model/PostCreateModel";
@@ -13,30 +13,30 @@ import {validateUpdatePostData} from "./validators/validateUpdatePostData";
 import {createErrorResponse} from "../../utils";
 import {authGuardMiddleware} from "../../middlewares/authGuardMiddleware";
 import {findPostById} from "./posts-utils/posts-utils";
+import {postsRepository} from "./posts-repository";
 
 export const getPostsRouter = () => {
     const router = express.Router()
-
-    router.get('/', (req: RequestWithQuery<QueryPostModel>, res: Response<PostViewModel[]>) => {
-        let foundedPosts = postsRepository.findPosts(req.query.title)
+    router.get('/', async (req: RequestWithQuery<QueryPostModel>, res: Response<PostViewModel[]>) => {
+        let foundedPosts = await postsRepository.findPosts(req.query.title)
         res.status(200).send(foundedPosts)
     })
 
 
-    router.post('/', authGuardMiddleware, validateCreatePostData, (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
+    router.post('/', authGuardMiddleware, validateCreatePostData, async (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
         const errors = validationResult(req).array({onlyFirstError: true});
         if (errors.length) {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(createErrorResponse(errors))
             return
         }
-            let newBlog = postsRepository.createPost(req.body)
+            let newBlog = await postsRepository.createPost(req.body)
             res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
 
     })
 
 
-    router.get('/:id', (req: RequestWithParams<URIParamsPostIdModel>, res: Response<PostViewModel | number>) => {
-        const post = postsRepository.getPostById(req.params.id)
+    router.get('/:id', async (req: RequestWithParams<URIParamsPostIdModel>, res: Response<PostViewModel | number>) => {
+        const post = await postsRepository.getPostById(req.params.id)
         if (post) {
             res.send(post)
         } else {
@@ -44,7 +44,7 @@ export const getPostsRouter = () => {
         }
     })
 
-    router.put('/:id', authGuardMiddleware, validateUpdatePostData, (req: RequestWithParamsAndBody<URIParamsPostIdModel, PostUpdateModel>, res: Response<PostViewModel | any>) => {
+    router.put('/:id', authGuardMiddleware, validateUpdatePostData, async (req: RequestWithParamsAndBody<URIParamsPostIdModel, PostUpdateModel>, res: Response<PostViewModel | any>) => {
         const isExistsPost = findPostById(req.params.id, "boolean")
 
         if (!isExistsPost) {
@@ -56,12 +56,12 @@ export const getPostsRouter = () => {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(createErrorResponse(errors))
             return
         }
-        postsRepository.updatePost(req.params.id, req.body)
+        await postsRepository.updatePost(req.params.id, req.body)
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
-    router.delete('/:id', authGuardMiddleware, (req: RequestWithParams<URIParamsPostIdModel>, res: Response<number>) => {
-        const isDeleted = postsRepository.deletePost(req.params.id)
+    router.delete('/:id', authGuardMiddleware, async (req: RequestWithParams<URIParamsPostIdModel>, res: Response<number>) => {
+        const isDeleted =await postsRepository.deletePost(req.params.id)
         isDeleted ? res.send(HTTP_STATUSES.NO_CONTENT_204) : res.send(HTTP_STATUSES.NOT_FOUND_404)
     })
 
