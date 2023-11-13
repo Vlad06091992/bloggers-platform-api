@@ -2,12 +2,18 @@ import {db} from "../../../db";
 // import {PostViewModel} from "./models/PostViewModel"
 import {PostViewModel} from "../model/PostViewModel"
 import {postsCollection} from "../../../db-mongo";
+import {blogsCollection} from "../../../db-mongo";
 
 type ResultType = "object" | "boolean"
 
-export const findPostById = (id: string, result: ResultType = "boolean") => {
-    const post = postsCollection.findOne({id})
+export const findPostById = async (id: string, result: ResultType = "boolean") => {
+    const post = await postsCollection.findOne({id})
     return result == "boolean" ? !!post : post
+}
+
+export const findBlogNameByBlogId = async (blogId: string) => {
+    const blog = await blogsCollection.findOne({id: blogId})
+    return blog?.name
 }
 
 export const findIndexPostById = (id: string) => {
@@ -15,6 +21,4 @@ export const findIndexPostById = (id: string) => {
     return postId
 }
 
-export const findBlogNameByBlogId = (id: string) => {
-    return db.blogs.find(el => el.id == id)?.name
-}
+

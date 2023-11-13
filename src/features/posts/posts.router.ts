@@ -29,9 +29,8 @@ export const getPostsRouter = () => {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(createErrorResponse(errors))
             return
         }
-            let newBlog = await postsRepository.createPost(req.body)
-            res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
-
+            let newPost = await postsRepository.createPost(req.body)
+            res.status(HTTP_STATUSES.CREATED_201).send(newPost)
     })
 
 
@@ -45,7 +44,7 @@ export const getPostsRouter = () => {
     })
 
     router.put('/:id', authGuardMiddleware, validateUpdatePostData, async (req: RequestWithParamsAndBody<URIParamsPostIdModel, PostUpdateModel>, res: Response<PostViewModel | any>) => {
-        const isExistsPost = findPostById(req.params.id, "boolean")
+        const isExistsPost = await postsRepository.getPostById(req.params.id)
 
         if (!isExistsPost) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

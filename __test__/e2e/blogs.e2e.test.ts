@@ -87,9 +87,7 @@ describe('test for /blogs', () => {
 
 
     it('should return status 200 and array with one item', async () => {
-        debugger
-
-     let res =    await request(app)
+       await request(app)
             .get(Routes.blogs)
             .expect(HTTP_STATUSES.OK_200, [createdBlog])
     })

@@ -27,7 +27,12 @@ export const validateUpdatePostData =
         },
         blogId: {
             custom: {
-                options: (id: string) => findBlogById(id),
+                options: async (id: string) => {
+                    let res = await findBlogById(id)
+                    if (!res) {
+                        return Promise.reject()
+                    }
+                },
                 errorMessage: 'blog is not found'
             }
         }

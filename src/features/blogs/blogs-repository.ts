@@ -32,7 +32,6 @@ export const blogsRepository = {
         let res = await blogsCollection.find(filter).toArray()
        let hz = res.map(el => {
             const {_id, ...blogWithoutPrefixId} = el
-           debugger
             return blogWithoutPrefixId
         })
 return hz

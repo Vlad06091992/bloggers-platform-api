@@ -20,7 +20,7 @@ export const postsTestManager = {
             .send(data)
         expect(response.status).toEqual(HTTPStatus)
         if (HTTPStatus === HTTP_STATUSES.CREATED_201) {
-            expect(response.body).toEqual({...data, blogName, id: expect.any(String),_id: expect.any(String),createdAt: expect.any(String)})
+            expect(response.body).toEqual({...data, blogName, id: expect.any(String),createdAt: expect.any(String)})
             return response.body
         } else {
             expect(response.body).toEqual(errorsObject)

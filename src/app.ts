@@ -5,6 +5,7 @@ import {getVideosRouter} from "./features/videos/videos.router";
 import {getPostsRouter} from "./features/posts/posts.router";
 import {getBlogsRouter} from "./features/blogs/blogs.router";
 import {blogsRepository} from "./features/blogs/blogs-repository";
+import {postsRepository} from "./features/posts/posts-repository";
 
 export const app = express()
 
@@ -29,5 +30,6 @@ app.delete(Routes.testing, async (req: Request, res: Response) => {
     db.posts = []
     // db.blogs = []
     await blogsRepository.deleteAllBlogs()
+    await postsRepository.deleteAllPosts()
     res.sendStatus(204)
 })
