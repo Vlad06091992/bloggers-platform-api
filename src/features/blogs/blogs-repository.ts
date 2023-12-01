@@ -44,7 +44,7 @@ export const blogsRepository = {
         try {
             let res = await blogsCollection.findOne({_id: new ObjectId(id)})
             return getBlogWithPrefixIdToViewModel(res!)
-        } catch (e){
+        } catch (e) {
             return null
         }
     },
@@ -59,15 +59,23 @@ export const blogsRepository = {
 
             }
         }
-        // return newBlogTemplate
     },
     async updateBlog(id: string, data: BlogUpdateModel) {
-        let result = await blogsCollection.updateOne({id}, {$set: data})
-        return result.matchedCount == 1
+        try {
+            let result = await blogsCollection.updateOne({_id: new ObjectId(id)}, {$set: data})
+            return result.matchedCount == 1
+        } catch (e) {
+            return false
+        }
     },
     async deleteBlog(id: string) {
-        let result = await blogsCollection.deleteOne({id})
-        return result.deletedCount === 1
+        try {
+            let result = await blogsCollection.deleteOne({_id: new ObjectId(id)})
+            return result.deletedCount === 1
+        } catch (e) {
+            return false
+        }
+
     },
     async deleteAllBlogs() {
         await blogsCollection.deleteMany({})

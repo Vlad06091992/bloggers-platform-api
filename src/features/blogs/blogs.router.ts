@@ -37,12 +37,10 @@ export const getBlogsRouter = () => {
 
 
     router.get('/:id', async (req: RequestWithParams<URIParamsBlogIdModel>, res: Response<BlogViewModel | number>) => {
-      debugger
         const blog = await blogsRepository.getBlogById(req.params.id)
         if (blog) {
             res.send(blog)
         } else {
-            debugger
             res.send(HTTP_STATUSES.NOT_FOUND_404)
         }
     })
