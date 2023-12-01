@@ -78,6 +78,7 @@ describe('test for /blogs', () => {
     })
 
     it('blog must be found by id', async () => {
+        debugger
         await blogsTestManager.getBlogById(createdBlog.id, createdBlog.name)
     })
 
@@ -120,6 +121,7 @@ describe('test for /blogs', () => {
     })
 
     it('should be updated blog with correct data', async () => {
+        debugger
         await blogsTestManager.updateBlog(createdBlog.id, {
             name: 'Vlad',
             description: 'new blog',

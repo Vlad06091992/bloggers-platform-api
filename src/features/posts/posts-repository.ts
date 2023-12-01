@@ -43,9 +43,12 @@ export const postsRepository = {
     },
     async createPost(data: PostCreateModel) {
         const blogName = await findBlogNameByBlogId(data.blogId)
-        const newPost = new Post({...data, blogName})
-        await postsCollection.insertOne({...newPost})
-        return newPost
+        if(blogName){
+            const newPost = new Post({...data, blogName})
+            await postsCollection.insertOne({...newPost})
+            return newPost
+        }
+
     },
     async updatePost(id: string, data: PostUpdateModel) {
         debugger

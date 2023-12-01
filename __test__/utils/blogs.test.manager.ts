@@ -1,7 +1,7 @@
 import {HTTP_STATUSES} from "../../src/http_statuses/http_statuses";
 import request from "supertest";
 import {app, Routes} from "../../src/app";
-import { ErrorResponseType} from "../../src/types";
+import {ErrorResponseType} from "../../src/types";
 import {BlogViewModel} from "../../src/features/blogs/model/BlogViewModel";
 
 type AuthDataType = {
@@ -24,7 +24,7 @@ export const blogsTestManager = {
         if (HTTPStatus === HTTP_STATUSES.CREATED_201) {
             expect(response.body).toEqual({
                 ...data,
-                isMembership: true,
+                isMembership: false,
                 id: expect.any(String),
                 createdAt: expect.any(String),
             })

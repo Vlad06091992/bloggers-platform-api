@@ -11,7 +11,6 @@ import {validationResult} from "express-validator"
 import {authGuardMiddleware} from "../../middlewares/authGuardMiddleware";
 import {validateCreateBlogData} from "./validators/validateCreateBlogData"
 import {validateUpdateBlogData} from "./validators/validateUpdateBlogData"
-import {findBlogById} from "./blogs-utils/blogs-utils";
 import {createErrorResponse} from "../../utils";
 import {blogsRepository} from "./blogs-repository";
 
@@ -38,10 +37,12 @@ export const getBlogsRouter = () => {
 
 
     router.get('/:id', async (req: RequestWithParams<URIParamsBlogIdModel>, res: Response<BlogViewModel | number>) => {
+      debugger
         const blog = await blogsRepository.getBlogById(req.params.id)
         if (blog) {
             res.send(blog)
         } else {
+            debugger
             res.send(HTTP_STATUSES.NOT_FOUND_404)
         }
     })
@@ -53,6 +54,7 @@ export const getBlogsRouter = () => {
             return
         }
         let result = await blogsRepository.updateBlog(req.params.id, req.body)
+        //TODO переписать(убрать тернарники)
         result ? res.sendStatus(204) : res.sendStatus(404)
     })
 

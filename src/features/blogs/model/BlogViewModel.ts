@@ -1,3 +1,5 @@
-import {AvailableResolutionsType} from "../../../../src/types";
-import {BlogType} from "../../../../src/types";
-export type BlogViewModel = Omit<BlogType, "_id">
+import {BlogType} from "../types/types";
+
+
+export type BlogViewModel = BlogType & {id:string}// (id:string)
+export type BlogInMongoDB = BlogType & {_id:string}// (_id:string)
