@@ -3,6 +3,7 @@ import {PostUpdateModel} from "./model/PostUpdateModel";
 import {findBlogNameByBlogId, getPostWithPrefixIdToViewModel} from "./posts-utils/posts-utils";
 import {postsCollection} from "../../db-mongo";
 import {ObjectId} from "mongodb";
+import {PostViewModel} from "./model/PostViewModel";
 
 type CreatePostForClass = PostCreateModel & {
     blogName: string
@@ -43,14 +44,11 @@ export const postsRepository = {
             return null
         }
     },
-    async createPost(data: PostCreateModel) {
-        const blogName = await findBlogNameByBlogId(data.blogId)
-        if (blogName) {
-            const newPostTemplate = new Post({...data, blogName})
+    async createPost(data: PostCreateModel):Promise<PostViewModel> {
+        const blogName = (await findBlogNameByBlogId(data.blogId))!
+        const newPostTemplate = new Post({...data, blogName})
             const{insertedId} = await postsCollection.insertOne({...newPostTemplate})
-            return await this.getPostById(insertedId.toString())
-        }
-
+            return (await this.getPostById(insertedId.toString()))!
     },
     async updatePost(id: string, data: PostUpdateModel) {
         try {

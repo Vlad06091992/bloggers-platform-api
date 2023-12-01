@@ -3,12 +3,8 @@ import {BlogCreateModel} from "./model/BlogCreateModel";
 import {BlogUpdateModel} from "./model/BlogUpdateModel";
 import {getBlogWithPrefixIdToViewModel} from "./blogs-utils/blogs-utils";
 import {ObjectId} from "mongodb";
+import {BlogViewModel} from "./model/BlogViewModel";
 
-//TODO обработка ошибок (try catch) на случай если БД легла(какой статус код отправлять ?)
-//TODO Юзать монгошную айдишку для сущностей
-//TODO подправить типы
-//TODO middleware для errros в роутах
-//TODO типизицаия(убрать any)
 
 class BlogCreateClass {
     name: string
@@ -35,7 +31,7 @@ export const blogsRepository = {
         let res = await blogsCollection.find(filter).toArray()
         return res.map(getBlogWithPrefixIdToViewModel)
     },
-    async getBlogById(id: string): Promise<any> {
+    async getBlogById(id: string): Promise<BlogViewModel | null> {
         try {
             let res = await blogsCollection.findOne({_id: new ObjectId(id)})
             return getBlogWithPrefixIdToViewModel(res!)
@@ -43,16 +39,10 @@ export const blogsRepository = {
             return null
         }
     },
-    async createBlog(data: BlogCreateModel) {
+    async createBlog(data: BlogCreateModel):Promise<BlogViewModel> {
         const newBlogTemplate = new BlogCreateClass(data)
-        if (newBlogTemplate) {
-            try {
                 const {insertedId} = await blogsCollection.insertOne(newBlogTemplate)
-                return await this.getBlogById(insertedId.toString())
-            } catch (e) {
-
-            }
-        }
+                return (await this.getBlogById(insertedId.toString()))!
     },
     async updateBlog(id: string, data: BlogUpdateModel) {
         try {

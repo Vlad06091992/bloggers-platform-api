@@ -7,32 +7,23 @@ import {URIParamsBlogIdModel} from "./model/URIParamsBlogIdModel";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {BlogCreateModel} from "./model/BlogCreateModel";
 import {BlogUpdateModel} from "./model/BlogUpdateModel";
-import {validationResult} from "express-validator"
 import {authGuardMiddleware} from "../../middlewares/authGuardMiddleware";
 import {validateCreateBlogData} from "./validators/validateCreateBlogData"
 import {validateUpdateBlogData} from "./validators/validateUpdateBlogData"
-import {createErrorResponse} from "../../utils";
 import {blogsRepository} from "./blogs-repository";
+import {validateErrors} from "../../middlewares/validateErrors";
 
 
 export const getBlogsRouter = () => {
     const router = express.Router()
     router.get('/', async (req: RequestWithQuery<QueryBlogModel>, res: Response<BlogViewModel[]>) => {
         let foundedBlogs = await blogsRepository.findBlogs(req.query.title)
-        res.status(200).send(foundedBlogs)
+        res.status(HTTP_STATUSES.OK_200).send(foundedBlogs)
     })
 
-
-    router.post('/', authGuardMiddleware, validateCreateBlogData, async (req: RequestWithBody<BlogCreateModel>, res: Response<BlogViewModel | any>) => {
-        const errors = validationResult(req).array({onlyFirstError: true});
-        if (errors.length) {
-            res.status(400).send(createErrorResponse(errors))
-            return
-        }
-        let newBlog = await blogsRepository.createBlog(req.body)
-
-        //TODO проверка что отправляем именно блог
-        res.status(201).send(newBlog)
+    router.post('/', authGuardMiddleware, validateCreateBlogData, validateErrors, async (req: RequestWithBody<BlogCreateModel>, res: Response<BlogViewModel | number>) => {
+        let blog = await blogsRepository.createBlog(req.body)
+        res.status(HTTP_STATUSES.CREATED_201).send(blog)
     })
 
 
@@ -45,20 +36,22 @@ export const getBlogsRouter = () => {
         }
     })
 
-    router.put('/:id', authGuardMiddleware, validateUpdateBlogData, async (req: RequestWithParamsAndBody<URIParamsBlogIdModel, BlogUpdateModel>, res: Response<BlogViewModel | any>) => {
-        const errors = validationResult(req).array({onlyFirstError: true});
-        if (errors.length) {
-            res.status(400).send(createErrorResponse(errors))
-            return
-        }
+    router.put('/:id', authGuardMiddleware, validateUpdateBlogData, validateErrors, async (req: RequestWithParamsAndBody<URIParamsBlogIdModel, BlogUpdateModel>, res: Response<BlogViewModel | any>) => {
         let result = await blogsRepository.updateBlog(req.params.id, req.body)
-        //TODO переписать(убрать тернарники)
-        result ? res.sendStatus(204) : res.sendStatus(404)
+        if (result) {
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        } else {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        }
     })
 
     router.delete('/:id', authGuardMiddleware, async (req: RequestWithParams<URIParamsBlogIdModel>, res: Response<number>) => {
         const isDeleted = await blogsRepository.deleteBlog(req.params.id)
-        isDeleted ? res.send(HTTP_STATUSES.NO_CONTENT_204) : res.send(HTTP_STATUSES.NOT_FOUND_404)
+        if (isDeleted) {
+            res.send(HTTP_STATUSES.NO_CONTENT_204);
+        } else {
+            res.send(HTTP_STATUSES.NOT_FOUND_404);
+        }
     })
     return router
 }

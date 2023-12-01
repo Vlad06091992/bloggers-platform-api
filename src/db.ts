@@ -21,14 +21,14 @@ export const db: RootDBType = {
             publicationDate: new Date().toDateString(),
             availableResolutions: ['P360']
         }],
-    blogs:[
+    blogs: [
         {
             id: "1",
             name: "Tech Blog",
             description: "A blog about technology and gadgets",
             websiteUrl: "https://example.com/tech-blog",
             createdAt: new Date().toDateString(),
-            isMembership:true
+            isMembership: true
         },
         {
             id: "2",
@@ -36,7 +36,7 @@ export const db: RootDBType = {
             description: "Exploring the world, one adventure at a time",
             websiteUrl: "https://example.com/travel-adventures",
             createdAt: new Date().toDateString(),
-            isMembership:true
+            isMembership: true
         },
         {
             id: "3",
@@ -44,7 +44,7 @@ export const db: RootDBType = {
             description: "Delicious recipes and culinary experiments",
             websiteUrl: "https://example.com/cooking-creations",
             createdAt: new Date().toDateString(),
-            isMembership:true
+            isMembership: true
         },
         {
             id: "4",
@@ -52,7 +52,7 @@ export const db: RootDBType = {
             description: "The latest trends and style inspiration",
             websiteUrl: "https://example.com/fashion-forward",
             createdAt: new Date().toDateString(),
-            isMembership:true
+            isMembership: true
         },
         {
             id: "5",
@@ -60,17 +60,18 @@ export const db: RootDBType = {
             description: "Get fit and stay healthy with our tips",
             websiteUrl: "https://example.com/fitness-fanatics",
             createdAt: new Date().toDateString(),
-            isMembership:true
+            isMembership: true
         }
     ],
-    posts:[
+    posts: [
         {
             id: "1",
             title: "Introduction to JavaScript",
             shortDescription: "A brief introduction to JavaScript programming",
             content: "JavaScript is a versatile programming language...",
             blogId: "1",
-            blogName: "Tech Blog"
+            blogName: "Tech Blog",
+            createdAt: 'hz'
         },
         {
             id: "2",
@@ -78,7 +79,8 @@ export const db: RootDBType = {
             shortDescription: "Discover the beauty of lesser-known European destinations",
             content: "Europe offers a wealth of hidden gems for travelers...",
             blogId: "2",
-            blogName: "Travel Adventures"
+            createdAt: 'hz',
+            blogName: "Travel Adventures",
         },
         {
             id: "3",
@@ -86,7 +88,8 @@ export const db: RootDBType = {
             shortDescription: "Learn how to make a mouthwatering chocolate cake",
             content: "Indulge in the rich and decadent flavors of this chocolate cake...",
             blogId: "3",
-            blogName: "Cooking Creations"
+            blogName: "Cooking Creations",
+            createdAt:'hz'
         },
         {
             id: "4",
@@ -94,7 +97,8 @@ export const db: RootDBType = {
             shortDescription: "Stay stylish with the latest fashion trends this fall",
             content: "Discover the hottest fashion trends for the autumn season...",
             blogId: "4",
-            blogName: "Fashion Forward"
+            blogName: "Fashion Forward",
+            createdAt:'hz'
         },
         {
             id: "5",
@@ -102,7 +106,8 @@ export const db: RootDBType = {
             shortDescription: "Start your fitness journey with this beginner's workout routine",
             content: "Get in shape and build a healthy fitness foundation with these exercises...",
             blogId: "5",
-            blogName: "Fitness Fanatics"
+            createdAt:'hz',
+            blogName: "Fitness Fanatics",
         }
     ]
 }
