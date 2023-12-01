@@ -1,8 +1,8 @@
 import dotenv from 'dotenv'
-import {MongoClient,Collection, WithId} from 'mongodb'
-import {PostViewModel} from "./features/posts/model/PostViewModel";
+import {Collection, MongoClient} from 'mongodb'
 import {VideoViewModel} from "./features/videos/model/VideoViewModel";
 import {BlogType} from "./features/blogs/types/types";
+import {PostType} from "./features/posts/types/types";
 
 
 dotenv.config()
@@ -20,8 +20,8 @@ export const client = new MongoClient(URL)
 
 // const db = client.db('base-backend');
 const db = client.db();
-export const blogsCollection:Collection<BlogType> = db.collection<BlogType>('blogs');
-export const postsCollection = db.collection<PostViewModel>('posts');
+export const blogsCollection: Collection<BlogType> = db.collection<BlogType>('blogs');
+export const postsCollection = db.collection<PostType>('posts');
 export const videosCollection = db.collection<VideoViewModel>('videos');
 
 export async function runDb() {

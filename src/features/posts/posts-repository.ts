@@ -1,14 +1,14 @@
 import {PostCreateModel} from "./model/PostCreateModel";
 import {PostUpdateModel} from "./model/PostUpdateModel";
-import {findBlogNameByBlogId} from "./posts-utils/posts-utils";
+import {findBlogNameByBlogId, getPostWithPrefixIdToViewModel} from "./posts-utils/posts-utils";
 import {postsCollection} from "../../db-mongo";
+import {ObjectId} from "mongodb";
 
 type CreatePostForClass = PostCreateModel & {
     blogName: string
 }
 
 class Post {
-    id: string;
     title: string;
     shortDescription: string;
     content: string;
@@ -17,7 +17,6 @@ class Post {
     createdAt: string
 
     constructor({blogId, title, blogName, shortDescription, content}: CreatePostForClass) {
-        this.id = new Date().getTime().toString()
         this.blogId = blogId
         this.blogName = blogName
         this.title = title
@@ -33,32 +32,43 @@ export const postsRepository = {
         if (title) {
             filter = {title: {regex: title}}
         }
-        return await postsCollection.find(filter, {projection: {_id: 0}}).toArray();
+        let res = await postsCollection.find(filter).toArray();
+        return res.map(getPostWithPrefixIdToViewModel)
     },
     async getPostById(id: string) {
-        const post = await postsCollection.findOne({id}, {projection: {_id: 0}});
-        if (post) {
-            return post
+        try {
+            let res = await postsCollection.findOne({_id: new ObjectId(id)});
+            return getPostWithPrefixIdToViewModel(res!)
+        } catch (e) {
+            return null
         }
     },
     async createPost(data: PostCreateModel) {
         const blogName = await findBlogNameByBlogId(data.blogId)
-        if(blogName){
-            const newPost = new Post({...data, blogName})
-            await postsCollection.insertOne({...newPost})
-            return newPost
+        if (blogName) {
+            const newPostTemplate = new Post({...data, blogName})
+            const{insertedId} = await postsCollection.insertOne({...newPostTemplate})
+            return await this.getPostById(insertedId.toString())
         }
 
     },
     async updatePost(id: string, data: PostUpdateModel) {
-        debugger
-        let result = await postsCollection.updateOne({id}, {$set:data})
-        return result.matchedCount === 1
+        try {
+            let result = await postsCollection.updateOne({_id: new ObjectId(id)}, {$set: data})
+            return result.matchedCount === 1
+        } catch (e){
+            return false
+        }
+
     },
     async deletePost(id: string) {
-        let result = await postsCollection.deleteOne({id})
-        return result.deletedCount === 1
-    },
+        try {
+            let result = await postsCollection.deleteOne({_id:new ObjectId(id)})
+            return result.deletedCount === 1
+        } catch (e){
+            return false
+        }
+        },
     async deleteAllPosts() {
         await postsCollection.deleteMany({})
         return true

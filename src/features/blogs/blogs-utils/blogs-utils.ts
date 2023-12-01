@@ -1,13 +1,18 @@
 import {blogsCollection} from "../../../db-mongo";
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {BlogType} from "../types/types";
 import {BlogViewModel} from "../model/BlogViewModel";
 
 type ResultType = "object" | "boolean"
 
 export const findBlogById = async (id: string, result: ResultType = "boolean") => {
-    const blog = await blogsCollection.findOne({id})
-    return result == "boolean" ? !!blog : blog
+    try {
+        const blog = await blogsCollection.findOne({_id:new ObjectId(id)})
+        return result == "boolean" ? !!blog : blog
+    } catch (e){
+        return false
+    }
+
 }
 
 // export const findIndexBlogById = (id: string) => {

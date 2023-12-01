@@ -1,8 +1,5 @@
-export type PostViewModel =  {
+import {PostType} from "../types/types";
+
+export type PostViewModel = PostType & {
     id: string;
-    title: string;
-    shortDescription: string;
-    content: string;
-    blogId: string;
-    blogName: string;
 }

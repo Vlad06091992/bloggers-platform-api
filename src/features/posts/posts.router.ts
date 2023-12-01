@@ -25,6 +25,7 @@ export const getPostsRouter = () => {
 
     router.post('/', authGuardMiddleware, validateCreatePostData, async (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel | any>) => {
         const errors = validationResult(req).array({onlyFirstError: true});
+        debugger
         if (errors.length) {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send(createErrorResponse(errors))
             return

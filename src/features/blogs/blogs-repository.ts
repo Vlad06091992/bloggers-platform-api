@@ -1,10 +1,8 @@
 import {blogsCollection} from "../../db-mongo";
 import {BlogCreateModel} from "./model/BlogCreateModel";
 import {BlogUpdateModel} from "./model/BlogUpdateModel";
-import {BlogViewModel} from "./model/BlogViewModel";
 import {getBlogWithPrefixIdToViewModel} from "./blogs-utils/blogs-utils";
 import {ObjectId} from "mongodb";
-import {BlogType} from "./types/types";
 
 //TODO обработка ошибок (try catch) на случай если БД легла(какой статус код отправлять ?)
 //TODO Юзать монгошную айдишку для сущностей
@@ -35,10 +33,7 @@ export const blogsRepository = {
             filter = {name: {regex: name}};
         }
         let res = await blogsCollection.find(filter).toArray()
-        let hz: BlogViewModel[] = res.map(el => {
-            return getBlogWithPrefixIdToViewModel(el)
-        })
-        return hz
+        return res.map(getBlogWithPrefixIdToViewModel)
     },
     async getBlogById(id: string): Promise<any> {
         try {
@@ -52,9 +47,8 @@ export const blogsRepository = {
         const newBlogTemplate = new BlogCreateClass(data)
         if (newBlogTemplate) {
             try {
-                let {insertedId} = await blogsCollection.insertOne(newBlogTemplate)
-                let blog = await this.getBlogById(insertedId.toString())
-                return blog
+                const {insertedId} = await blogsCollection.insertOne(newBlogTemplate)
+                return await this.getBlogById(insertedId.toString())
             } catch (e) {
 
             }
