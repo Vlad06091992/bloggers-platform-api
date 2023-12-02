@@ -14,7 +14,7 @@ export const Routes = {
     videos: '/videos',
     posts: '/posts',
     blogs: '/blogs',
-    testing: "/testing/all-data"
+    testing: "/testing/all-data",
 }
 
 app.use(bodyParser())
