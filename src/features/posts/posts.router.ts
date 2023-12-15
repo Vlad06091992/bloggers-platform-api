@@ -22,7 +22,7 @@ export const getPostsRouter = () => {
     })
 
 
-    router.post('/', authGuardMiddleware, validateCreatePostData, validateErrors, async (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel>) => {
+    router.post('/', authGuardMiddleware, validateCreatePostDataWithIdParams, validateErrors, async (req: RequestWithBody<PostCreateModel>, res: Response<PostViewModel>) => {
         let newPost = await postsRepository.createPost(req.body)
         res.status(HTTP_STATUSES.CREATED_201).send(newPost)
     })
