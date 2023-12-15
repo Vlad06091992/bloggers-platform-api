@@ -1,23 +1,25 @@
 import express, {Response} from "express";
 import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../../types";
-import {QueryBlogModel} from "./model/QueryBlogModel";
+import {QueryBlogModel} from "./model/request-models/QueryBlogModel";
 import {BlogViewModel} from "./model/BlogViewModel";
 
-import {URIParamsBlogIdModel} from "./model/URIParamsBlogIdModel";
+import {URIParamsBlogIdModel} from "./model/request-models/URIParamsBlogIdModel";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {BlogCreateModel} from "./model/BlogCreateModel";
-import {BlogUpdateModel} from "./model/BlogUpdateModel";
+import {BlogCreateModel} from "./model/request-models/BlogCreateModel";
+import {BlogUpdateModel} from "./model/request-models/BlogUpdateModel";
 import {authGuardMiddleware} from "../../middlewares/authGuardMiddleware";
 import {validateCreateBlogData} from "./validators/validateCreateBlogData"
 import {validateUpdateBlogData} from "./validators/validateUpdateBlogData"
 import {blogsRepository} from "./blogs-repository";
 import {validateErrors} from "../../middlewares/validateErrors";
+import {ResponseBlogsModel} from "./model/response-models/ResponseBlogsModel";
 
 
 export const getBlogsRouter = () => {
     const router = express.Router()
-    router.get('/', async (req: RequestWithQuery<QueryBlogModel>, res: Response<BlogViewModel[]>) => {
-        let foundedBlogs = await blogsRepository.findBlogs(req.query.title)
+    router.get('/', async (req: RequestWithQuery<QueryBlogModel> , res: Response<ResponseBlogsModel>) => {
+        const foundedBlogs = await blogsRepository.findBlogs(req.query)
+
         res.status(HTTP_STATUSES.OK_200).send(foundedBlogs)
     })
 

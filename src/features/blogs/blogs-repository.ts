@@ -1,9 +1,10 @@
 import {blogsCollection} from "../../db-mongo";
-import {BlogCreateModel} from "./model/BlogCreateModel";
-import {BlogUpdateModel} from "./model/BlogUpdateModel";
+import {BlogCreateModel} from "../blogs/model/request-models/BlogCreateModel";
+import {BlogUpdateModel} from "../blogs/model/request-models/BlogUpdateModel";
 import {getBlogWithPrefixIdToViewModel} from "./blogs-utils/blogs-utils";
 import {ObjectId} from "mongodb";
 import {BlogViewModel} from "./model/BlogViewModel";
+import {QueryBlogModel} from "../blogs/model/request-models/QueryBlogModel";
 
 
 class BlogCreateClass {
@@ -23,13 +24,34 @@ class BlogCreateClass {
 }
 
 export const blogsRepository = {
-    async findBlogs(name: string | null) {
+    async findBlogs(reqQuery: QueryBlogModel) {
         let filter = {}
-        if (name) {
-            filter = {name: {regex: name}};
+
+        if (reqQuery.searchNameTerm) {
+            filter = {name: {$regex: reqQuery.searchNameTerm}};
         }
-        let res = await blogsCollection.find(filter).toArray()
-        return res.map(getBlogWithPrefixIdToViewModel)
+
+        const sortBy = reqQuery.sortBy || 'createdAt'
+        const sortDirection = reqQuery.sortDirection || 'desc'
+        const pageNumber = reqQuery.pageNumber || 1
+        const pageSize = reqQuery.pageSize || 10
+
+
+        const totalCount = await blogsCollection.countDocuments()
+        const res = await blogsCollection
+            .find(filter)
+            .skip((+pageNumber - 1) * +pageSize)
+            .limit(+pageSize)
+            .sort({[sortBy]: sortDirection == 'asc' ? 1 : -1})
+            .toArray()
+        return {
+            pagesCount: Math.ceil(+totalCount / +pageSize),
+            page: pageNumber,
+            pageSize,
+            totalCount,
+            items: res.map(getBlogWithPrefixIdToViewModel)
+
+        }
     },
     async getBlogById(id: string): Promise<BlogViewModel | null> {
         try {
@@ -39,10 +61,10 @@ export const blogsRepository = {
             return null
         }
     },
-    async createBlog(data: BlogCreateModel):Promise<BlogViewModel> {
+    async createBlog(data: BlogCreateModel): Promise<BlogViewModel> {
         const newBlogTemplate = new BlogCreateClass(data)
-                const {insertedId} = await blogsCollection.insertOne(newBlogTemplate)
-                return (await this.getBlogById(insertedId.toString()))!
+        const {insertedId} = await blogsCollection.insertOne(newBlogTemplate)
+        return (await this.getBlogById(insertedId.toString()))!
     },
     async updateBlog(id: string, data: BlogUpdateModel) {
         try {

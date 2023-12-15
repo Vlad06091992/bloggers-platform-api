@@ -3,7 +3,7 @@ import {app, Routes} from "../../src/app";
 import {HTTP_STATUSES} from "../../src/http_statuses/http_statuses";
 // @ts-ignore
 import {blogsTestManager} from "../utils/blogs.test.manager";
-import {BlogCreateModel} from "../../src/features/blogs/model/BlogCreateModel";
+import {BlogCreateModel} from "src/features/blogs/model/request-models/BlogCreateModel";
 
 const authData = {
     user: 'admin',
