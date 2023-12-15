@@ -45,9 +45,9 @@ export const postsRepository = {
             .toArray();
         return {
             pagesCount: Math.ceil(+totalCount / +pageSize),
-            page: pageNumber,
-            pageSize,
-            totalCount,
+            page: +pageNumber,
+            pageSize:+pageNumber,
+            totalCount:+totalCount,
             items: res.map(getPostWithPrefixIdToViewModel)
         }
     },

@@ -48,9 +48,9 @@ export const blogsRepository = {
             .toArray()
         return {
             pagesCount: Math.ceil(+totalCount / +pageSize),
-            page: pageNumber,
-            pageSize,
-            totalCount,
+            page: +pageNumber,
+            pageSize:+pageSize,
+            totalCount:+totalCount,
             items: res.map(getBlogWithPrefixIdToViewModel)
 
         }
@@ -71,9 +71,9 @@ export const blogsRepository = {
             .toArray();
         return {
             pagesCount: Math.ceil(+totalCount / +pageSize),
-            page: pageNumber,
-            pageSize,
-            totalCount,
+            page: +pageNumber,
+            pageSize:+pageSize,
+            totalCount:+totalCount,
             items: res.map(getPostWithPrefixIdToViewModel)
         }
     },
