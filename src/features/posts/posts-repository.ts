@@ -46,7 +46,7 @@ export const postsRepository = {
         return {
             pagesCount: Math.ceil(+totalCount / +pageSize),
             page: +pageNumber,
-            pageSize:+pageNumber,
+            pageSize:+pageSize,
             totalCount:+totalCount,
             items: res.map(getPostWithPrefixIdToViewModel)
         }

@@ -56,7 +56,6 @@ export const blogsRepository = {
         }
     },
     async findPostsForSpecificBlog(reqQuery: QueryPostModel,id:string) {
-        console.log(id)
         const sortBy = reqQuery.sortBy || 'createdAt'
         const sortDirection = reqQuery.sortDirection || 'desc'
         const pageNumber = reqQuery.pageNumber || 1
