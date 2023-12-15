@@ -12,10 +12,11 @@ import {validateUpdatePostData} from "./validators/validateUpdatePostData";
 import {authGuardMiddleware} from "../../middlewares/authGuardMiddleware";
 import {postsRepository} from "./posts-repository";
 import {validateErrors} from "../../middlewares/validateErrors";
+import {ResponsePostsModel} from "./model/response-models/responsePostsModel";
 
 export const getPostsRouter = () => {
     const router = express.Router()
-    router.get('/', async (req: RequestWithQuery<QueryPostModel>, res: Response<PostViewModel[]>) => {
+    router.get('/', async (req: RequestWithQuery<QueryPostModel>, res: Response<ResponsePostsModel>) => {
         let foundedPosts = await postsRepository.findPosts(req.query)
         res.status(HTTP_STATUSES.OK_200).send(foundedPosts)
     })
