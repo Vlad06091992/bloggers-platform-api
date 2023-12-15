@@ -30,7 +30,7 @@ export const blogsRepository = {
         let filter = {}
 
         if (reqQuery.searchNameTerm) {
-            filter = {name: {$regex: reqQuery.searchNameTerm}};
+            filter = {name: {$regex: reqQuery.searchNameTerm,$options : "i"}};
         }
 
         const sortBy = reqQuery.sortBy || 'createdAt'
@@ -39,7 +39,7 @@ export const blogsRepository = {
         const pageSize = reqQuery.pageSize || 10
 
 
-        const totalCount = await blogsCollection.countDocuments()
+        const totalCount = await blogsCollection.countDocuments(filter)
         const res = await blogsCollection
             .find(filter)
             .skip((+pageNumber - 1) * +pageSize)
