@@ -3,14 +3,9 @@ import {Collection, MongoClient} from 'mongodb'
 import {VideoViewModel} from "./features/videos/model/VideoViewModel";
 import {BlogType} from "./features/blogs/types/types";
 import {PostType} from "./features/posts/types/types";
-
-
 dotenv.config()
 
-
-const URL = process.env.MONGO_URL
-
-console.log(URL)
+const URL = process.env.MONGO_URL || "mongodb://localhost:27017"
 
 if (!URL) {
     throw new Error("URL not found")
