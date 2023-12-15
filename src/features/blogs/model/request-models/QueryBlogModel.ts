@@ -6,5 +6,4 @@ export type QueryBlogModel = {
     sortDirection?:'asc'|'desc',
     pageNumber?:number,
     pageSize?:number,
-
 }

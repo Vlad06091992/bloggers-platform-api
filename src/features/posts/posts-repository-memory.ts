@@ -1,7 +1,7 @@
 import {db} from "../../db";
 
-import {PostCreateModel} from "./model/PostCreateModel";
-import {PostUpdateModel} from "./model/PostUpdateModel";
+import {PostCreateModel} from "src/features/posts/model/request-models/PostCreateModel";
+import {PostUpdateModel} from "src/features/posts/model/request-models/PostUpdateModel";
 import {findBlogNameByBlogId, findIndexPostById} from "./posts-utils/posts-utils";
 import {PostViewModel} from "./model/PostViewModel";
 

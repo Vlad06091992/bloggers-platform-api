@@ -1,12 +1,12 @@
 import express, {Response} from "express";
 import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../../types";
 
-import {QueryPostModel} from "./model/QueryPostModel";
+import {QueryPostModel} from "./model/request-models/QueryPostModel";
 import {PostViewModel} from "./model/PostViewModel";
-import {PostCreateModel} from "./model/PostCreateModel";
-import {PostUpdateModel} from "./model/PostUpdateModel";
+import {PostCreateModel} from "./model/request-models/PostCreateModel";
+import {PostUpdateModel} from "./model/request-models/PostUpdateModel";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {URIParamsPostIdModel} from "./model/URIParamsPostIdModel"
+import {URIParamsPostIdModel} from "./model/request-models/URIParamsPostIdModel"
 import {validateCreatePostData} from "./validators/validateCreatePostData";
 import {validateUpdatePostData} from "./validators/validateUpdatePostData";
 import {authGuardMiddleware} from "../../middlewares/authGuardMiddleware";
@@ -16,7 +16,7 @@ import {validateErrors} from "../../middlewares/validateErrors";
 export const getPostsRouter = () => {
     const router = express.Router()
     router.get('/', async (req: RequestWithQuery<QueryPostModel>, res: Response<PostViewModel[]>) => {
-        let foundedPosts = await postsRepository.findPosts(req.query.title)
+        let foundedPosts = await postsRepository.findPosts(req.query)
         res.status(HTTP_STATUSES.OK_200).send(foundedPosts)
     })
 

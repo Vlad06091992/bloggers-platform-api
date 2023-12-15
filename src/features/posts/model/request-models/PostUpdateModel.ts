@@ -1,8 +1,10 @@
-import {AvailableResolutionsType} from "../../../types";
+import {AvailableResolutionsType} from "src/types";
 
-export type PostCreateModel = {
+export type PostUpdateModel = {
     title: string;
     shortDescription: string;
     content: string;
     blogId: string;
 }
+
+

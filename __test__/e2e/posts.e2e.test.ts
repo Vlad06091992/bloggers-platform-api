@@ -5,7 +5,7 @@ import {HTTP_STATUSES} from "../../src/http_statuses/http_statuses";
 import {blogsTestManager} from "../utils/blogs.test.manager";
 // @ts-ignore
 import {postsTestManager} from "../utils/posts.tests.manager";
-import {PostCreateModel} from "../../src/features/posts/model/PostCreateModel";
+import {PostCreateModel} from "src/features/posts/model/request-models/PostCreateModel";
 import {BlogViewModel} from "../../src/features/blogs/model/BlogViewModel";
 
 const authData = {

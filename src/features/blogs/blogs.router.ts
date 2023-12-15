@@ -18,9 +18,8 @@ import {ResponseBlogsModel} from "./model/response-models/ResponseBlogsModel";
 export const getBlogsRouter = () => {
     const router = express.Router()
     router.get('/', async (req: RequestWithQuery<QueryBlogModel> , res: Response<ResponseBlogsModel>) => {
-        const foundedBlogs = await blogsRepository.findBlogs(req.query)
-
-        res.status(HTTP_STATUSES.OK_200).send(foundedBlogs)
+        const result = await blogsRepository.findBlogs(req.query)
+        res.status(HTTP_STATUSES.OK_200).send(result)
     })
 
     router.post('/', authGuardMiddleware, validateCreateBlogData, validateErrors, async (req: RequestWithBody<BlogCreateModel>, res: Response<BlogViewModel | number>) => {
