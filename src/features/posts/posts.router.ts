@@ -7,8 +7,8 @@ import {PostCreateModel} from "./model/request-models/PostCreateModel";
 import {PostUpdateModel} from "./model/request-models/PostUpdateModel";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {URIParamsPostIdModel} from "./model/request-models/URIParamsPostIdModel"
-import {validateCreatePostData} from "./validators/validateCreatePostData";
-import {validateUpdatePostData} from "./validators/validateUpdatePostData";
+import {validateCreatePostData, validateCreatePostDataWithIdParams} from "./validators/validateCreatePostData";
+import {validateUpdatePostDataWithParams} from "./validators/validateUpdatePostData";
 import {authGuardMiddleware} from "../../middlewares/authGuardMiddleware";
 import {postsRepository} from "./posts-repository";
 import {validateErrors} from "../../middlewares/validateErrors";
@@ -36,7 +36,7 @@ export const getPostsRouter = () => {
         }
     })
 
-    router.put('/:id', authGuardMiddleware, validateUpdatePostData,validateErrors, async (req: RequestWithParamsAndBody<URIParamsPostIdModel, PostUpdateModel>, res: Response<PostViewModel | number>) => {
+    router.put('/:id', authGuardMiddleware, validateCreatePostDataWithIdParams,validateErrors, async (req: RequestWithParamsAndBody<URIParamsPostIdModel, PostUpdateModel>, res: Response<PostViewModel | number>) => {
         const isExistsPost = await postsRepository.getPostById(req.params.id)
         if (!isExistsPost) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

@@ -1,7 +1,7 @@
 import {checkSchema} from "express-validator";
 import {findBlogById} from "../../blogs/blogs-utils/blogs-utils";
 
-export const validateUpdatePostData =
+export const validateUpdatePostDataWithParams =
     checkSchema({
         title: {
             errorMessage: "The 'title' field is required and must be no more than 15 characters.",
