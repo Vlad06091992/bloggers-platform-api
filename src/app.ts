@@ -30,7 +30,8 @@ const options = {
       description: "My API Documentation",
     },
   ],
-  apis: ["./**/*.js", "./**/*.ts", "src/**/*.js", "dist/**/*.js"],
+  apis: ["./**/*.js", "./**/*.ts", "src/**/*.js", "dist/**/*.js","./dist/**/*.js","./src/**/*.js"],
+
 };
 const swaggerSpec = swaggerJsdoc(options);
 
