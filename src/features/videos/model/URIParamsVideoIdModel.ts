@@ -1,6 +1,4 @@
 export type URIParamsVideoIdModel = {
-    /**
-   * id of existing video
-     */
-    id:string
-}
+  /** Id of existing video */
+  id: string;
+};

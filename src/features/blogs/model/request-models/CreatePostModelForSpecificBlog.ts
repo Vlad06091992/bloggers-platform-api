@@ -1,3 +1,3 @@
-import {PostCreateModel} from "../../../posts/model/request-models/PostCreateModel";
+import { PostCreateModel } from "../../../posts/model/request-models/PostCreateModel";
 
-export type CreatePostModelForSpecificBlog = Omit<PostCreateModel, "blogId">
+export type CreatePostModelForSpecificBlog = Omit<PostCreateModel, "blogId">;

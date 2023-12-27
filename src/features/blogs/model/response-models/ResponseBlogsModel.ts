@@ -1,9 +1,9 @@
-import {BlogViewModel} from "../BlogViewModel";
+import { BlogViewModel } from "../BlogViewModel";
 
 export type ResponseBlogsModel = {
-    pagesCount:number,
-    page:number,
-    pageSize:number,
-    totalCount:number,
-    items:BlogViewModel[]
-}
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: BlogViewModel[];
+};

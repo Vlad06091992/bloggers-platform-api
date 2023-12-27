@@ -1,5 +1,5 @@
 export type BlogCreateModel = {
-    name:string,
-    description:string,
-    websiteUrl:string
-}
+  name: string;
+  description: string;
+  websiteUrl: string;
+};

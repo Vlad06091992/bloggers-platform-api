@@ -36,8 +36,7 @@ exports.blogsTestManager = {
     },
     getBlogById(id, name, HTTPStatus = http_statuses_1.HTTP_STATUSES.OK_200) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield (0, supertest_1.default)(app_1.app)
-                .get(`${app_1.Routes.blogs}/${id}`);
+            const response = yield (0, supertest_1.default)(app_1.app).get(`${app_1.Routes.blogs}/${id}`);
             if (HTTPStatus === http_statuses_1.HTTP_STATUSES.OK_200) {
                 expect(response.body.name).toEqual(name);
                 return response.body;

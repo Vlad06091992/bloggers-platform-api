@@ -1,5 +1,5 @@
-import {PostType} from "../types/types";
+import { PostType } from "../types/types";
 
 export type PostViewModel = PostType & {
-    id: string;
-}
+  id: string;
+};
