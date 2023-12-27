@@ -66,32 +66,7 @@
  *                   websiteUrl: "string"
  *                   createdAt: "2023-12-27T13:19:29.212Z"
  *             schema:
- *               type: object
- *               properties:
- *                 pagesCount:
- *                   type: number
- *                 page:
- *                   type: number
- *                 pageSize:
- *                   type: number
- *                 totalCount:
- *                   type: number
- *                 items:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: string
- *                       name:
- *                         type: string
- *                       description:
- *                         type: string
- *                       websiteUrl:
- *                         type: string
- *                       createdAt:
- *                         type: string
- *                         format: date-time
+ *               $ref: '#/components/schemas/BlogsResponseModel'
  */
 
 /**
@@ -106,7 +81,7 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateNewBlog'
+ *             $ref: '#/components/schemas/BlogCreateModel'
  *           example:
  *             name: "Example Blog"
  *             description: "This is a sample blog."
@@ -206,7 +181,7 @@
  *                   websiteUrl: "string"
  *                   createdAt: "2023-12-27T13:19:29.212Z"
  *             schema:
- *               $ref: '#/components/schemas/BlogPostResponseModel'
+ *               $ref: '#/components/schemas/PostResponseModel'
  *       '404':
  *         description: If the specified blog does not exist
  */
@@ -215,7 +190,7 @@
  * @swagger
  * components:
  *   schemas:
- *     BlogPostResponseModel:
+ *     PostResponseModel:
  *       type: object
  *       properties:
  *         pagesCount:
@@ -229,7 +204,7 @@
  *         items:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/PostResponseModel'
+ *             $ref: '#/components/schemas/PostViewModel'
  */
 
 
@@ -432,7 +407,7 @@
  *         title: "New Post"
  *         shortDescription: "A short description for the new post."
  *         content: "The content of the new post."
- *     CreateNewBlog:
+ *     BlogCreateModel:
  *       type: object
  *       properties:
  *         name:
@@ -512,5 +487,20 @@
  *         createdAt:
  *           type: string
  *           format: date-time
+ *     BlogsResponseModel:
+ *       type: object
+ *       properties:
+ *         pagesCount:
+ *           type: number
+ *         page:
+ *           type: number
+ *         pageSize:
+ *           type: number
+ *         totalCount:
+ *           type: number
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/BlogViewModel'
  */
 

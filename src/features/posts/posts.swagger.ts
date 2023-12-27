@@ -1,42 +1,3 @@
-//endpoints
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     PostResponseModel:
- *       type: object
- *       properties:
- *         pagesCount:
- *           type: number
- *         page:
- *           type: number
- *         pageSize:
- *           type: number
- *         totalCount:
- *           type: number
- *         items:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               id:
- *                 type: string
- *               title:
- *                 type: string
- *               shortDescription:
- *                 type: string
- *               content:
- *                 type: string
- *               blogId:
- *                 type: string
- *               blogName:
- *                 type: string
- *               createdAt:
- *                 type: string
- *                 format: date-time
- */
-
 /**
  * @openapi
  * /posts:
@@ -101,23 +62,29 @@
  *                   blogId: "string"
  *                   blogName: "string"
  *                   createdAt: "2023-12-27T16:48:20.678Z"
- *         schema:
- *           $ref: '#/components/schemas/PostResponseModel'
- *       '404':
- *         description: Not Found
- *         content:
- *           text/plain:
- *             example:
- *               errorMessage: "Posts not found"
- *               errorCode: 404
- *           schema:
- *             type: object
- *             properties:
- *               errorMessage:
- *                 type: string
- *               errorCode:
- *                 type: number
- *                 example: 404
+ *             schema:
+ *              $ref: '#/components/schemas/PostsResponseModel'
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     PostsgitResponseModel:
+ *       type: object
+ *       properties:
+ *         pagesCount:
+ *           type: number
+ *         page:
+ *           type: number
+ *         pageSize:
+ *           type: number
+ *         totalCount:
+ *           type: number
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/PostViewModel'
  */
 
 /**
@@ -159,86 +126,30 @@
  *         title: "New Post"
  *         shortDescription: "A short description for the new post."
  *         content: "The content of the new post."
- *     CreateNewBlog:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           maxLength: 15
- *         description:
- *           type: string
- *           maxLength: 500
- *         websiteUrl:
- *           type: string
- *           pattern: '^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'
- *       required:
- *         - name
- *         - description
- *         - websiteUrl
- *       example:
- *         name: "Example Blog"
- *         description: "This is a sample blog."
- *         websiteUrl: "https://example.com"
- *     BlogViewModel:
+ *     PostViewModel:
  *       type: object
  *       properties:
  *         id:
  *           type: string
- *         name:
+ *         title:
  *           type: string
- *         description:
+ *         shortDescription:
  *           type: string
- *         websiteUrl:
+ *         content:
+ *           type: string
+ *         blogId:
+ *           type: string
+ *         blogName:
  *           type: string
  *         createdAt:
  *           type: string
  *           format: date-time
- *         isMembership:
- *           type: boolean
- *           description: True if the user has an active membership subscription to the blog.
- *       required:
- *         - id
- *         - name
- *         - description
- *         - websiteUrl
- */
-
-
-
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     PostResponseModel:
- *       type: object
- *       properties:
- *         pagesCount:
- *           type: number
- *         page:
- *           type: number
- *         pageSize:
- *           type: number
- *         totalCount:
- *           type: number
- *         items:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               id:
- *                 type: string
- *               title:
- *                 type: string
- *               shortDescription:
- *                 type: string
- *               content:
- *                 type: string
- *               blogId:
- *                 type: string
- *               blogName:
- *                 type: string
- *               createdAt:
- *                 type: string
- *                 format: date-time
+ *       example:
+ *         id: "string"
+ *         title: "string"
+ *         shortDescription: "string"
+ *         content: "string"
+ *         blogId: "string"
+ *         blogName: "string"
+ *         createdAt: "2023-12-27T16:48:20.678Z"
  */
