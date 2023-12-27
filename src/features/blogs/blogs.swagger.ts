@@ -181,7 +181,7 @@
  *                   websiteUrl: "string"
  *                   createdAt: "2023-12-27T13:19:29.212Z"
  *             schema:
- *               $ref: '#/components/schemas/PostResponseModel'
+ *               $ref: '#/components/schemas/PostsResponseModel'
  *       '404':
  *         description: If the specified blog does not exist
  */
@@ -190,7 +190,7 @@
  * @swagger
  * components:
  *   schemas:
- *     PostResponseModel:
+ *     PostsResponseModel:
  *       type: object
  *       properties:
  *         pagesCount:
