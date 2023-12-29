@@ -264,27 +264,6 @@ import { ResponsePostsModel } from "./model/response-models/responsePostsModel";
 
 /**
  * @swagger
- * /testing/all-data:
- *   delete:
- *     summary: Clear database: delete all data from all tables/collections
- *     description: Delete all data from the database tables or collections.
- *     tags:
- *       - Testing
- *     parameters:
- *       - name: No parameters
- *         in: None
- *         description: No parameters are required for this operation.
- *         required: false
- *     responses:
- *       '204':
- *         description: All data is deleted
- */
-
-
-
-
-/**
- * @swagger
  * components:
  *   schemas:
  *     PostsResponseModel:
