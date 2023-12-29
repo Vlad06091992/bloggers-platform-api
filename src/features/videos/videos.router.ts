@@ -93,3 +93,265 @@ export const getVideosRouter = () => {
   );
   return router;
 };
+
+console.log(1)
+
+
+
+/**
+ * @swagger
+ * /videos:
+ *   get:
+ *     summary: Returns all videos
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/VideosResponseModel'
+ *     tags:
+ *       - Videos
+ *   post:
+ *     summary: Create a new video entity
+ *     tags:
+ *       - Videos
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/VideoCreateModel'
+ *           example:
+ *             title: "string"
+ *             author: "string"
+ *             availableResolutions:
+ *               - "P144"
+ *     responses:
+ *       '201':
+ *         description: Returns the newly created video
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               $ref: '#/components/schemas/VideoViewModel'
+ *             example:
+ *               id: 0
+ *               title: "string"
+ *               author: "string"
+ *               canBeDownloaded: true
+ *               minAgeRestriction: null
+ *               createdAt: "2023-12-27T19:11:01.653Z"
+ *               publicationDate: "2023-12-27T19:11:01.653Z"
+ *               availableResolutions:
+ *                 - "P144"
+ *       '400':
+ *         description: If the inputModel has incorrect values
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               $ref: '#/components/schemas/APIErrorResult'
+ *
+ */
+
+
+/**
+ * @openapi
+ * /videos/{id}:
+ *   get:
+ *     summary: Get details of an existing video
+ *     tags:
+ *       - Videos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: Id of the existing video
+ *         schema:
+ *           type: string
+ *         required: true
+ *         example: "string"
+ *     responses:
+ *       '200':
+ *         description: Success
+ *         content:
+ *           text/plain:
+ *             example:
+ *               id: 0
+ *               title: "string"
+ *               author: "string"
+ *               canBeDownloaded: true
+ *               minAgeRestriction: null
+ *               createdAt: "2023-12-27T19:11:01.653Z"
+ *               publicationDate: "2023-12-27T19:11:01.653Z"
+ *               availableResolutions:
+ *                 - "P144"
+ *             schema:
+ *               $ref: '#/components/schemas/VideoViewModel'
+ *       '404':
+ *         description: Not Found
+ */
+
+
+/**
+ * @swagger
+ * /videos/{id}:
+ *   put:
+ *     summary: Update an existing post
+ *     tags:
+ *       - Videos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the post to be updated
+ *         schema:
+ *           type: string
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/VideoUpdateModel'
+ *           example:
+ *             title: "string"
+ *             author: "string"
+ *             availableResolutions:
+ *             - "P144"
+ *     responses:
+ *       '204':
+ *         description: No Content
+ *       '400':
+ *         description: If the inputModel has incorrect values
+ *         content:
+ *           text/plain:
+ *             example:
+ *               errorsMessages:
+ *                 - message: "string"
+ *                   field: "string"
+ *             schema:
+ *               $ref: '#/components/schemas/APIErrorResult'
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Not Found
+ */
+
+
+/**
+ * @swagger
+ * /videos/{id}:
+ *   delete:
+ *     summary: Delete an existing video
+ *     tags:
+ *       - Videos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the post.
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       '204':
+ *         description: No Content
+ *       '401':
+ *         description: Unauthorized
+ *       '404':
+ *         description: Not Found
+ */
+
+
+
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     VideoCreateModel:
+ *       type: object
+ *       required:
+ *         - title
+ *         - author
+ *       properties:
+ *         title:
+ *           type: string
+ *           maxLength: 40
+ *         author:
+ *           type: string
+ *           maxLength: 20
+ *         availableResolutions:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - P144
+ *               - P240
+ *               - P360
+ *               - P480
+ *               - P720
+ *               - P1080
+ *               - P1440
+ *               - P2160
+ *
+ *     VideoUpdateModel:
+ *       type: object
+ *       required:
+ *         - title
+ *         - author
+ *       properties:
+ *         title:
+ *           type: string
+ *           maxLength: 40
+ *         author:
+ *           type: string
+ *           maxLength: 20
+ *         availableResolutions:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - P144
+ *               - P240
+ *               - P360
+ *               - P480
+ *               - P720
+ *               - P1080
+ *               - P1440
+ *               - P2160
+ *
+ *     VideoViewModel:
+ *         type: object
+ *         properties:
+ *           id:
+ *             type: integer
+ *           title:
+ *             type: string
+ *           author:
+ *             type: string
+ *           canBeDownloaded:
+ *             type: boolean
+ *           minAgeRestriction:
+ *             type: integer
+ *             nullable: true
+ *           createdAt:
+ *             type: string
+ *             format: date-time
+ *           publicationDate:
+ *             type: string
+ *             format: date-time
+ *           availableResolutions:
+ *             type: array
+ *             items:
+ *               type: string
+ *               enum:
+ *                 - P144
+ *                 - P240
+ *                 - P360
+ *                 - P480
+ *                 - P720
+ *                 - P1080
+ *                 - P1440
+ */
+
+

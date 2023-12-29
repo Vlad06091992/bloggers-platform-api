@@ -26,7 +26,121 @@ import { postsRepository } from "../posts/posts-repository";
 import { CreatePostModelForSpecificBlog } from "./model/request-models/CreatePostModelForSpecificBlog";
 import { QueryPostModel } from "../posts/model/request-models/QueryPostModel";
 
-//endpoints
+export const getBlogsRouter = () => {
+  const router = express.Router();
+  router.get(
+    "/",
+    async (
+      req: RequestWithQuery<QueryBlogModel>,
+      res: Response<ResponseBlogsModel>,
+    ) => {
+      const result = await blogsRepository.findBlogs(req.query);
+      res.status(HTTP_STATUSES.OK_200).send(result);
+    },
+  );
+
+  router.post(
+    "/",
+    authGuardMiddleware,
+    validateCreateBlogData,
+    validateErrors,
+    async (
+      req: RequestWithBody<BlogCreateModel>,
+      res: Response<BlogViewModel | number>,
+    ) => {
+      let blog = await blogsRepository.createBlog(req.body);
+      res.status(HTTP_STATUSES.CREATED_201).send(blog);
+    },
+  );
+
+  router.get(
+    "/:id",
+    async (
+      req: RequestWithParams<URIParamsBlogIdModel>,
+      res: Response<BlogViewModel | number>,
+    ) => {
+      const blog = await blogsRepository.getBlogById(req.params.id);
+      if (blog) {
+        res.send(blog);
+      } else {
+        res.send(HTTP_STATUSES.NOT_FOUND_404);
+      }
+    },
+  );
+
+  router.put(
+    "/:id",
+    authGuardMiddleware,
+    validateUpdateBlogData,
+    validateErrors,
+    async (
+      req: RequestWithParamsAndBody<URIParamsBlogIdModel, BlogUpdateModel>,
+      res: Response<BlogViewModel | any>,
+    ) => {
+      let result = await blogsRepository.updateBlog(req.params.id, req.body);
+      if (result) {
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+      } else {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+      }
+    },
+  );
+
+  router.delete(
+    "/:id",
+    authGuardMiddleware,
+    async (
+      req: RequestWithParams<URIParamsBlogIdModel>,
+      res: Response<number>,
+    ) => {
+      const isDeleted = await blogsRepository.deleteBlog(req.params.id);
+      if (isDeleted) {
+        res.send(HTTP_STATUSES.NO_CONTENT_204);
+      } else {
+        res.send(HTTP_STATUSES.NOT_FOUND_404);
+      }
+    },
+  );
+
+  router.post(
+    "/:id/posts",
+    authGuardMiddleware,
+    isExistingBlog,
+    validateCreatePostData,
+    validateErrors,
+    async (
+      req: RequestWithParamsAndBody<
+        URIParamsBlogIdModel,
+        CreatePostModelForSpecificBlog
+      >,
+      res: Response,
+    ) => {
+      let newPost = await postsRepository.createPost({
+        ...req.body,
+        blogId: req.params.id,
+      });
+      res.status(HTTP_STATUSES.CREATED_201).send(newPost);
+    },
+  );
+
+  router.get(
+    "/:id/posts",
+    isExistingBlog,
+    async (
+      req: RequestWithQueryAndParams<URIParamsBlogIdModel, QueryPostModel>,
+      res: Response,
+    ) => {
+      let result = await blogsRepository.findPostsForSpecificBlog(
+        req.query,
+        req.params.id,
+      );
+      res.status(HTTP_STATUSES.OK_200).send(result);
+    },
+  );
+  return router;
+};
+
+
 
 /**
  * @openapi
@@ -531,119 +645,3 @@ import { QueryPostModel } from "../posts/model/request-models/QueryPostModel";
  *           items:
  *             $ref: '#/components/schemas/BlogViewModel'
  */
-
-
-
-export const getBlogsRouter = () => {
-  const router = express.Router();
-  router.get(
-    "/",
-    async (
-      req: RequestWithQuery<QueryBlogModel>,
-      res: Response<ResponseBlogsModel>,
-    ) => {
-      const result = await blogsRepository.findBlogs(req.query);
-      res.status(HTTP_STATUSES.OK_200).send(result);
-    },
-  );
-
-  router.post(
-    "/",
-    authGuardMiddleware,
-    validateCreateBlogData,
-    validateErrors,
-    async (
-      req: RequestWithBody<BlogCreateModel>,
-      res: Response<BlogViewModel | number>,
-    ) => {
-      let blog = await blogsRepository.createBlog(req.body);
-      res.status(HTTP_STATUSES.CREATED_201).send(blog);
-    },
-  );
-
-  router.get(
-    "/:id",
-    async (
-      req: RequestWithParams<URIParamsBlogIdModel>,
-      res: Response<BlogViewModel | number>,
-    ) => {
-      const blog = await blogsRepository.getBlogById(req.params.id);
-      if (blog) {
-        res.send(blog);
-      } else {
-        res.send(HTTP_STATUSES.NOT_FOUND_404);
-      }
-    },
-  );
-
-  router.put(
-    "/:id",
-    authGuardMiddleware,
-    validateUpdateBlogData,
-    validateErrors,
-    async (
-      req: RequestWithParamsAndBody<URIParamsBlogIdModel, BlogUpdateModel>,
-      res: Response<BlogViewModel | any>,
-    ) => {
-      let result = await blogsRepository.updateBlog(req.params.id, req.body);
-      if (result) {
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-      } else {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-      }
-    },
-  );
-
-  router.delete(
-    "/:id",
-    authGuardMiddleware,
-    async (
-      req: RequestWithParams<URIParamsBlogIdModel>,
-      res: Response<number>,
-    ) => {
-      const isDeleted = await blogsRepository.deleteBlog(req.params.id);
-      if (isDeleted) {
-        res.send(HTTP_STATUSES.NO_CONTENT_204);
-      } else {
-        res.send(HTTP_STATUSES.NOT_FOUND_404);
-      }
-    },
-  );
-
-  router.post(
-    "/:id/posts",
-    authGuardMiddleware,
-    isExistingBlog,
-    validateCreatePostData,
-    validateErrors,
-    async (
-      req: RequestWithParamsAndBody<
-        URIParamsBlogIdModel,
-        CreatePostModelForSpecificBlog
-      >,
-      res: Response,
-    ) => {
-      let newPost = await postsRepository.createPost({
-        ...req.body,
-        blogId: req.params.id,
-      });
-      res.status(HTTP_STATUSES.CREATED_201).send(newPost);
-    },
-  );
-
-  router.get(
-    "/:id/posts",
-    isExistingBlog,
-    async (
-      req: RequestWithQueryAndParams<URIParamsBlogIdModel, QueryPostModel>,
-      res: Response,
-    ) => {
-      let result = await blogsRepository.findPostsForSpecificBlog(
-        req.query,
-        req.params.id,
-      );
-      res.status(HTTP_STATUSES.OK_200).send(result);
-    },
-  );
-  return router;
-};
