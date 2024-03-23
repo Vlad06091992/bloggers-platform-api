@@ -1,6 +1,8 @@
-export function createErrorResponse(errors: any) {
+import {Result} from "express-validator";
+
+export function createErrorResponse(errors: Result) {
   return {
-    errorsMessages: errors.map((el: any) => ({
+    errorsMessages: errors.array().map((el) => ({
       message: el.msg,
       field: el.path,
     })),

@@ -17,8 +17,8 @@ const http_statuses_1 = require("../../src/http_statuses/http_statuses");
 const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../src/app");
 exports.postsTestManager = {
-    createPost(data, blogName, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
-        return __awaiter(this, void 0, void 0, function* () {
+    createPost(data_1, blogName_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (data, blogName, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .post(app_1.Routes.posts)
                 .auth(user, password)
@@ -34,8 +34,8 @@ exports.postsTestManager = {
             }
         });
     },
-    getPostById(id, title, HTTPStatus = http_statuses_1.HTTP_STATUSES.OK_200) {
-        return __awaiter(this, void 0, void 0, function* () {
+    getPostById(id_1, title_1) {
+        return __awaiter(this, arguments, void 0, function* (id, title, HTTPStatus = http_statuses_1.HTTP_STATUSES.OK_200) {
             const response = yield (0, supertest_1.default)(app_1.app).get(`${app_1.Routes.posts}/${id}`);
             if (HTTPStatus === http_statuses_1.HTTP_STATUSES.OK_200) {
                 expect(response.body.title).toEqual(title);
@@ -46,8 +46,8 @@ exports.postsTestManager = {
             }
         });
     },
-    updatePost(id, data, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
-        return __awaiter(this, void 0, void 0, function* () {
+    updatePost(id_1, data_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (id, data, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .put(`${app_1.Routes.posts}/${id}`)
                 .auth(user, password)
@@ -62,8 +62,8 @@ exports.postsTestManager = {
             }
         });
     },
-    deletePost(id, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.NO_CONTENT_204) {
-        return __awaiter(this, void 0, void 0, function* () {
+    deletePost(id_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (id, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.NO_CONTENT_204) {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .delete(`${app_1.Routes.posts}/${id}`)
                 .auth(user, password)

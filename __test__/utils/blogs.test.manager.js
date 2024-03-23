@@ -17,8 +17,8 @@ const http_statuses_1 = require("../../src/http_statuses/http_statuses");
 const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../src/app");
 exports.blogsTestManager = {
-    createBlog(data, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
-        return __awaiter(this, void 0, void 0, function* () {
+    createBlog(data_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (data, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .post(app_1.Routes.blogs)
                 .auth(user, password)
@@ -34,8 +34,8 @@ exports.blogsTestManager = {
             }
         });
     },
-    getBlogById(id, name, HTTPStatus = http_statuses_1.HTTP_STATUSES.OK_200) {
-        return __awaiter(this, void 0, void 0, function* () {
+    getBlogById(id_1, name_1) {
+        return __awaiter(this, arguments, void 0, function* (id, name, HTTPStatus = http_statuses_1.HTTP_STATUSES.OK_200) {
             const response = yield (0, supertest_1.default)(app_1.app).get(`${app_1.Routes.blogs}/${id}`);
             if (HTTPStatus === http_statuses_1.HTTP_STATUSES.OK_200) {
                 expect(response.body.name).toEqual(name);
@@ -46,8 +46,8 @@ exports.blogsTestManager = {
             }
         });
     },
-    updateBlog(id, data, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
-        return __awaiter(this, void 0, void 0, function* () {
+    updateBlog(id_1, data_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (id, data, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.CREATED_201, errorsObject) {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .put(`${app_1.Routes.blogs}/${id}`)
                 .auth(user, password)
@@ -62,8 +62,8 @@ exports.blogsTestManager = {
             }
         });
     },
-    deleteBlog(id, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.NO_CONTENT_204) {
-        return __awaiter(this, void 0, void 0, function* () {
+    deleteBlog(id_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (id, { user, password }, HTTPStatus = http_statuses_1.HTTP_STATUSES.NO_CONTENT_204) {
             const response = yield (0, supertest_1.default)(app_1.app)
                 .delete(`${app_1.Routes.blogs}/${id}`)
                 .auth(user, password)
