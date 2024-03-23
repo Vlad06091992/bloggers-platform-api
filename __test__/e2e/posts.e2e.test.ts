@@ -5,8 +5,8 @@ import { HTTP_STATUSES } from "../../src/http_statuses/http_statuses";
 import { blogsTestManager } from "../utils/blogs.test.manager";
 // @ts-ignore
 import { postsTestManager } from "../utils/posts.tests.manager";
-import { PostCreateModel } from "../../src/features/posts/model/request-models/PostCreateModel";
-import { BlogViewModel } from "../../src/features/blogs/model/BlogViewModel";
+import { PostCreateModel } from "../../src/features/posts/types/types";
+import { BlogViewModel } from "../../src/features/blogs/types/types";
 
 const authData = {
   user: "admin",
@@ -147,7 +147,13 @@ describe("test for /posts", () => {
   it("should return status 200 and array with one item", async () => {
     await request(app)
       .get(Routes.posts)
-      .expect(HTTP_STATUSES.OK_200, [createdPost]);
+      .expect(HTTP_STATUSES.OK_200, {
+        pagesCount: 1,
+        page: 1,
+        pageSize: 10,
+        totalCount: 1,
+        items: [createdPost]
+      });
   });
 
   it("should not updated new post with incorrect idEntity", async () => {
@@ -247,6 +253,6 @@ describe("test for /posts", () => {
     );
   });
   it("should return status 200 and empty", async () => {
-    await request(app).get(Routes.posts).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(Routes.posts).expect(HTTP_STATUSES.OK_200, { pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: [] });
   });
 });

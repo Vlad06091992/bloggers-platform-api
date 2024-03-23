@@ -3,7 +3,7 @@ import { app, Routes } from "../../src/app";
 import { HTTP_STATUSES } from "../../src/http_statuses/http_statuses";
 // @ts-ignore
 import { blogsTestManager } from "../utils/blogs.test.manager";
-import { BlogCreateModel } from "../../src/features/blogs/model/request-models/BlogCreateModel";
+import { BlogCreateModel } from "../../src/features/blogs/types/types";
 
 const authData = {
   user: "admin",
@@ -20,7 +20,7 @@ describe("test for /blogs", () => {
   });
 
   it("should return status 200 and empty", async () => {
-    await request(app).get(Routes.blogs).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(Routes.blogs).expect(HTTP_STATUSES.OK_200, { pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: []});
   });
 
   it("blog do not create because auth data is not valid", async () => {
@@ -117,7 +117,13 @@ describe("test for /blogs", () => {
   it("should return status 200 and array with one item", async () => {
     await request(app)
       .get(Routes.blogs)
-      .expect(HTTP_STATUSES.OK_200, [createdBlog]);
+      .expect(HTTP_STATUSES.OK_200, {
+        pagesCount: 1,
+        page: 1,
+        pageSize: 10,
+        totalCount: 1,
+        items: [createdBlog]
+      });
   });
 
   it("should not updated new blog with incorrect idEntity", async () => {
@@ -212,6 +218,6 @@ describe("test for /blogs", () => {
     );
   });
   it("should return status 200 and empty", async () => {
-    await request(app).get(Routes.blogs).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(Routes.blogs).expect(HTTP_STATUSES.OK_200, { pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: [] });
   });
 });

@@ -1,5 +1,5 @@
 import { checkSchema } from "express-validator";
-import { findBlogById } from "../blogs-utils/blogs-utils";
+
 
 export const validateUpdateBlogData = checkSchema(
   {

@@ -1,13 +1,12 @@
-import { PostCreateModel } from "./model/request-models/PostCreateModel";
-import { PostUpdateModel } from "./model/request-models/PostUpdateModel";
-import {
-  findBlogNameByBlogId,
-  getPostWithPrefixIdToViewModel,
-} from "./posts-utils/posts-utils";
+import { PostCreateModel } from "./types/types";
+import { PostUpdateModel } from "./types/types";
+import {postsService} from '../posts/posts-service'
 import { postsCollection } from "../../db-mongo";
 import { ObjectId } from "mongodb";
-import { PostViewModel } from "./model/PostViewModel";
-import { QueryPostModel } from "./model/request-models/QueryPostModel";
+import { PostViewModel } from "./types/types";
+import { QueryPostModel } from "./types/types";
+import {ResponsePostsModel} from "./types/types";
+import {blogsService} from "../blogs/blogs-service";
 
 type CreatePostForClass = PostCreateModel & {
   blogName: string;
@@ -38,7 +37,7 @@ class Post {
 }
 
 export const postsRepository = {
-  async findPosts(reqQuery: QueryPostModel) {
+  async findPosts(reqQuery: QueryPostModel):Promise<ResponsePostsModel> {
     const sortBy = reqQuery.sortBy || "createdAt";
     const sortDirection = reqQuery.sortDirection || "desc";
     const pageNumber = reqQuery.pageNumber || 1;
@@ -56,19 +55,19 @@ export const postsRepository = {
       page: +pageNumber,
       pageSize: +pageSize,
       totalCount: +totalCount,
-      items: res.map(getPostWithPrefixIdToViewModel),
+      items: res.map(postsService.getPostWithPrefixIdToViewModel),
     };
   },
   async getPostById(id: string) {
     try {
       let res = await postsCollection.findOne({ _id: new ObjectId(id) });
-      return getPostWithPrefixIdToViewModel(res!);
+      return postsService.getPostWithPrefixIdToViewModel(res!);
     } catch (e) {
       return null;
     }
   },
   async createPost(data: PostCreateModel): Promise<PostViewModel> {
-    const blogName = (await findBlogNameByBlogId(data.blogId))!;
+    const blogName = (await blogsService.findBlogNameByBlogId(data.blogId))!;
     const newPostTemplate = new Post({ ...data, blogName });
     const { insertedId } = await postsCollection.insertOne({
       ...newPostTemplate,

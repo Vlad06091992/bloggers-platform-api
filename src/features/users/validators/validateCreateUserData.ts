@@ -1,6 +1,8 @@
 import { checkSchema } from "express-validator";
 import {blogsService} from "../../blogs/blogs-service";
 
+;
+
 const schema = {
   title: {
     errorMessage:
@@ -31,7 +33,7 @@ const schema = {
   },
 };
 
-const   schemaWithId = {
+const schemaWithId = {
   ...schema,
   blogId: {
     custom: {
@@ -51,7 +53,7 @@ export const validateCreatePostDataWithIdParams = checkSchema(schemaWithId, [
   "query",
   "params",
 ]);
-export const validateCreatePostData = checkSchema(schema, [
+export const validateCreateUserData = checkSchema(schema, [
   "body",
   "query",
   "params",

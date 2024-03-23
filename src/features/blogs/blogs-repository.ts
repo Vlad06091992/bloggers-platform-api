@@ -1,12 +1,7 @@
-import { blogsCollection, postsCollection } from "../../db-mongo";
-import { BlogCreateModel } from "../blogs/model/request-models/BlogCreateModel";
-import { BlogUpdateModel } from "../blogs/model/request-models/BlogUpdateModel";
-import { getBlogWithPrefixIdToViewModel } from "./blogs-utils/blogs-utils";
-import { ObjectId } from "mongodb";
-import { BlogViewModel } from "./model/BlogViewModel";
-import { QueryBlogModel } from "../blogs/model/request-models/QueryBlogModel";
-import { QueryPostModel } from "../posts/model/request-models/QueryPostModel";
-import { getPostWithPrefixIdToViewModel } from "../posts/posts-utils/posts-utils";
+import {blogsCollection} from "../../db-mongo";
+import {BlogCreateModel, BlogUpdateModel, BlogViewModel, QueryBlogModel, ResponseBlogsModel} from "./types/types";
+import {ObjectId} from "mongodb";
+import {blogsService} from "../blogs/blogs-service";
 
 class BlogCreateClass {
   name: string;
@@ -25,7 +20,7 @@ class BlogCreateClass {
 }
 
 export const blogsRepository = {
-  async findBlogs(reqQuery: QueryBlogModel) {
+  async findBlogs(reqQuery: QueryBlogModel):Promise<ResponseBlogsModel> {
     let filter = {};
 
     if (reqQuery.searchNameTerm) {
@@ -49,34 +44,14 @@ export const blogsRepository = {
       page: +pageNumber,
       pageSize: +pageSize,
       totalCount: +totalCount,
-      items: res.map(getBlogWithPrefixIdToViewModel),
+      items: res.map(blogsService.getBlogWithPrefixIdToViewModel),
     };
   },
-  async findPostsForSpecificBlog(reqQuery: QueryPostModel, id: string) {
-    const sortBy = reqQuery.sortBy || "createdAt";
-    const sortDirection = reqQuery.sortDirection || "desc";
-    const pageNumber = reqQuery.pageNumber || 1;
-    const pageSize = reqQuery.pageSize || 10;
 
-    const totalCount = await postsCollection.countDocuments({ blogId: id });
-    let res = await postsCollection
-      .find({ blogId: id })
-      .skip((+pageNumber - 1) * +pageSize)
-      .limit(+pageSize)
-      .sort({ [sortBy]: sortDirection == "asc" ? 1 : -1 })
-      .toArray();
-    return {
-      pagesCount: Math.ceil(+totalCount / +pageSize),
-      page: +pageNumber,
-      pageSize: +pageSize,
-      totalCount: +totalCount,
-      items: res.map(getPostWithPrefixIdToViewModel),
-    };
-  },
   async getBlogById(id: string): Promise<BlogViewModel | null> {
     try {
       let res = await blogsCollection.findOne({ _id: new ObjectId(id) });
-      return getBlogWithPrefixIdToViewModel(res!);
+      return blogsService.getBlogWithPrefixIdToViewModel(res!);
     } catch (e) {
       return null;
     }
