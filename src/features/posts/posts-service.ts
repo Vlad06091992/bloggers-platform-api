@@ -3,8 +3,37 @@ import {ObjectId, WithId} from "mongodb";
 import {PostCreateModel, PostType, PostViewModel, QueryPostModel} from "./types/types";
 import {postsRepository} from "./posts-repository";
 import {postsCollection} from "../../db-mongo";
+import {blogsService} from "../blogs/blogs-service";
 
 type ResultType = "object" | "boolean";
+
+type CreatePostForClass = PostCreateModel & {
+    blogName: string;
+};
+
+class Post {
+    title: string;
+    shortDescription: string;
+    content: string;
+    blogId: string;
+    blogName: string;
+    createdAt: string;
+
+    constructor({
+                    blogId,
+                    title,
+                    blogName,
+                    shortDescription,
+                    content,
+                }: CreatePostForClass) {
+        this.blogId = blogId;
+        this.blogName = blogName;
+        this.title = title;
+        this.content = content;
+        this.shortDescription = shortDescription;
+        this.createdAt = new Date().toISOString();
+    }
+}
 
 export const postsService = {
     async findPostById(id: string, result: ResultType = "boolean") {
@@ -13,7 +42,9 @@ export const postsService = {
     },
 
     async createPost(body:PostCreateModel){
-        return await postsRepository.createPost(body)
+        const blogName = (await blogsService.findBlogNameByBlogId(body.blogId))!;
+        const newPostTemplate = new Post({ ...body, blogName })
+        return await postsRepository.createPost(newPostTemplate)
     },
 
     async getPostById(id:string){

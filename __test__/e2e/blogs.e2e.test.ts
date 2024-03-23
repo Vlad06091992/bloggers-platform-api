@@ -86,6 +86,11 @@ describe("test for /blogs", () => {
     );
   });
 
+  it("should return status 200 and empty", async () => {
+    await request(app).get(Routes.blogs).expect(HTTP_STATUSES.OK_200, { pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: []});
+  });
+
+
   let createdBlog: any = null;
 
   it("blog should be created", async () => {

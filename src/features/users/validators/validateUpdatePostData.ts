@@ -1,7 +1,6 @@
 import { checkSchema } from "express-validator";
 import {blogsService} from "../../blogs/blogs-service";
 
-
 export const validateUpdatePostDataWithParams = checkSchema(
   {
     title: {

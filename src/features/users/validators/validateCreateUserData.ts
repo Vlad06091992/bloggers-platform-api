@@ -1,33 +1,34 @@
 import { checkSchema } from "express-validator";
-import {blogsService} from "../../blogs/blogs-service";
-
-;
+import { blogsService } from "../../blogs/blogs-service";
 
 const schema = {
-  title: {
+  login: {
     errorMessage:
-      "The 'title' field is required and must be no more than 15 characters.",
+        "The 'login' field is required and must be between 3 and 10 characters.",
     trim: true,
     isLength: {
-      options: { min: 1, max: 30 },
+      options: { min: 3, max: 10 },
+    },
+    matches: {
+      options: /^[a-zA-Z0-9_-]*$/,
     },
     exists: true,
   },
-  shortDescription: {
+  password: {
     errorMessage:
-      "The 'short description' field is required and must be no more than 500 characters.",
+        "The 'password' field is required and must be between 6 and 20 characters.",
     trim: true,
     isLength: {
-      options: { min: 1, max: 100 },
+      options: { min: 6, max: 20 },
     },
     exists: true,
   },
-  content: {
+  email: {
     errorMessage:
-      "The 'websiteUrl' field is required and must be no more than 100 characters.",
+        "The 'email' field is required and must be a valid email address.",
     trim: true,
-    isLength: {
-      options: { min: 1, max: 100 },
+    matches: {
+      options: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
     },
     exists: true,
   },
@@ -40,10 +41,10 @@ const schemaWithId = {
       options: async (id: string) => {
         let res = await blogsService.findBlogById(id);
         if (!res) {
-          return Promise.reject();
+          return Promise.reject("Blog is not found");
         }
       },
-      errorMessage: "blog is not found",
+      errorMessage: "Blog is not found",
     },
   },
 };

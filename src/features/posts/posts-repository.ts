@@ -1,4 +1,4 @@
-import { PostCreateModel } from "./types/types";
+import {PostCreateModel, PostType} from "./types/types";
 import { PostUpdateModel } from "./types/types";
 import {postsService} from '../posts/posts-service'
 import { postsCollection } from "../../db-mongo";
@@ -8,33 +8,7 @@ import { QueryPostModel } from "./types/types";
 import {ResponsePostsModel} from "./types/types";
 import {blogsService} from "../blogs/blogs-service";
 
-type CreatePostForClass = PostCreateModel & {
-  blogName: string;
-};
 
-class Post {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-  blogName: string;
-  createdAt: string;
-
-  constructor({
-    blogId,
-    title,
-    blogName,
-    shortDescription,
-    content,
-  }: CreatePostForClass) {
-    this.blogId = blogId;
-    this.blogName = blogName;
-    this.title = title;
-    this.content = content;
-    this.shortDescription = shortDescription;
-    this.createdAt = new Date().toISOString();
-  }
-}
 
 export const postsRepository = {
   async findPosts(reqQuery: QueryPostModel):Promise<ResponsePostsModel> {
@@ -66,12 +40,9 @@ export const postsRepository = {
       return null;
     }
   },
-  async createPost(data: PostCreateModel): Promise<PostViewModel> {
-    const blogName = (await blogsService.findBlogNameByBlogId(data.blogId))!;
-    const newPostTemplate = new Post({ ...data, blogName });
-    const { insertedId } = await postsCollection.insertOne({
-      ...newPostTemplate,
-    });
+  async createPost(data: PostType): Promise<PostViewModel> {
+
+    const { insertedId } = await postsCollection.insertOne(data);
     return (await this.getPostById(insertedId.toString()))!;
   },
   async updatePost(id: string, data: PostUpdateModel) {

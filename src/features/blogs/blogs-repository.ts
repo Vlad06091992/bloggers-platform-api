@@ -1,23 +1,16 @@
 import {blogsCollection} from "../../db-mongo";
-import {BlogCreateModel, BlogUpdateModel, BlogViewModel, QueryBlogModel, ResponseBlogsModel} from "./types/types";
+import {
+  BlogCreateModel,
+  BlogType,
+  BlogUpdateModel,
+  BlogViewModel,
+  QueryBlogModel,
+  ResponseBlogsModel
+} from "./types/types";
 import {ObjectId} from "mongodb";
 import {blogsService} from "../blogs/blogs-service";
 
-class BlogCreateClass {
-  name: string;
-  websiteUrl: string;
-  description: string;
-  isMembership: boolean;
-  createdAt: string;
 
-  constructor({ name, websiteUrl, description }: BlogCreateModel) {
-    this.name = name;
-    this.description = description;
-    this.websiteUrl = websiteUrl;
-    this.isMembership = false;
-    this.createdAt = new Date().toISOString();
-  }
-}
 
 export const blogsRepository = {
   async findBlogs(reqQuery: QueryBlogModel):Promise<ResponseBlogsModel> {
@@ -56,9 +49,9 @@ export const blogsRepository = {
       return null;
     }
   },
-  async createBlog(data: BlogCreateModel): Promise<BlogViewModel> {
-    const newBlogTemplate = new BlogCreateClass(data);
-    const { insertedId } = await blogsCollection.insertOne(newBlogTemplate);
+  async createBlog(data: BlogType): Promise<BlogViewModel> {
+
+    const { insertedId } = await blogsCollection.insertOne(data);
     return (await this.getBlogById(insertedId.toString()))!;
   },
   async updateBlog(id: string, data: BlogUpdateModel) {

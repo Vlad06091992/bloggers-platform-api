@@ -6,6 +6,22 @@ import {blogsRepository} from "./blogs-repository";
 
 type ResultType = "object" | "boolean";
 
+class BlogCreateClass {
+    name: string;
+    websiteUrl: string;
+    description: string;
+    isMembership: boolean;
+    createdAt: string;
+
+    constructor({ name, websiteUrl, description }: BlogCreateModel) {
+        this.name = name;
+        this.description = description;
+        this.websiteUrl = websiteUrl;
+        this.isMembership = false;
+        this.createdAt = new Date().toISOString();
+    }
+}
+
 export const blogsService = {
 
     async findBlogs(query:QueryBlogModel){
@@ -27,7 +43,8 @@ export const blogsService = {
     },
 
     async createBlog(body:BlogCreateModel):Promise<BlogViewModel | number>{
-        return await blogsRepository.createBlog(body);
+        const newBlogTemplate = new BlogCreateClass(body);
+        return await blogsRepository.createBlog(newBlogTemplate);
     },
 
     async updateBlog(id:string,body:BlogUpdateModel):Promise<BlogViewModel | boolean>{
