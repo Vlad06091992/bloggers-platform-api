@@ -51,7 +51,7 @@ export const usersRepository = {
         const searchLoginTerm = reqQuery.searchLoginTerm || "";
 
 
-        const totalCount = await usersCollection.countDocuments();
+        const totalCount = await usersCollection.countDocuments({$or : [{login: { $regex : searchLoginTerm , $options : "i"}}, {email: { $regex : searchEmailTerm , $options : "i"}}]});
         let res = await usersCollection
             .find({$or : [{login: { $regex : searchLoginTerm , $options : "i"}}, {email: { $regex : searchEmailTerm , $options : "i"}}]})
             .skip((+pageNumber - 1) * +pageSize)
