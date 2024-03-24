@@ -56,6 +56,7 @@ export const getCommentsRouter = () => {
 
       if(comment?.commentatorInfo.userId != req.user.id){
         res.sendStatus(HTTP_STATUSES.FORBIDDEN)
+        return
       }
 
       if(commentForUpdate){
@@ -85,6 +86,7 @@ export const getCommentsRouter = () => {
 
         if(comment.commentatorInfo.userId != req.user.id){
           res.sendStatus(HTTP_STATUSES.FORBIDDEN)
+          return
         }
 
 
