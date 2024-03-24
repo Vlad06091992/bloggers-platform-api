@@ -6,7 +6,7 @@ import {RequestWithBody} from "../../types";
 import {AuthCreateModel} from "./types/types";
 import {authService} from "../auth/auth-service";
 import {WithId} from "mongodb";
-import {UserType} from "../users/types/types";
+import {UserType, UserViewModel} from "../users/types/types";
 import {validateCreateUserData} from "./validators/validateUserCredentials";
 import {validateErrors} from "../../middlewares/validateErrors";
 import {jwtService} from "./jwt-service";
@@ -43,7 +43,7 @@ export const getAuthRouter = () => {
             req: any,
             res: Response<any>,
         ) => {
-            let user: WithId<UserType> = req.user
+            let user: UserViewModel = req.user
             if (!user) {
                 res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             } else {

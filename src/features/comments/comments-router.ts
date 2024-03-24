@@ -41,11 +41,26 @@ export const getCommentsRouter = () => {
       req: any,
       res: Response<UserViewModel>,
     ) => {
+
+      console.log(req.user.id)
+
       let updatedComment = await commentsService.updateComment(req.params.commentId,{
         content: req.body.content
       });
-      // debugger
-      res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+
+      let comment = await commentsService.getCommentById(req.params.commentId)
+
+      if(comment?.commentatorInfo.userId != req.user.id){
+        res.sendStatus(HTTP_STATUSES.FORBIDDEN)
+      }
+
+      if(updatedComment){
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+
+      } else {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+      }
+
     },
   );
 
