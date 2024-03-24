@@ -10,10 +10,6 @@ const schema = {
     isLength: {
       options: { min: 3, max: 10 },
     },
-    matches: {
-      options: /^[a-zA-Z0-9_-]*$/,
-      errorMessage: "The 'login' field can contain only letters, numbers, underscores, and hyphens.",
-    },
     exists: true,
     custom: {
       options: async (nameOrLogin: string) => {
@@ -38,10 +34,7 @@ const schema = {
     errorMessage:
         "The 'email' field is required and must be a valid email address.",
     trim: true,
-    matches: {
-      options: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-      errorMessage: "The provided 'email' is not a valid email address.",
-    },
+    isEmail: true,
     exists: true,
     custom: {
       options: async (email: string) => {
@@ -71,11 +64,6 @@ const schemaWithId = {
   },
 };
 
-export const validateCreatePostDataWithIdParams = checkSchema(schemaWithId, [
-  "body",
-  "query",
-  "params",
-]);
 export const validateCreateUserData = checkSchema(schema, [
   "body",
   "query",
