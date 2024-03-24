@@ -11,7 +11,7 @@ import {UserType} from "../users/types/types";
 export const getAuthRouter = () => {
     const router = express.Router();
     router.post(
-        "/",
+        "/login",
         async (
             req: RequestWithBody<AuthCreateModel>,
             res: Response<any>,
