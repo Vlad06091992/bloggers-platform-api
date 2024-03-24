@@ -13,7 +13,7 @@ export type UserViewModel =  {
 };
 
 export type UserAuthMeModel =  {
-    id: string;
+    userId: string;
     login: string;
     email: string
 };

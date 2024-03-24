@@ -52,7 +52,7 @@ export const usersService = {
 
     mapUserViewModelToAuthMeUser(user: UserViewModel): UserAuthMeModel {
         return {
-            id: user.id,
+            userId: user.id,
             login:user.login,
             email:user.email,
         };
