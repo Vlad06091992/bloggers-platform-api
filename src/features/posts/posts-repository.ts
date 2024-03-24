@@ -40,7 +40,7 @@ export const postsRepository = {
       return null;
     }
   },
-  async createPost(data: PostType): Promise<PostViewModel> {
+  async createPost(data: PostType) {
     const { insertedId } = await postsCollection.insertOne(data);
     return (await this.getPostById(insertedId.toString()))!;
   },

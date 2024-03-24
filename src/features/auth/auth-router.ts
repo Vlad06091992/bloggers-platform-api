@@ -1,4 +1,4 @@
-import express, {Response} from "express";
+import express, {Response,Request} from "express";
 import {authMiddleware} from "../../middlewares/authMiddleware";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {usersService} from "../users/users-service";
@@ -9,6 +9,8 @@ import {WithId} from "mongodb";
 import {UserType} from "../users/types/types";
 import {validateCreateUserData} from "./validators/validateUserCredentials";
 import {validateErrors} from "../../middlewares/validateErrors";
+import {jwtService} from "./jwt-service";
+import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
 
 export const getAuthRouter = () => {
     const router = express.Router();
@@ -28,8 +30,24 @@ export const getAuthRouter = () => {
                 if (!result) {
                     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
                 } else {
-                    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+                    const token = jwtService.createJWT(user)
+                    res.send({accessToken:token}).status(HTTP_STATUSES.OK_200)
                 }
+            }
+        },
+    );
+    router.get(
+        "/me",
+        authBearerMiddleware,
+        async (
+            req: any,
+            res: Response<any>,
+        ) => {
+            let user: WithId<UserType> = req.user
+            if (!user) {
+                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+            } else {
+              res.send(user).status(200)
             }
         },
     );

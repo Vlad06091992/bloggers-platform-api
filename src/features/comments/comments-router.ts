@@ -1,58 +1,63 @@
-import express, { Response } from "express";
-import {
-  RequestWithBody,
-  RequestWithParams,
-  RequestWithParamsAndBody,
-  RequestWithQuery,
-} from "../../types";
-import {validateCreateUserData} from "./validators/validateCreateUserData";
+import express, {Response} from "express";
+import {RequestWithParams,} from "../../types";
+import {validateCreateCommentData} from "../comments/validators/validateCreateCommentData";
 import {usersService} from "../users/users-service";
 
 import {validateErrors} from "../../middlewares/validateErrors";
-import {QueryUserModel, ResponseUsersModel, URIParamsUserIdModel, UserCreateModel, UserViewModel} from "./types/types";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {usersRepository} from "./users-repository";
+
 import {authMiddleware} from "../../middlewares/authMiddleware";
+import {ResponseUsersModel, URIParamsUserIdModel, UserViewModel} from "../users/types/types";
+import {commentsService} from "./comments-service";
+import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
 
 
-
-export const getUsersRouter = () => {
+export const getCommentsRouter = () => {
   const router = express.Router();
   router.get(
-    "/",
-      authMiddleware,
+    "/:commentId",
+      // authMiddleware,
     async (
-      req: RequestWithQuery<QueryUserModel>,
+      req: RequestWithParams<any>,
       res: Response<ResponseUsersModel>,
     ) => {
-      let foundedUsers:ResponseUsersModel = await usersRepository.findUsers(req.query);
-      res.status(HTTP_STATUSES.OK_200).send(foundedUsers);
+      let foundedComment:any = await commentsService.getCommentById(req.params.commentId);
+      if(foundedComment){
+        res.status(HTTP_STATUSES.OK_200).send(foundedComment);
+
+      } else {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+      }
     },
   );
 
-  router.post(
-    "/",
-      authMiddleware,
-    validateCreateUserData,
+  router.put(
+    "/:commentId",
+      authBearerMiddleware,
+    validateCreateCommentData,
     validateErrors,
     async (
-      req: RequestWithBody<UserCreateModel>,
+      // req: RequestWithBody<CommentContent>,
+      req: any,
       res: Response<UserViewModel>,
     ) => {
-      let newUser = await usersService.createUser(req.body);
-      res.status(HTTP_STATUSES.CREATED_201).send(newUser);
+      let updatedComment = await commentsService.updateComment(req.params.commentId,{
+        content: req.body.content
+      });
+      // debugger
+      res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     },
   );
 
 
   router.delete(
-      "/:id",
-      authMiddleware,
+      "/:commentId",
+      authBearerMiddleware,
       async (
-          req: RequestWithParams<URIParamsUserIdModel>,
+          req: any,
           res: Response<number>,
       ) => {
-        const isDeleted = await usersService.deleteUser(req.params.id);
+        const isDeleted = await commentsService.deleteComment(req.params.commentId);
         if (isDeleted) {
           res.send(HTTP_STATUSES.NO_CONTENT_204);
         } else {

@@ -23,6 +23,10 @@ class User {
 
 export const usersService = {
 
+    async getUserById(id:string){
+        return await usersRepository.getUserById(id)
+    },
+
     async createUser(body: UserCreateModel) {
         const passwordHash = await this._createHash(body.password)
         const result = new User({...body,password:passwordHash})
@@ -37,14 +41,24 @@ export const usersService = {
 
 
 
+    // getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
+    //     return {
+    //         id: user._id.toString(),
+    //         login:user.login,
+    //         createdAt:user.createdAt,
+    //         email:user.email,
+    //     };
+    // },
+
+
     getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
         return {
-            id: user._id.toString(),
+            userId: user._id.toString(),
             login:user.login,
-            createdAt:user.createdAt,
             email:user.email,
         };
     },
+
 
         async findUserByLoginOrEmail<T>(loginOrEmail: string, result: ResultType = "boolean") {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
@@ -67,7 +81,7 @@ export const usersService = {
 //
 //
 //     async getPostById(id:string){
-//         return await usersRepository.getPostById(id)
+//         return await commentsRepository.getPostById(id)
 //     },
 //
 //

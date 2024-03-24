@@ -1,27 +1,32 @@
-import express, { Response } from "express";
+import express, {Response} from "express";
 import {
   RequestWithBody,
   RequestWithParams,
   RequestWithParamsAndBody,
   RequestWithQuery,
+  RequestWithQueryAndParams,
 } from "../../types";
 
-import { QueryPostModel } from "./types/types";
-import { PostViewModel } from "./types/types";
-import { PostCreateModel } from "./types/types";
-import { PostUpdateModel } from "./types/types";
-import { HTTP_STATUSES } from "../../http_statuses/http_statuses";
-import { URIParamsPostIdModel } from "./types/types";
 import {
-  validateCreatePostData,
-  validateCreatePostDataWithIdParams,
-} from "./validators/validateCreatePostData";
-import { validateUpdatePostDataWithParams } from "./validators/validateUpdatePostData";
-import { postsRepository } from "./posts-repository";
-import { validateErrors } from "../../middlewares/validateErrors";
-import { ResponsePostsModel } from "./types/types";
+  PostCreateModel,
+  PostUpdateModel,
+  PostViewModel,
+  QueryPostModel,
+  ResponsePostsModel,
+  URIParamsPostIdModel
+} from "./types/types";
+import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
+import {validateCreatePostDataWithIdParams,} from "./validators/validateCreatePostData";
+import {postsRepository} from "./posts-repository";
+import {validateErrors} from "../../middlewares/validateErrors";
 import {authMiddleware} from "../../middlewares/authMiddleware";
 import {postsService} from "./posts-service";
+import {isExistingPost} from "../../middlewares/isExistingPost";
+import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
+import {validateCreateCommentData} from "../comments/validators/validateCreateCommentData";
+import {commentsService} from "../comments/comments-service";
+import {CommentCreateModel, URIParamsCommentsIdModel} from "../comments/types/types";
+
 
 export const getPostsRouter = () => {
   const router = express.Router();
@@ -99,5 +104,42 @@ export const getPostsRouter = () => {
       }
     },
   );
+
+
+  router.post(
+      "/:id/comments",
+      authBearerMiddleware,
+      isExistingPost,
+      validateCreateCommentData,
+      validateErrors,
+      async (
+          req: RequestWithParamsAndBody<
+              URIParamsPostIdModel,
+              CommentCreateModel
+          > | any,
+          res: Response,
+      ) => {
+          let newComment = await commentsService.createComment({
+              postId: req.params.id,
+              content: req.body.content,
+              commentatorInfo: {userId: req.user.userId, userLogin: req.user.login}
+          });
+          res.status(HTTP_STATUSES.CREATED_201).send(newComment);
+      },
+  );
+
+  router.get(
+      "/:id/comments",
+      isExistingPost,
+      async (
+          req: RequestWithQueryAndParams<URIParamsCommentsIdModel, QueryPostModel>,
+          res: Response,
+      ) => {
+        let result = await commentsService.findCommentsForSpecificPost(req.query,req.params.id)
+        res.status(HTTP_STATUSES.OK_200).send(result);
+      },
+  );
+
+
   return router;
 };

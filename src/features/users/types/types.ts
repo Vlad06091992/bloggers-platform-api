@@ -4,12 +4,18 @@ export type UserType = {
     createdAt: string;
     password:string
 };
+//
+// export type UserViewModel =  {
+//     id: string;
+//     login: string;
+//     email: string
+//     createdAt: string
+// };
 
 export type UserViewModel =  {
-    id: string;
+    userId: string;
     login: string;
     email: string
-    createdAt: string
 };
 
 export type UserCreateModel = {

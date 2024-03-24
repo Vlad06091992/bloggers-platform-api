@@ -3,7 +3,7 @@ import {usersCollection} from "../../db-mongo";
 import {QueryUserModel, UserCreateModel, UserViewModel, ResponseUsersModel} from "../users//types/types";
 import {ObjectId} from "mongodb";
 import {usersService} from "./users-service";
-// import {usersService} from "./";
+// import {commentsService} from "./";
 
 // type CreatePostForClass = PostCreateModel & {
 //   blogName: string;
@@ -33,7 +33,7 @@ export const usersRepository = {
     },
 
     // async createUser(data: UserCreateModel): Promise<UserViewModel> {
-    //   const blogName = (await usersService.findBlogNameByBlogId(data.blogId))!;
+    //   const blogName = (await commentsService.findBlogNameByBlogId(data.blogId))!;
     //   const newPostTemplate = new Post({ ...data, blogName });
     //   const { insertedId } = await usersCollection.insertOne({
     //     ...newPostTemplate,
