@@ -46,8 +46,8 @@ export const usersService = {
         };
     },
 
-        async findUserByLoginOrEmail<T>(emailOrlogin: string, result: ResultType = "boolean") {
-        const user = await usersRepository.findUserByLoginOrEmail(emailOrlogin)
+        async findUserByLoginOrEmail<T>(loginOrEmail: string, result: ResultType = "boolean") {
+        const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
         return result === "boolean" ? !!user : user;
     },
 

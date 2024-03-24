@@ -1,4 +1,4 @@
 export type AuthCreateModel = {
-   emailOrLogin:string
+   loginOrEmail:string
    password:string
 };

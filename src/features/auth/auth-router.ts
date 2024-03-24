@@ -16,7 +16,7 @@ export const getAuthRouter = () => {
             req: RequestWithBody<AuthCreateModel>,
             res: Response<any>,
         ) => {
-            let user: WithId<UserType> = await usersService.findUserByLoginOrEmail(req.body.emailOrLogin, "object") as WithId<UserType>;
+            let user: WithId<UserType> = await usersService.findUserByLoginOrEmail(req.body.loginOrEmail, "object") as WithId<UserType>;
             if (!user) {
                 res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             } else {
