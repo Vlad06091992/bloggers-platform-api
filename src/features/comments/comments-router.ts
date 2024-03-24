@@ -42,19 +42,23 @@ export const getCommentsRouter = () => {
       res: Response<UserViewModel>,
     ) => {
 
-      console.log(req.user.id)
 
-      let updatedComment = await commentsService.updateComment(req.params.commentId,{
+      let commentForUpdate = await commentsService.updateComment(req.params.commentId,{
         content: req.body.content
       });
 
       let comment = await commentsService.getCommentById(req.params.commentId)
 
+      if(!comment){
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
+      }
+
       if(comment?.commentatorInfo.userId != req.user.id){
         res.sendStatus(HTTP_STATUSES.FORBIDDEN)
       }
 
-      if(updatedComment){
+      if(commentForUpdate){
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 
       } else {
@@ -72,6 +76,18 @@ export const getCommentsRouter = () => {
           req: any,
           res: Response<number>,
       ) => {
+        let comment = await commentsService.getCommentById(req.params.commentId)
+
+        if(!comment){
+          res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
+        }
+
+        if(comment.commentatorInfo.userId != req.user.id){
+          res.sendStatus(HTTP_STATUSES.FORBIDDEN)
+        }
+
+
         const isDeleted = await commentsService.deleteComment(req.params.commentId);
         if (isDeleted) {
           res.send(HTTP_STATUSES.NO_CONTENT_204);
