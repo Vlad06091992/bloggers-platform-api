@@ -15,7 +15,6 @@ export const commentsRepository = {
     async getCommentById(id: string) {
         try {
             let res = await commentsCollection.findOne({_id: new ObjectId(id)!})
-            debugger
             return commentsService.mapCommentToViewModel(res!)
         } catch (e) {
             return null;
@@ -30,7 +29,6 @@ export const commentsRepository = {
     async deleteComment(id: string) {
         try {
             let result = await commentsCollection.deleteOne({_id: new ObjectId(id)});
-            debugger
             return result.deletedCount === 1;
         } catch (e) {
             return false;
@@ -43,7 +41,6 @@ export const commentsRepository = {
                 {_id: new ObjectId(id)},
                 {$set: data},
             );
-            debugger
             return result.matchedCount === 1;
         } catch (e) {
             return false;

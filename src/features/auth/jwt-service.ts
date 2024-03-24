@@ -16,7 +16,6 @@ export const jwtService = {
             const res:any =  jwt.verify(token,settings.JWT_SECRET)
             return res.userId
         } catch (e){
-            debugger
         }
     }
 }

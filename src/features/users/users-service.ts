@@ -1,5 +1,5 @@
 import {WithId} from "mongodb";
-import {UserCreateModel, UserType, UserViewModel} from "./types/types";
+import {UserAuthMeModel, UserCreateModel, UserType, UserViewModel} from "./types/types";
 import {usersRepository} from "./users-repository";
 import bcrypt from "bcrypt";
 
@@ -41,23 +41,32 @@ export const usersService = {
 
 
 
-    // getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
-    //     return {
-    //         id: user._id.toString(),
-    //         login:user.login,
-    //         createdAt:user.createdAt,
-    //         email:user.email,
-    //     };
-    // },
-
-
     getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
         return {
-            userId: user._id.toString(),
+            id: user._id.toString(),
+            login:user.login,
+            createdAt:user.createdAt,
+            email:user.email,
+        };
+    },
+
+    mapUserViewModelToAuthMeUser(user: UserViewModel): UserAuthMeModel {
+        return {
+            id: user.id,
             login:user.login,
             email:user.email,
         };
     },
+
+
+
+    // getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
+    //     return {
+    //         userId: user._id.toString(),
+    //         login:user.login,
+    //         email:user.email,
+    //     };
+    // },
 
 
         async findUserByLoginOrEmail<T>(loginOrEmail: string, result: ResultType = "boolean") {

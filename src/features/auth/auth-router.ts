@@ -47,7 +47,8 @@ export const getAuthRouter = () => {
             if (!user) {
                 res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             } else {
-              res.send(user).status(200)
+                console.log(user)
+              res.send(usersService.mapUserViewModelToAuthMeUser(user)).status(200)
             }
         },
     );
