@@ -119,10 +119,12 @@ export const getPostsRouter = () => {
           > | any,
           res: Response,
       ) => {
+        console.log(req.user)
+
           let newComment = await commentsService.createComment({
               postId: req.params.id,
               content: req.body.content,
-              commentatorInfo: {userId: req.user.userId, userLogin: req.user.login}
+              commentatorInfo: {userId: req.user.id, userLogin: req.user.login}
           });
           res.status(HTTP_STATUSES.CREATED_201).send(newComment);
       },
