@@ -10,7 +10,6 @@ export const validateErrors = (
 ) => {
   const errors  = <(ValidationError & { path: string })[]>validationResult(req).array({ onlyFirstError: true });
   if (errors.length) {
-    debugger
     res.status(HTTP_STATUSES.BAD_REQUEST_400).send(createErrorResponse(errors));
   } else {
     next();

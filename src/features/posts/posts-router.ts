@@ -31,7 +31,7 @@ export const getPostsRouter = () => {
       req: RequestWithQuery<QueryPostModel>,
       res: Response<ResponsePostsModel>,
     ) => {
-      let foundedPosts:ResponsePostsModel = await postsRepository.findPosts(req.query);
+      let foundedPosts:ResponsePostsModel = await postsService.findPosts(req.query);
       res.status(HTTP_STATUSES.OK_200).send(foundedPosts);
     },
   );

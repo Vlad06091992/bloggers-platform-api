@@ -1,16 +1,63 @@
-
-import {ObjectId, WithId} from "mongodb";
-import {UserCreateModel} from "./types/types";
+import {WithId} from "mongodb";
+import {UserCreateModel, UserType, UserViewModel} from "./types/types";
 import {usersRepository} from "./users-repository";
-import {postsCollection} from "../../db-mongo";
+import bcrypt from "bcrypt";
 
 type ResultType = "object" | "boolean";
 
+class User {
+    email: string;
+    password: string;
+    login: string;
+    createdAt: string;
+
+    constructor({ email, password, login }: UserCreateModel) {
+        this.email = email;
+        this.password = password;
+        this.login = login;
+        this.createdAt = new Date().toISOString();
+    }
+}
+
+
+
 export const usersService = {
 
-    async createUser(body:UserCreateModel){
-        return await usersRepository.createPost(body)
+    async createUser(body: UserCreateModel) {
+        const passwordHash = await this._createHash(body.password)
+        const result = new User({...body,password:passwordHash})
+        return await usersRepository.createUser(result)
     },
+
+    async _createHash(password:string){
+        const salt = await bcrypt.genSalt(10)
+        return await bcrypt.hash(password,salt)
+    },
+
+
+
+
+    getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
+        return {
+            id: user._id.toString(),
+            login:user.login,
+            createdAt:user.createdAt,
+            email:user.email,
+        };
+    },
+
+        async findUserByLoginOrEmail<T>(emailOrlogin: string, result: ResultType = "boolean") {
+        const user = await usersRepository.findUserByLoginOrEmail(emailOrlogin)
+        return result === "boolean" ? !!user : user;
+    },
+
+    async deleteUser(id:string){
+        return await usersRepository.deleteUser(id)
+    },
+
+    // async checkCredentials(loginOrEmail:string,password:string){
+    //
+    //     },
 
 //     async findPostById(id: string, result: ResultType = "boolean") {
 //         const post = await postsCollection.findOne({ _id: new ObjectId(id) });
@@ -46,9 +93,6 @@ export const usersService = {
 //         };
 //     },
 //
-//     async deletePost(id:string){
-//         return await usersRepository.deletePost(id)
-// },
 //
 //     getPostWithPrefixIdToViewModel(post: WithId<PostType>): PostViewModel {
 //         return {

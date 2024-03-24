@@ -41,7 +41,6 @@ export const postsRepository = {
     }
   },
   async createPost(data: PostType): Promise<PostViewModel> {
-
     const { insertedId } = await postsCollection.insertOne(data);
     return (await this.getPostById(insertedId.toString()))!;
   },

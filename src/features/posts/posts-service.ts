@@ -1,6 +1,6 @@
 
 import {ObjectId, WithId} from "mongodb";
-import {PostCreateModel, PostType, PostViewModel, QueryPostModel} from "./types/types";
+import {PostCreateModel, PostType, PostViewModel, QueryPostModel, ResponsePostsModel} from "./types/types";
 import {postsRepository} from "./posts-repository";
 import {postsCollection} from "../../db-mongo";
 import {blogsService} from "../blogs/blogs-service";
@@ -36,6 +36,12 @@ class Post {
 }
 
 export const postsService = {
+
+    async findPosts (params:QueryPostModel){
+        return  await postsRepository.findPosts(params);
+    },
+
+
     async findPostById(id: string, result: ResultType = "boolean") {
         const post = await postsCollection.findOne({ _id: new ObjectId(id) });
         return result === "boolean" ? !!post : post;

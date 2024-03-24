@@ -121,7 +121,6 @@ export const getBlogsRouter = () => {
         ...req.body,
         blogId: req.params.id,
       });
-debugger
       console.log(newPost)
 
       res.status(HTTP_STATUSES.CREATED_201).send(newPost);

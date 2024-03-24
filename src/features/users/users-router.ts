@@ -7,35 +7,58 @@ import {
 } from "../../types";
 import {validateCreateUserData} from "./validators/validateCreateUserData";
 import {usersService} from "../users/users-service";
-import {HTTP_STATUSES} from "../../../src/http_statuses/http_statuses";
+
 import {validateErrors} from "../../middlewares/validateErrors";
-import {UserCreateModel, UserViewModel} from "./types/types";
+import {QueryUserModel, ResponseUsersModel, URIParamsUserIdModel, UserCreateModel, UserViewModel} from "./types/types";
+import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
+import {usersRepository} from "./users-repository";
+import {authMiddleware} from "../../middlewares/authMiddleware";
 
 
-export const getPostsRouter = () => {
+
+export const getUsersRouter = () => {
   const router = express.Router();
-  // router.get(
-  //   "/",
-  //   async (
-  //     req: RequestWithQuery<QueryPostModel>,
-  //     res: Response<ResponsePostsModel>,
-  //   ) => {
-  //     let foundedPosts:ResponsePostsModel = await usersRepository.findPosts(req.query);
-  //     res.status(HTTP_STATUSES.OK_200).send(foundedPosts);
-  //   },
-  // );
+  router.get(
+    "/",
+      authMiddleware,
+    async (
+      req: RequestWithQuery<QueryUserModel>,
+      res: Response<ResponseUsersModel>,
+    ) => {
+      let foundedUsers:ResponseUsersModel = await usersRepository.findUsers(req.query);
+      res.status(HTTP_STATUSES.OK_200).send(foundedUsers);
+    },
+  );
 
   router.post(
     "/",
+      authMiddleware,
     validateCreateUserData,
     validateErrors,
     async (
       req: RequestWithBody<UserCreateModel>,
       res: Response<UserViewModel>,
     ) => {
-      let newUser = await usersService.createPost(req.body);
+      let newUser = await usersService.createUser(req.body);
       res.status(HTTP_STATUSES.CREATED_201).send(newUser);
     },
+  );
+
+
+  router.delete(
+      "/:id",
+      authMiddleware,
+      async (
+          req: RequestWithParams<URIParamsUserIdModel>,
+          res: Response<number>,
+      ) => {
+        const isDeleted = await usersService.deleteUser(req.params.id);
+        if (isDeleted) {
+          res.send(HTTP_STATUSES.NO_CONTENT_204);
+        } else {
+          res.send(HTTP_STATUSES.NOT_FOUND_404);
+        }
+      },
   );
 
   // router.get(
@@ -72,20 +95,6 @@ export const getPostsRouter = () => {
   //   },
   // );
 
-  // router.delete(
-  //   "/:id",
-  //   authMiddleware,
-  //   async (
-  //     req: RequestWithParams<URIParamsPostIdModel>,
-  //     res: Response<number>,
-  //   ) => {
-  //     const isDeleted = await usersService.deletePost(req.params.id);
-  //     if (isDeleted) {
-  //       res.send(HTTP_STATUSES.NO_CONTENT_204);
-  //     } else {
-  //       res.send(HTTP_STATUSES.NOT_FOUND_404);
-  //     }
-  //   },
-  // );
+
   return router;
 };

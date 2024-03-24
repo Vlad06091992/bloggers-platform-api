@@ -109,7 +109,6 @@ describe("test for /posts", () => {
   let createdBlog: any = null;
   it("post should be created", async () => {
     const blogName = "New blog";
-    debugger;
     createdBlog = (await blogsTestManager.createBlog(
       {
         websiteUrl: "https://samurai.it-incubator.io",
