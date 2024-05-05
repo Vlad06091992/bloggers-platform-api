@@ -78,8 +78,8 @@ export const getAuthRouter = () => {
 
     router.post(
         "/registration-email-resending",
-        // check('email').isEmail(),
-        // validateErrors,
+        check('email').isEmail(),
+        validateErrors,
         async (
             req: RequestWithBody<ResendingEmail>,
             res: Response<number | {errorsMessages:Array<{message:string,field:string}>}>,
@@ -88,7 +88,7 @@ export const getAuthRouter = () => {
             if (result) {
                 res.send(HTTP_STATUSES.NO_CONTENT_204)
             } else {
-                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorsMessages:[{message:'user not found or code expired', field: 'code'}]})
+                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorsMessages:[{message:'user not found or code expired', field: 'email'}]})
             }
         },
     );
