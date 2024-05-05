@@ -1,6 +1,6 @@
 // import {PostCreateModel, PostViewModel, UserCreateModel} from "./types/types";
 import {usersCollection} from "../../db-mongo";
-import {QueryUserModel, UserCreateModel, UserViewModel, ResponseUsersModel} from "../users//types/types";
+import {QueryUserModel, ResponseUsersModel, UserType, UserViewModel} from "../users//types/types";
 import {ObjectId} from "mongodb";
 import {usersService} from "./users-service";
 // import {commentsService} from "./";
@@ -12,12 +12,12 @@ import {usersService} from "./users-service";
 
 export const usersRepository = {
 
-    async createUser(user: UserCreateModel): Promise<UserViewModel> {
+    async createUser(user: UserType): Promise<UserViewModel> {
         const {insertedId} = await usersCollection.insertOne(user);
         return (await this.getUserById(insertedId.toString()))!;
     },
 
-    async getUserById(id: string) {
+    async getUserById(id: string, isNewUser:boolean = false) {
         try {
             let res = await usersCollection.findOne({_id: new ObjectId(id)});
             return usersService.getUserWithPrefixIdToViewModel(res!);
@@ -28,6 +28,12 @@ export const usersRepository = {
 
     async findUserByLoginOrEmail(loginOrEmail: string) {
         const user = await usersCollection.findOne({ $or:[{login:loginOrEmail},{email:loginOrEmail}] });
+        return  user;
+    },
+
+
+    async findUserByConfirmationCode(code: string) {
+        const user = await usersCollection.findOne({'registrationData.confirmationCode':code });
         return  user;
     },
 
@@ -65,6 +71,10 @@ export const usersRepository = {
             items: res.map(usersService.getUserWithPrefixIdToViewModel),
         };
     },
+
+
+
+
     // async getPostById(id: string) {
     //   try {
     //     let res = await postsCollection.findOne({ _id: new ObjectId(id) });

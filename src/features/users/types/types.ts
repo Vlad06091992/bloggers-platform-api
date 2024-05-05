@@ -1,15 +1,25 @@
+import {Moment} from "moment/moment";
+
 export type UserType = {
+    email: string;
+    password: string;
     login: string;
-    email: string
     createdAt: string;
-    password:string
-};
+    registrationData: {
+        confirmationCode: string,
+        expirationDate: Moment
+        isConfirmed: boolean
+    }
+}
 
 export type UserViewModel =  {
     id: string;
     login: string;
     email: string
     createdAt: string
+    registrationdata?:{
+        confirmationCode: string,
+    }
 };
 
 export type UserAuthMeModel =  {
@@ -25,6 +35,8 @@ export type UserAuthMeModel =  {
 // };
 
 export type UserCreateModel = {
+    confirmationCode?:string
+    isConfirmed?:boolean,
     login: string;
     email: string
     password: string;

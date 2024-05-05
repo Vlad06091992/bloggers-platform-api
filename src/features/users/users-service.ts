@@ -2,6 +2,8 @@ import {WithId} from "mongodb";
 import {UserAuthMeModel, UserCreateModel, UserType, UserViewModel} from "./types/types";
 import {usersRepository} from "./users-repository";
 import bcrypt from "bcrypt";
+import {v4 as uuidv4} from "uuid"
+import moment, {Moment} from "moment";
 
 type ResultType = "object" | "boolean";
 
@@ -10,54 +12,69 @@ class User {
     password: string;
     login: string;
     createdAt: string;
+    registrationData: {
+        confirmationCode: string,
+        expirationDate: any
+        isConfirmed: boolean
+    }
 
-    constructor({ email, password, login }: UserCreateModel) {
+    constructor({email, password, login, isConfirmed = false, confirmationCode}: UserCreateModel) {
         this.email = email;
         this.password = password;
         this.login = login;
         this.createdAt = new Date().toISOString();
+        this.registrationData = {
+            confirmationCode: confirmationCode || uuidv4(),
+            expirationDate: moment().add(1,'hour').toString(),
+            isConfirmed: isConfirmed
+        }
     }
 }
 
-
-
 export const usersService = {
 
-    async getUserById(id:string){
+    async getUserById(id: string) {
         return await usersRepository.getUserById(id)
     },
 
     async createUser(body: UserCreateModel) {
         const passwordHash = await this._createHash(body.password)
-        const result = new User({...body,password:passwordHash})
+        const result = new User({...body, password: passwordHash, isConfirmed:true})
         return await usersRepository.createUser(result)
     },
 
-    async _createHash(password:string){
+    async _createHash(password: string) {
         const salt = await bcrypt.genSalt(10)
-        return await bcrypt.hash(password,salt)
+        return await bcrypt.hash(password, salt)
     },
-
-
 
 
     getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
         return {
             id: user._id.toString(),
-            login:user.login,
-            createdAt:user.createdAt,
-            email:user.email,
+            login: user.login,
+            createdAt: user.createdAt,
+            email: user.email,
         };
     },
+
+    getnewUserWithPrefixIdToViewModelWithConfirmationCode(user: WithId<UserType>): UserViewModel {
+        return {
+            id: user._id.toString(),
+            login: user.login,
+            createdAt: user.createdAt,
+            email: user.email,
+        };
+    },
+
 
     mapUserViewModelToAuthMeUser(user: UserViewModel): UserAuthMeModel {
         return {
             userId: user.id,
-            login:user.login,
-            email:user.email,
+            login: user.login,
+            email: user.email,
         };
     },
-
 
 
     // getUserWithPrefixIdToViewModel(user: WithId<UserType>): UserViewModel {
@@ -69,12 +86,12 @@ export const usersService = {
     // },
 
 
-        async findUserByLoginOrEmail<T>(loginOrEmail: string, result: ResultType = "boolean") {
+    async findUserByLoginOrEmail<T>(loginOrEmail: string, result: ResultType = "boolean") {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
         return result === "boolean" ? !!user : user;
     },
 
-    async deleteUser(id:string){
+    async deleteUser(id: string) {
         return await usersRepository.deleteUser(id)
     },
 

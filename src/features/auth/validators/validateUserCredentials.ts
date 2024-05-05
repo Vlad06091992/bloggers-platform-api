@@ -54,7 +54,7 @@ export const validateCreatePostDataWithIdParams = checkSchema(schemaWithId, [
   "query",
   "params",
 ]);
-export const validateCreateUserData = checkSchema(schema, [
+export const validateAuthUserData = checkSchema(schema, [
   "body",
   "query",
   "params",

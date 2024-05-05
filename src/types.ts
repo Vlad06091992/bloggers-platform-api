@@ -24,7 +24,7 @@ export type ErrorResponseType = {
   errorsMessages: Array<{ message: string; field: string }>;
 };
 
-export enum AvailableResolutions {
+export const enum AvailableResolutions {
   P144 = "P144",
   P240 = "P240",
   P360 = "P360",
