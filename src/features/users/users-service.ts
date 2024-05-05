@@ -39,7 +39,7 @@ export const usersService = {
 
     async createUser(body: UserCreateModel) {
         const passwordHash = await this._createHash(body.password)
-        const result = new User({...body, password: passwordHash, isConfirmed:true})
+        const result = new User({...body, password: passwordHash, isConfirmed:body.isConfirmed})
         return await usersRepository.createUser(result)
     },
 

@@ -39,7 +39,7 @@ export const getUsersRouter = () => {
       req: RequestWithBody<UserCreateModel>,
       res: Response<UserViewModel>,
     ) => {
-      let newUser = await usersService.createUser({...req.body});
+      let newUser = await usersService.createUser({...req.body, isConfirmed:true});
       res.status(HTTP_STATUSES.CREATED_201).send(newUser);
     },
   );

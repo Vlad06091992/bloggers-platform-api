@@ -10,13 +10,14 @@ import {v4 as uuidv4} from "uuid";
 
 export const authService = {
     async createUser(body:UserCreateModel, confirmationCode:string){
-        const newUser = await usersService.createUser({...body, confirmationCode});
+        const newUser = await usersService.createUser({...body, confirmationCode, isConfirmed:false});
         await emailManager.sendEmailConfirmationMessage(newUser, confirmationCode)
     },
 
 
     async resendEmail(email: string) {
         const user = await usersRepository.findUserByLoginOrEmail(email)
+        debugger
         if (user && !user.registrationData.isConfirmed) {
             const confirmationCode = uuidv4()
             const expirationDate = moment().add(1, 'hour').toString()
