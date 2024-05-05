@@ -59,8 +59,8 @@ export const getAuthRouter = () => {
 
     router.post(
         "/registration-confirmation",
-        check('code').isString(),
-        validateErrors,
+        // check('code').isString(),
+        // validateErrors,
         async (
             req: RequestWithBody<ConfirmationCode>,
             res: Response<number | {errorsMessages:Array<{message:string,field:string}>}>,
@@ -78,8 +78,8 @@ export const getAuthRouter = () => {
 
     router.post(
         "/registration-email-resending",
-        check('email').isEmail(),
-        validateErrors,
+        // check('email').isEmail(),
+        // validateErrors,
         async (
             req: RequestWithBody<ResendingEmail>,
             res: Response<number | {errorsMessages:Array<{message:string,field:string}>}>,
