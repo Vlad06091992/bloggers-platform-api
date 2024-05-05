@@ -17,7 +17,6 @@ export const authService = {
 
     async resendEmail(email: string) {
         const user = await usersRepository.findUserByLoginOrEmail(email)
-        debugger
         if (user && !user.registrationData.isConfirmed) {
             const confirmationCode = uuidv4()
             const expirationDate = moment().add(1, 'hour').toString()

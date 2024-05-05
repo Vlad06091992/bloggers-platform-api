@@ -63,7 +63,7 @@ export const getAuthRouter = () => {
         validateErrors,
         async (
             req: RequestWithBody<ConfirmationCode>,
-            res: Response<number | {errorMessages:Array<{message:string,field:string}>}>,
+            res: Response<number | {errorsMessages:Array<{message:string,field:string}>}>,
         ) => {
 
             let result = await authService.checkConfirmationCode(req.body.code)
@@ -71,7 +71,7 @@ export const getAuthRouter = () => {
             if (result) {
                 res.send(HTTP_STATUSES.NO_CONTENT_204)
             } else {
-                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorMessages:[{message:'user not found or code expired', field: 'code'}]})
+                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorsMessages:[{message:'user not found or code expired', field: 'code'}]})
             }
         },
     );
@@ -82,13 +82,13 @@ export const getAuthRouter = () => {
         validateErrors,
         async (
             req: RequestWithBody<ResendingEmail>,
-            res: Response<number | {errorMessages:Array<{message:string,field:string}>}>,
+            res: Response<number | {errorsMessages:Array<{message:string,field:string}>}>,
         ) => {
             let result = await authService.resendEmail(req.body.email)
             if (result) {
                 res.send(HTTP_STATUSES.NO_CONTENT_204)
             } else {
-                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorMessages:[{message:'user not found or code expired', field: 'code'}]})
+                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({errorsMessages:[{message:'user not found or code expired', field: 'code'}]})
             }
         },
     );
