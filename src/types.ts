@@ -35,6 +35,11 @@ export const enum AvailableResolutions {
   P2160 = "P2160"
 }
 
+export type TokenType = {
+  token:string
+}
+
+
 export type AvailableResolutionsType = keyof typeof AvailableResolutions;
 
 export type RequestWithQuery<T> = Request<{}, {}, {}, T>;

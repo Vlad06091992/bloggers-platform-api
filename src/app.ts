@@ -14,7 +14,13 @@ import {commentsRepository} from "./features/comments/comments-repository";
 import {getCommentsRouter} from "./features/comments/comments-router";
 const bodyParser = require("body-parser");
 
+
+import cookieParser from 'cookie-parser'
+
+
+
 export const app = express();
+app.use(cookieParser())
 
 
 export const Routes = {

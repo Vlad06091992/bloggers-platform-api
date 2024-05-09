@@ -3,8 +3,9 @@ import { Collection, MongoClient } from "mongodb";
 import { VideoViewModel } from "./features/videos/model/VideoViewModel";
 import { BlogType } from "./features/blogs/types/types";
 import { PostType } from "./features/posts/types/types";
-import {UserType} from "./features/users/types/types";
 import {CommentType} from "./features/comments/types/types";
+import {TokenType} from "./types";
+import {UserType} from "./features/users/types/types";
 dotenv.config();
 
 const URL = process.env.MONGO_URL || "mongodb://localhost:27017";
@@ -22,6 +23,7 @@ export const blogsCollection: Collection<BlogType> =
 export const postsCollection = db.collection<PostType>("posts");
 export const commentsCollection = db.collection<CommentType>("comments");
 export const usersCollection = db.collection<UserType>("users");
+export const tokensBlackListCollection = db.collection<TokenType>("tokens");
 export const videosCollection = db.collection<VideoViewModel>("videos");
 
 export async function runDb() {

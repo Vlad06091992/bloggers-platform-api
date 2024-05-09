@@ -12,6 +12,7 @@ export type UserType = {
     }
 }
 
+
 export type UserViewModel =  {
     id: string;
     login: string;
