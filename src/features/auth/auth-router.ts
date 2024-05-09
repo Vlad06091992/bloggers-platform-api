@@ -43,8 +43,8 @@ export const getAuthRouter = () => {
                 } else {
                     const userId = user._id.toString()
                     const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, {
-                        expiresInAccess: '10h',
-                        expiresInRefresh: '20h'
+                        expiresInAccess: '10s',
+                        expiresInRefresh: '20s'
                     })
                     res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
                     res.send({accessToken}).status(HTTP_STATUSES.OK_200)
@@ -81,8 +81,8 @@ export const getAuthRouter = () => {
             if(userId) {
                 await jwtService.putTokenInBlackList({token: refreshTokenOld})
                 const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, {
-                    expiresInAccess: '10h',
-                    expiresInRefresh: '20h'
+                    expiresInAccess: '10s',
+                    expiresInRefresh: '20s'
                 })
                 res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
                 res.send({accessToken}).status(HTTP_STATUSES.NO_CONTENT_204)
