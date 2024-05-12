@@ -47,8 +47,8 @@ export const getAuthRouter = () => {
                         refreshToken,
                         refreshTokenData
                     } = jwtService.generateTokensPair(userId, deviceId, {
-                        expiresInAccess: '10h',
-                        expiresInRefresh: '20h'
+                        expiresInAccess: '10s',
+                        expiresInRefresh: '20s'
                     })
 
                     const session = new Session(userId,
@@ -101,8 +101,8 @@ export const getAuthRouter = () => {
 
 
                 const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, deviceId, {
-                    expiresInAccess: '10h',
-                    expiresInRefresh: '20h'
+                    expiresInAccess: '10s',
+                    expiresInRefresh: '20s'
                 })
 
                 const lastActiveDate = moment().format()
