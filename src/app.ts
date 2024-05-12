@@ -17,6 +17,10 @@ var cors = require('cors')
 
 import cookieParser from 'cookie-parser'
 import {getSecurityDevicesRouter} from "./features/security_devices/security-devaices-router";
+import {tokensBlackListCollection} from "src/db-mongo";
+import {usersSessionsRepository} from "./features/userSessions/usersSessionsRepository";
+import {ApiCallHistoryRepository} from "./features/apiCallHistory/apiCallHistory-repository";
+import {AuthRepository} from "./features/auth/auth-repository";
 
 
 
@@ -68,5 +72,8 @@ app.delete(Routes.testing, async (req: Request, res: Response) => {
   await commentsRepository.deleteAllComments();
   await usersRepository.deleteAllUsers();
   await postsRepository.deleteAllPosts();
+  await AuthRepository.clearAllBlackList()
+  await usersSessionsRepository.deleteAllSessions()
+  await ApiCallHistoryRepository.deleteAllRecords()
   res.sendStatus(204);
 });

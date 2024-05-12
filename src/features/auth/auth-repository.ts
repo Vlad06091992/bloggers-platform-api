@@ -13,5 +13,9 @@ export const AuthRepository = {
     },
     async putTokenInBlackList(data:TokenType){
         return  await tokensBlackListCollection.insertOne(data);
+    },
+    async clearAllBlackList(){
+        return  await tokensBlackListCollection.deleteMany({});
+        return true
     }
 }

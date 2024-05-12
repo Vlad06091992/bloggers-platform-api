@@ -3,18 +3,22 @@ import {CallToAPI} from "./types";
 import moment from "moment";
 
 export const ApiCallHistoryRepository = {
-    async recordAPICall(call:CallToAPI){
+    async recordAPICall(call: CallToAPI) {
         await APICallHistoryCollection.insertOne(call)
     },
 
-    async countRequests(IP:string,URL:string, timeIntervalSeconds:number){
+    async countRequests(IP: string, URL: string, timeIntervalSeconds: number) {
 
         const now = moment().valueOf()
 
         const startTime = now - timeIntervalSeconds * 1000
 
-        const count = await APICallHistoryCollection.countDocuments({$and:[{IP},{URL},{dateToNumber:{$gt:startTime}}]})
-    return count
-    }
+        const count = await APICallHistoryCollection.countDocuments({$and: [{IP}, {URL}, {dateToNumber: {$gt: startTime}}]})
+        return count
+    },
+    async deleteAllRecords(){
+        await APICallHistoryCollection.deleteMany({})
+        return true
+    },
 
 }
