@@ -13,9 +13,10 @@ import {usersRepository} from "./features/users/users-repository";
 import {commentsRepository} from "./features/comments/comments-repository";
 import {getCommentsRouter} from "./features/comments/comments-router";
 const bodyParser = require("body-parser");
-
+var cors = require('cors')
 
 import cookieParser from 'cookie-parser'
+import {getSecurityDevicesRouter} from "./features/security_devices/security-devaices-router";
 
 
 
@@ -32,12 +33,21 @@ export const Routes = {
   posts: "/posts",
   blogs: "/blogs",
   testing: "/testing/all-data",
+  security: "/security"
 };
 
 
 
 
 app.use(bodyParser());
+
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
 app.get(Routes.default, (req, res) => {
   res.send("hello, is my blogger platform API");
 });
@@ -47,6 +57,8 @@ app.use(Routes.users, getUsersRouter());
 app.use(Routes.comments, getCommentsRouter());
 app.use(Routes.posts, getPostsRouter());
 app.use(Routes.blogs, getBlogsRouter());
+app.use(Routes.security, getSecurityDevicesRouter());
+
 
 app.delete(Routes.testing, async (req: Request, res: Response) => {
   db.videos = [];

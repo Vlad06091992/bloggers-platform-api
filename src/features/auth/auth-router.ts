@@ -16,17 +16,16 @@ import {v4 as uuidv4} from "uuid"
 import {validateCreateUserData} from "./validators/validateCreateUserData";
 import {check, checkSchema} from "express-validator";
 import {isString} from "util";
+import {attemptsMiddleware} from "../../middlewares/attemptsMiddleware";
+import {Session, usersSessionService} from "../userSessions/usersSessionService";
+import moment from "moment";
 
-//TODO refreshToken в cookie;
-// auth/login: при логине нужно возвращать accessToken в body и refreshToken в cookie (обратите внимание в документации на время жизни токенов и на настройки куки);
-// auth/refresh-token: клиент отправляет на бек refreshToken в cookie, мы должны вернуть новую пару токенов (старый refreshToken протухает, т.е. отмечаем refreshToken как невалидный);
-// auth/logout: задача бека, отметить refreshToken как невалидный (токен приходит в cookie);
-// auth/me: возвращаем короткую инфу о текущем пользователе на основе accessToken.
 
 export const getAuthRouter = () => {
     const router = express.Router();
     router.post(
         "/login",
+        attemptsMiddleware,
         validateAuthUserData,
         validateErrors,
         async (
@@ -41,11 +40,30 @@ export const getAuthRouter = () => {
                 if (!result) {
                     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
                 } else {
+                    const deviceId = uuidv4()
                     const userId = user._id.toString()
-                    const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, {
-                        expiresInAccess: '10s',
-                        expiresInRefresh: '20s'
+                    const {
+                        accessToken,
+                        refreshToken,
+                        refreshTokenData
+                    } = jwtService.generateTokensPair(userId, deviceId, {
+                        expiresInAccess: '10h',
+                        expiresInRefresh: '20h'
                     })
+
+                    const session = new Session(userId,
+                        req.ip as any,
+                        req.headers["user-agent"] as any,
+                        moment().format(),
+                        deviceId,
+                        moment(refreshTokenData.iatRefreshToken * 1000).format() ,
+                        moment(refreshTokenData.expRefreshToken * 1000).format(),
+                        )
+
+                    console.log(session)
+
+                    let {insertedId} = await usersSessionService.createSession(session)
+
                     res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
                     res.send({accessToken}).status(HTTP_STATUSES.OK_200)
                 }
@@ -55,6 +73,7 @@ export const getAuthRouter = () => {
 
     router.post(
         "/registration",
+        attemptsMiddleware,
         validateCreateUserData,
         validateErrors,
         async (
@@ -76,13 +95,17 @@ export const getAuthRouter = () => {
         ) => {
             const refreshTokenOld = req.cookies.refreshToken
 
-            const userId = await jwtService.getUserIdByToken(refreshTokenOld)
+            const {userId} = await jwtService.getUserDataByToken(refreshTokenOld)
 
-            if(userId) {
+            if (userId) {
+                const deviceId = uuidv4()
                 await jwtService.putTokenInBlackList({token: refreshTokenOld})
-                const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, {
-                    expiresInAccess: '10s',
-                    expiresInRefresh: '20s'
+
+                console.log(deviceId)
+
+                const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, deviceId, {
+                    expiresInAccess: '10h',
+                    expiresInRefresh: '20h'
                 })
                 res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
                 res.send({accessToken}).status(HTTP_STATUSES.NO_CONTENT_204)
@@ -104,9 +127,9 @@ export const getAuthRouter = () => {
         ) => {
             const refreshTokenOld = req.cookies.refreshToken
 
-            const userId = await jwtService.getUserIdByToken(refreshTokenOld)
+            const {userId} = await jwtService.getUserDataByToken(refreshTokenOld)
 
-            if (userId){
+            if (userId) {
                 await jwtService.putTokenInBlackList({token: refreshTokenOld})
                 res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
             } else {
@@ -115,15 +138,15 @@ export const getAuthRouter = () => {
             }
 
 
-
         },
     );
 
 
     router.post(
         "/registration-confirmation",
-        // check('code').isString(),
-        // validateErrors,
+        attemptsMiddleware,
+        check('code').isString(),
+        validateErrors,
         async (
             req: RequestWithBody<ConfirmationCode>,
             res: Response<number | { errorsMessages: Array<{ message: string, field: string }> }>,
@@ -146,6 +169,7 @@ export const getAuthRouter = () => {
 
     router.post(
         "/registration-email-resending",
+        attemptsMiddleware,
         check('email').isEmail(),
         validateErrors,
         async (

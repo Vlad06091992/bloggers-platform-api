@@ -6,6 +6,8 @@ import { PostType } from "./features/posts/types/types";
 import {CommentType} from "./features/comments/types/types";
 import {TokenType} from "./types";
 import {UserType} from "./features/users/types/types";
+import {UserSession} from "./features/userSessions/types";
+import {CallToAPI} from "./features/apiCallHistory/types";
 dotenv.config();
 
 const URL = process.env.MONGO_URL || "mongodb://localhost:27017";
@@ -24,7 +26,9 @@ export const postsCollection = db.collection<PostType>("posts");
 export const commentsCollection = db.collection<CommentType>("comments");
 export const usersCollection = db.collection<UserType>("users");
 export const tokensBlackListCollection = db.collection<TokenType>("tokens");
-export const videosCollection = db.collection<VideoViewModel>("videos");
+export const usersSessionsCollection = db.collection<UserSession>("usersSessions");
+export const APICallHistoryCollection = db.collection<CallToAPI>("APICallHistory");
+// export const videosCollection = db.collection<VideoViewModel>("videos");
 
 export async function runDb() {
   try {
