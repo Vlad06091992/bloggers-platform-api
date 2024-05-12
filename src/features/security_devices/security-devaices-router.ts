@@ -14,22 +14,46 @@ export const getSecurityDevicesRouter = () => {
             res: Response,
         ) => {
             const refreshToken = req.cookies.refreshToken
-            const {userId} = await jwtService.getUserDataByToken(refreshToken)
+            const result = await jwtService.getUserDataByToken(refreshToken)
 
-            let foundedSessions = await usersSessionService.getUserSession(userId);
+            if(!result){
+                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+                return
+            }
+
+            let foundedSessions = await usersSessionService.getUserSession(result.userId);
             res.status(HTTP_STATUSES.OK_200).send(foundedSessions);
         },
     );
 
 
     router.delete(
-        "/devices/:deviceId",
+        "/devices/:sessionId",
         async (
-            req: RequestWithParams<{ deviceId: string }>,
+            req: RequestWithParams<{ sessionId: string }>,
             res: Response,
         ) => {
-            if (req.params.deviceId) {
-                const isDeleted = await usersSessionService.deleteSession(req.params.deviceId);
+            const refreshToken = req.cookies.refreshToken
+            const result = await jwtService.getUserDataByToken(refreshToken)
+
+            if(!result){
+                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+                return
+            }
+
+            const {userId,deviceId} = result
+
+            const session = await usersSessionService.getSessionBySessionId(req.params.sessionId)
+
+            if(session?.userId !== userId){
+                res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
+                return
+            }
+
+
+
+            if (req.params.sessionId) {
+                const isDeleted = await usersSessionService.deleteSession(req.params.sessionId);
 
                 if (isDeleted) {
                     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -53,12 +77,14 @@ export const getSecurityDevicesRouter = () => {
             res: Response,
         ) => {
             const refreshToken = req.cookies.refreshToken
-            const {userId,deviceId} = await jwtService.getUserDataByToken(refreshToken)
+            const result = await jwtService.getUserDataByToken(refreshToken)
 
-            console.log(userId)
-            console.log(deviceId)
+            if(!result){
+                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+                return
+            }
 
-            let isDeleted = await usersSessionService.deleteOtherSession(userId,deviceId)
+             await usersSessionService.deleteOtherSession(result.userId,result.deviceId)
 
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 

@@ -94,9 +94,6 @@ export const getVideosRouter = () => {
   return router;
 };
 
-console.log(1)
-
-
 
 /**
  * @swagger

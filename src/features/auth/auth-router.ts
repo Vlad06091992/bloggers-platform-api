@@ -60,7 +60,6 @@ export const getAuthRouter = () => {
                         moment(refreshTokenData.expRefreshToken * 1000).format(),
                         )
 
-                    console.log(session)
 
                     let {insertedId} = await usersSessionService.createSession(session)
 
@@ -101,7 +100,6 @@ export const getAuthRouter = () => {
                 const deviceId = uuidv4()
                 await jwtService.putTokenInBlackList({token: refreshTokenOld})
 
-                console.log(deviceId)
 
                 const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, deviceId, {
                     expiresInAccess: '10h',
@@ -201,7 +199,6 @@ export const getAuthRouter = () => {
             if (!user) {
                 res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             } else {
-                console.log(user)
                 res.send(usersService.mapUserViewModelToAuthMeUser(user)).status(HTTP_STATUSES.OK_200)
             }
         },

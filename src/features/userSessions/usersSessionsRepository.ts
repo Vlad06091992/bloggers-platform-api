@@ -3,6 +3,10 @@ import {usersSessionsCollection} from "../../db-mongo";
 import {ObjectId} from "mongodb";
 
 export const usersSessionsRepository = {
+    async getSessionBySessionId(sessionId:string) {
+        return  await usersSessionsCollection.findOne({_id: new ObjectId(sessionId)})
+    },
+
    async createSession(session:UserSession) {
        return  await usersSessionsCollection.insertOne(session)
     },

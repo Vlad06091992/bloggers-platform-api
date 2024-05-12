@@ -30,6 +30,11 @@ export const usersSessionService = {
     async getUserSession(userId:string) {
         return  await usersSessionsRepository.getUserSession(userId)
     },
+
+    async getSessionBySessionId(sessionId:string) {
+        return  await usersSessionsRepository.getSessionBySessionId(sessionId)
+    },
+
     async deleteSession(sessionId: string) {
         return await usersSessionsRepository.deleteSession(sessionId)
     },
