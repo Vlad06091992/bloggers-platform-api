@@ -3,8 +3,13 @@ import {usersSessionsCollection} from "../../db-mongo";
 import {ObjectId} from "mongodb";
 
 export const usersSessionsRepository = {
-    async getSessionBySessionId(sessionId: string) {
-        return await usersSessionsCollection.findOne({_id: new ObjectId(sessionId)})
+    async updateSession(deviceId: string, lastActiveDate:string) {
+        return await usersSessionsCollection.updateOne({deviceId},{$set:{lastActiveDate}})
+    },
+
+
+    async getSessionByDeviceId(deviceId: string) {
+        return await usersSessionsCollection.findOne({deviceId})
     },
 
     async createSession(session: UserSession) {
@@ -16,9 +21,9 @@ export const usersSessionsRepository = {
         return res
     },
 
-    async deleteSession(sessionId: string) {
+    async deleteSessionByDeviceId(deviceId: string) {
         try {
-            let result = await usersSessionsCollection.deleteOne({_id: new ObjectId(sessionId)});
+            let result = await usersSessionsCollection.deleteOne({deviceId});
             return result.deletedCount === 1;
         } catch (e) {
             return false;

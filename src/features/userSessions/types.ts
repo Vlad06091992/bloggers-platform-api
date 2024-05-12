@@ -7,3 +7,5 @@ export type UserSession = {
     iatRefreshToken:string
     expRefreshToken:string
 }
+
+export type UserSessionViewModel = Omit<UserSession, "iatRefreshToken" | "expRefreshToken" | "userId" >

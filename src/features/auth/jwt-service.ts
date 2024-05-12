@@ -34,7 +34,9 @@ export const jwtService = {
         return {accessToken, refreshToken,refreshTokenData:{iatRefreshToken:iat,expRefreshToken:exp}}
     },
     async getUserDataByToken(token: string) {
+        debugger
         try {
+            debugger
             const tokenInBlackList = await AuthRepository.findToken(token)
             if (!!tokenInBlackList) {
                 return null

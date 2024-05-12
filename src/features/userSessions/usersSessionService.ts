@@ -27,16 +27,20 @@ export const usersSessionService = {
         return await usersSessionsRepository.createSession(session)
     },
 
+    async updateSession(deviceId: string, lastActiveDate:string) {
+        return await usersSessionsRepository.updateSession(deviceId,lastActiveDate)
+    },
+
     async getUserSession(userId:string) {
         return  await usersSessionsRepository.getUserSession(userId)
     },
 
-    async getSessionBySessionId(sessionId:string) {
-        return  await usersSessionsRepository.getSessionBySessionId(sessionId)
+    async getSessionByDeviceId(deviceId:string) {
+        return  await usersSessionsRepository.getSessionByDeviceId(deviceId)
     },
 
-    async deleteSession(sessionId: string) {
-        return await usersSessionsRepository.deleteSession(sessionId)
+    async deleteSessionByDeviceId(deviceId: string) {
+        return await usersSessionsRepository.deleteSessionByDeviceId(deviceId)
     },
 
     async deleteOtherSession(userId: string, deviceId: string) {

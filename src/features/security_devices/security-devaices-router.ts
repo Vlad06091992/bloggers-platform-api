@@ -3,6 +3,7 @@ import {usersSessionService} from "../userSessions/usersSessionService";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {RequestWithParams, RequestWithQuery} from "../../types";
 import {jwtService} from "../../features/auth/jwt-service";
+import {mapSessionToViewModel} from "../userSessions/utils";
 
 
 export const getSecurityDevicesRouter = () => {
@@ -22,18 +23,19 @@ export const getSecurityDevicesRouter = () => {
             }
 
             let foundedSessions = await usersSessionService.getUserSession(result.userId);
-            res.status(HTTP_STATUSES.OK_200).send(foundedSessions);
+            res.status(HTTP_STATUSES.OK_200).send(foundedSessions.map(mapSessionToViewModel));
         },
     );
 
 
     router.delete(
-        "/devices/:sessionId",
+        "/devices/:deviceId",
         async (
-            req: RequestWithParams<{ sessionId: string }>,
+            req: RequestWithParams<{ deviceId: string }>,
             res: Response,
         ) => {
             const refreshToken = req.cookies.refreshToken
+            debugger
             const result = await jwtService.getUserDataByToken(refreshToken)
 
             if(!result){
@@ -43,7 +45,7 @@ export const getSecurityDevicesRouter = () => {
 
             const {userId,deviceId} = result
 
-            const session = await usersSessionService.getSessionBySessionId(req.params.sessionId)
+            const session = await usersSessionService.getSessionByDeviceId(req.params.deviceId)
 
             if(session?.userId !== userId){
                 res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
@@ -52,8 +54,8 @@ export const getSecurityDevicesRouter = () => {
 
 
 
-            if (req.params.sessionId) {
-                const isDeleted = await usersSessionService.deleteSession(req.params.sessionId);
+            if (req.params.deviceId) {
+                const isDeleted = await usersSessionService.deleteSessionByDeviceId(req.params.deviceId);
 
                 if (isDeleted) {
                     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -73,7 +75,7 @@ export const getSecurityDevicesRouter = () => {
     router.delete(
         "/devices",
         async (
-            req: RequestWithParams<{ deviceId: string }>,
+            req: Request,
             res: Response,
         ) => {
             const refreshToken = req.cookies.refreshToken
