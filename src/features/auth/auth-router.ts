@@ -47,8 +47,8 @@ export const getAuthRouter = () => {
                         refreshToken,
                         refreshTokenData
                     } = jwtService.generateTokensPair(userId, deviceId, {
-                        expiresInAccess: '10h',
-                        expiresInRefresh: '20h'
+                        expiresInAccess: '10s',
+                        expiresInRefresh: '20s'
                     })
 
                     const session = new Session(userId,
@@ -102,8 +102,8 @@ export const getAuthRouter = () => {
 
 
                 const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, deviceId, {
-                    expiresInAccess: '10h',
-                    expiresInRefresh: '20h'
+                    expiresInAccess: '10s',
+                    expiresInRefresh: '20s'
                 })
                 res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
                 res.send({accessToken}).status(HTTP_STATUSES.NO_CONTENT_204)
