@@ -1,25 +1,25 @@
 // import {PostCreateModel, PostViewModel, UserCreateModel} from "./types/types";
-import {usersCollection} from "../../db-mongo";
+import {UsersModelClass} from "../../mongoose/models";
 import {QueryUserModel, ResponseUsersModel, UserType, UserViewModel} from "../users//types/types";
 import {ObjectId} from "mongodb";
 import {usersService} from "./users-service";
-// import {commentsService} from "./";
-
-// type CreatePostForClass = PostCreateModel & {
-//   blogName: string;
-// };
 
 
 export const usersRepository = {
-
     async createUser(user: UserType): Promise<UserViewModel> {
-        const {insertedId} = await usersCollection.insertOne(user);
-        return (await this.getUserById(insertedId.toString()))!;
+        const result = await UsersModelClass.create(user);
+        return {
+            id: result._id.toString(),
+            createdAt: result.createdAt,
+            email: result.email,
+            login: result.login,
+            // registrationData: result.registrationData
+        };
     },
 
-    async getUserById(id: string, isNewUser:boolean = false) {
+    async getUserById(id: string, isNewUser: boolean = false) {
         try {
-            let res = await usersCollection.findOne({_id: new ObjectId(id)});
+            let res = await UsersModelClass.findOne({_id: new ObjectId(id)});
             return usersService.getUserWithPrefixIdToViewModel(res!);
         } catch (e) {
             return null;
@@ -27,14 +27,14 @@ export const usersRepository = {
     },
 
     async findUserByLoginOrEmail(loginOrEmail: string) {
-        const user = await usersCollection.findOne({ $or:[{login:loginOrEmail},{email:loginOrEmail}] });
-        return  user;
+        const user = await UsersModelClass.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]});
+        return user;
     },
 
 
     async findUserByConfirmationCode(code: string) {
-        const user = await usersCollection.findOne({'registrationData.confirmationCode':code });
-        return  user;
+        const user = await UsersModelClass.findOne({'registrationData.confirmationCode': code});
+        return user;
     },
 
     // async createUser(data: UserCreateModel): Promise<UserViewModel> {
@@ -55,24 +55,34 @@ export const usersRepository = {
         const searchEmailTerm = reqQuery.searchEmailTerm || "";
         const searchLoginTerm = reqQuery.searchLoginTerm || "";
 
+const filter = {
+    $or: [{
+        login: {
+            $regex: searchLoginTerm,
+            $options: "i"
+        }
+    }, {email: {$regex: searchEmailTerm, $options: "i"}}]
+}
 
-        const totalCount = await usersCollection.countDocuments({$or : [{login: { $regex : searchLoginTerm , $options : "i"}}, {email: { $regex : searchEmailTerm , $options : "i"}}]});
-        let res = await usersCollection
-            .find({$or : [{login: { $regex : searchLoginTerm , $options : "i"}}, {email: { $regex : searchEmailTerm , $options : "i"}}]})
-            .skip((+pageNumber - 1) * +pageSize)
-            .limit(+pageSize)
-            .sort({[sortBy]: sortDirection == "asc" ? 1 : -1})
-            .toArray();
-        return {
-            pagesCount: Math.ceil(+totalCount / +pageSize),
-            page: +pageNumber,
-            pageSize: +pageSize,
-            totalCount: +totalCount,
-            items: res.map(usersService.getUserWithPrefixIdToViewModel),
-        };
+        const totalCount = await UsersModelClass.countDocuments(filter);
+
+        //@ts-ignore
+        return await UsersModelClass.pagination(filter, pageNumber, pageSize, sortBy, sortDirection, totalCount, usersService.getUserWithPrefixIdToViewModel)
+
+        // let res = await UsersModelClass
+        //     .find({$or : [{login: { $regex : searchLoginTerm , $options : "i"}}, {email: { $regex : searchEmailTerm , $options : "i"}}]})
+        //     .skip((+pageNumber - 1) * +pageSize)
+        //     .limit(+pageSize)
+        //     .sort({[sortBy]: sortDirection == "asc" ? 1 : -1})
+        //     .toArray();
+        // return {
+        //     pagesCount: Math.ceil(+totalCount / +pageSize),
+        //     page: +pageNumber,
+        //     pageSize: +pageSize,
+        //     totalCount: +totalCount,
+        //     items: res.map(usersService.getUserWithPrefixIdToViewModel),
+        // };
     },
-
-
 
 
     // async getPostById(id: string) {
@@ -96,15 +106,15 @@ export const usersRepository = {
     //   }
     // },
     async deleteUser(id: string) {
-      try {
-        let result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
-        return result.deletedCount === 1;
-      } catch (e) {
-        return false;
-      }
+        try {
+            let result = await UsersModelClass.deleteOne({_id: new ObjectId(id)});
+            return result.deletedCount === 1;
+        } catch (e) {
+            return false;
+        }
     },
     async deleteAllUsers() {
-      await usersCollection.deleteMany({});
-      return true;
+        await UsersModelClass.deleteMany({});
+        return true;
     },
 };

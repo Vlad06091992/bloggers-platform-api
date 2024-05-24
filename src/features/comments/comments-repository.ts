@@ -1,5 +1,5 @@
 // import {PostCreateModel, PostViewModel, UserCreateModel} from "./types/types";
-import {commentsCollection, postsCollection} from "../../db-mongo";
+import {CommentsModelClass, PostModelClass} from "../../mongoose/models";
 import {ObjectId} from "mongodb";
 import {CommentType, CommentUpdateModel, CommentViewModel} from "./types/types";
 import {commentsService} from "./comments-service";
@@ -14,7 +14,7 @@ export const commentsRepository = {
 
     async getCommentById(id: string) {
         try {
-            let res = await commentsCollection.findOne({_id: new ObjectId(id)!})
+            let res = await CommentsModelClass.findOne({_id: new ObjectId(id)!})
             return commentsService.mapCommentToViewModel(res!)
         } catch (e) {
             return null;
@@ -22,13 +22,18 @@ export const commentsRepository = {
     },
 
     async createComment(comment: CommentType): Promise<CommentViewModel> {
-        const {insertedId} = await commentsCollection.insertOne(comment);
-        return (await this.getCommentById(insertedId.toString()))!;
+        await CommentsModelClass.create(comment);
+        return {
+            id: comment._id.toString(),
+            createdAt: comment.createdAt,
+            commentatorInfo: comment.commentatorInfo,
+            content: comment.content
+        }
     },
 
     async deleteComment(id: string) {
         try {
-            let result = await commentsCollection.deleteOne({_id: new ObjectId(id)});
+            let result = await CommentsModelClass.deleteOne({_id: new ObjectId(id)});
             return result.deletedCount === 1;
         } catch (e) {
             return false;
@@ -37,7 +42,7 @@ export const commentsRepository = {
 
     async updateComment(id: string, data: CommentUpdateModel) {
         try {
-            let result = await commentsCollection.updateOne(
+            let result = await CommentsModelClass.updateOne(
                 {_id: new ObjectId(id)},
                 {$set: data},
             );
@@ -48,7 +53,7 @@ export const commentsRepository = {
     },
 
     async deleteAllComments() {
-        await postsCollection.deleteMany({});
+        await PostModelClass.deleteMany({});
         return true;
     },
 

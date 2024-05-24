@@ -2,8 +2,8 @@
 import {ObjectId, WithId} from "mongodb";
 import {PostCreateModel, PostType, PostViewModel, QueryPostModel, ResponsePostsModel} from "./types/types";
 import {postsRepository} from "./posts-repository";
-import {postsCollection} from "../../db-mongo";
 import {blogsService} from "../blogs/blogs-service";
+import {PostModelClass} from "../../mongoose/models";
 
 type ResultType = "object" | "boolean";
 
@@ -12,6 +12,7 @@ type CreatePostForClass = PostCreateModel & {
 };
 
 class Post {
+    _id: ObjectId;
     title: string;
     shortDescription: string;
     content: string;
@@ -27,6 +28,7 @@ class Post {
                     content,
                 }: CreatePostForClass) {
         this.blogId = blogId;
+        this._id = new ObjectId();
         this.blogName = blogName;
         this.title = title;
         this.content = content;
@@ -43,7 +45,7 @@ export const postsService = {
 
 
     async findPostById(id: string, result: ResultType = "boolean") {
-        const post = await postsCollection.findOne({ _id: new ObjectId(id) });
+        const post = await PostModelClass.findOne({ _id: new ObjectId(id) });
         return result === "boolean" ? !!post : post;
     },
 
@@ -63,21 +65,10 @@ export const postsService = {
         const sortDirection = reqQuery.sortDirection || "desc";
         const pageNumber = reqQuery.pageNumber || 1;
         const pageSize = reqQuery.pageSize || 10;
+        const totalCount = await PostModelClass.countDocuments({ blogId: id });
 
-        const totalCount = await postsCollection.countDocuments({ blogId: id });
-        let res = await postsCollection
-            .find({ blogId: id })
-            .skip((+pageNumber - 1) * +pageSize)
-            .limit(+pageSize)
-            .sort({ [sortBy]: sortDirection == "asc" ? 1 : -1 })
-            .toArray();
-        return {
-            pagesCount: Math.ceil(+totalCount / +pageSize),
-            page: +pageNumber,
-            pageSize: +pageSize,
-            totalCount: +totalCount,
-            items: res.map(this.getPostWithPrefixIdToViewModel),
-        };
+        //@ts-ignore
+        return await PostModelClass.pagination({ blogId: id }, pageNumber, pageSize, sortBy, sortDirection, totalCount, this.getPostWithPrefixIdToViewModel)
     },
 
     async deletePost(id:string){
@@ -95,12 +86,5 @@ export const postsService = {
             createdAt: post.createdAt,
         };
     },
-
-
-
-    // findIndexPostById(id: string) {
-    //     const postId = db.posts.findIndex((post: PostViewModel) => post.id === id);
-    //     return postId;
-    // }
 };
 

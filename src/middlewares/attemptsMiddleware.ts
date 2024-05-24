@@ -6,7 +6,6 @@ import {HTTP_STATUSES} from "../http_statuses/http_statuses";
 //TODO количество попыток обращения с одного ип адреса
 
 export const attemptsMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-debugger
     const IP = req.ip!
     const URL = req.url
     const date = moment().format()

@@ -55,7 +55,7 @@ export const getCommentsRouter = () => {
       }
 
       if(comment?.commentatorInfo.userId != req.user.id){
-        res.sendStatus(HTTP_STATUSES.FORBIDDEN)
+        res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
         return
       }
 
@@ -85,7 +85,7 @@ export const getCommentsRouter = () => {
         }
 
         if(comment.commentatorInfo.userId != req.user.id){
-          res.sendStatus(HTTP_STATUSES.FORBIDDEN)
+          res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
           return
         }
 

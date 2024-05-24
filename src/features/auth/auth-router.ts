@@ -54,14 +54,12 @@ export const getAuthRouter = () => {
                     const session = new Session(userId,
                         req.ip as any,
                         req.headers["user-agent"] as any,
-                        moment().format(),
+                        moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]"),
                         deviceId,
-                        moment(refreshTokenData.iatRefreshToken * 1000).format() ,
-                        moment(refreshTokenData.expRefreshToken * 1000).format(),
-                        )
-
-
-                    let {insertedId} = await usersSessionService.createSession(session)
+                        moment(refreshTokenData.iatRefreshToken * 1000).utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]"),
+                        moment(refreshTokenData.expRefreshToken * 1000).utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]"),
+                    )
+                    await usersSessionService.createSession(session)
 
                     res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
                     res.send({accessToken}).status(HTTP_STATUSES.OK_200)
@@ -94,20 +92,25 @@ export const getAuthRouter = () => {
         ) => {
             const refreshTokenOld = req.cookies.refreshToken
 
-            const {userId,deviceId} = await jwtService.getUserDataByToken(refreshTokenOld)
+            const result = await jwtService.getUserDataByToken(refreshTokenOld)
 
-            if (userId) {
+            if (!result) {
+                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+                return
+            }
+
+            if (result.userId) {
                 await jwtService.putTokenInBlackList({token: refreshTokenOld})
 
 
-                const {accessToken, refreshToken} = jwtService.generateTokensPair(userId, deviceId, {
+                const {accessToken, refreshToken} = jwtService.generateTokensPair(result.userId, result.deviceId, {
                     expiresInAccess: '10s',
                     expiresInRefresh: '20s'
                 })
 
-                const lastActiveDate = moment().format()
+                const lastActiveDate = moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]")
 
-                await usersSessionService.updateSession(deviceId,lastActiveDate)
+                await usersSessionService.updateSession(result.deviceId, lastActiveDate)
 
                 res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
                 res.send({accessToken}).status(HTTP_STATUSES.NO_CONTENT_204)
@@ -129,10 +132,16 @@ export const getAuthRouter = () => {
         ) => {
             const refreshTokenOld = req.cookies.refreshToken
 
-            const {userId} = await jwtService.getUserDataByToken(refreshTokenOld)
+            const result = await jwtService.getUserDataByToken(refreshTokenOld)
 
-            if (userId) {
+            if (!result) {
+                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+                return
+            }
+
+            if (result.userId && result.deviceId) {
                 await jwtService.putTokenInBlackList({token: refreshTokenOld})
+                await usersSessionService.deleteSessionByDeviceId(result.deviceId)
                 res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
             } else {
                 res.clearCookie('refreshToken');

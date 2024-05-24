@@ -1,13 +1,14 @@
 import dotenv from "dotenv";
-import { Collection, MongoClient } from "mongodb";
-import { VideoViewModel } from "./features/videos/model/VideoViewModel";
-import { BlogType } from "./features/blogs/types/types";
-import { PostType } from "./features/posts/types/types";
+import {MongoClient} from "mongodb";
+import {PostType} from "./features/posts/types/types";
 import {CommentType} from "./features/comments/types/types";
 import {TokenType} from "./types";
 import {UserType} from "./features/users/types/types";
 import {UserSession} from "./features/userSessions/types";
 import {CallToAPI} from "./features/apiCallHistory/types";
+import mongoose from "mongoose"
+import {pagination} from "./utils";
+
 dotenv.config();
 
 const URL = process.env.MONGO_URL || "mongodb://localhost:27017";
@@ -20,18 +21,15 @@ export const client = new MongoClient(URL);
 
 // const db = client.db('base-backend');
 const db = client.db();
-export const blogsCollection: Collection<BlogType> =
-  db.collection<BlogType>("blogs");
-export const postsCollection = db.collection<PostType>("posts");
-export const commentsCollection = db.collection<CommentType>("comments");
-export const usersCollection = db.collection<UserType>("users");
-export const tokensBlackListCollection = db.collection<TokenType>("tokens");
-export const usersSessionsCollection = db.collection<UserSession>("usersSessions");
-export const APICallHistoryCollection = db.collection<CallToAPI>("APICallHistory");
-// export const videosCollection = db.collection<VideoViewModel>("videos");
+
+
+
+
 
 export async function runDb() {
   try {
+    await mongoose.connect(URL);
+    console.log("Connected successfully mongoose");
     //Connect client to the server
     await client.connect();
     //Establish ane verify connection
@@ -42,5 +40,6 @@ export async function runDb() {
     console.log(`can't connect to db`);
 
     await client.close();
+    await mongoose.disconnect()
   }
 }

@@ -1,4 +1,4 @@
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {UserAuthMeModel, UserCreateModel, UserType, UserViewModel} from "./types/types";
 import {usersRepository} from "./users-repository";
 import bcrypt from "bcrypt";
@@ -8,6 +8,7 @@ import moment, {Moment} from "moment";
 type ResultType = "object" | "boolean";
 
 class User {
+    _id:ObjectId;
     email: string;
     password: string;
     login: string;
@@ -19,6 +20,7 @@ class User {
     }
 
     constructor({email, password, login, isConfirmed = false, confirmationCode}: UserCreateModel) {
+        this._id = new ObjectId();
         this.email = email;
         this.password = password;
         this.login = login;

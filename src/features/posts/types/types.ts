@@ -1,4 +1,7 @@
+import {ObjectId} from "mongodb";
+
 export type PostType = {
+  _id:ObjectId
   title: string;
   shortDescription: string;
   content: string;
@@ -35,9 +38,7 @@ export type URIParamsPostIdModel = {
   id: string;
 };
 
-export type PostViewModel = PostType & {
-  id: string;
-};
+export type PostViewModel =Omit< PostType & { id: string; }, '_id'>;
 
 export type ResponsePostsModel = {
   pagesCount: number;

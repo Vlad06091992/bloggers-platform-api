@@ -1,4 +1,7 @@
+import {ObjectId} from "mongodb";
+
 export type BlogType = {
+  _id: ObjectId,
   name: string;
   description: string;
   websiteUrl: string;
@@ -39,7 +42,7 @@ export type ResponseBlogsModel = {
   items: BlogViewModel[];
 };
 
-export type BlogViewModel = BlogType & { id: string }; // (id:string)
+export type BlogViewModel =Omit<BlogType & { id: string }, '_id'>; // (id:string)
 export type BlogInMongoDB = BlogType & { _id: string }; // (_id:string)
 
 

@@ -1,10 +1,10 @@
-import {APICallHistoryCollection} from "../../db-mongo";
+import {APICallHistoryModelClass} from "../../mongoose/models";
 import {CallToAPI} from "./types";
 import moment from "moment";
 
 export const ApiCallHistoryRepository = {
     async recordAPICall(call: CallToAPI) {
-        await APICallHistoryCollection.insertOne(call)
+        await APICallHistoryModelClass.create(call)
     },
 
     async countRequests(IP: string, URL: string, timeIntervalSeconds: number) {
@@ -13,11 +13,11 @@ export const ApiCallHistoryRepository = {
 
         const startTime = now - timeIntervalSeconds * 1000
 
-        const count = await APICallHistoryCollection.countDocuments({$and: [{IP}, {URL}, {dateToNumber: {$gt: startTime}}]})
+        const count = await APICallHistoryModelClass.countDocuments({$and: [{IP}, {URL}, {dateToNumber: {$gt: startTime}}]})
         return count
     },
     async deleteAllRecords(){
-        await APICallHistoryCollection.deleteMany({})
+        await APICallHistoryModelClass.deleteMany({})
         return true
     },
 

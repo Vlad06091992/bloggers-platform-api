@@ -1,7 +1,6 @@
 import express, {Request, Response} from "express";
 // import bodyParser from "body-parser";
-import {db} from "./db";
-import {getVideosRouter} from "./features/videos/videos.router";
+
 import {getBlogsRouter} from "./features/blogs/blogs-router";
 import {blogsRepository} from "./features/blogs/blogs-repository";
 // import {commentsRepository} from "./features/users/users-repository";
@@ -12,20 +11,19 @@ import {getAuthRouter} from "./features/auth/auth-router";
 import {usersRepository} from "./features/users/users-repository";
 import {commentsRepository} from "./features/comments/comments-repository";
 import {getCommentsRouter} from "./features/comments/comments-router";
-const bodyParser = require("body-parser");
-var cors = require('cors')
-
 import cookieParser from 'cookie-parser'
 import {getSecurityDevicesRouter} from "./features/security_devices/security-devaices-router";
-import {tokensBlackListCollection} from "src/db-mongo";
 import {usersSessionsRepository} from "./features/userSessions/usersSessionsRepository";
 import {ApiCallHistoryRepository} from "./features/apiCallHistory/apiCallHistory-repository";
 import {AuthRepository} from "./features/auth/auth-repository";
 
+const bodyParser = require("body-parser");
+var cors = require('cors')
 
 
 export const app = express();
 app.use(cookieParser())
+app.set('trust proxy', true)
 
 
 export const Routes = {
@@ -55,7 +53,6 @@ app.options('*', cors(corsConfig));
 app.get(Routes.default, (req, res) => {
   res.send("hello, is my blogger platform API");
 });
-app.use(Routes.videos, getVideosRouter());
 app.use(Routes.auth, getAuthRouter());
 app.use(Routes.users, getUsersRouter());
 app.use(Routes.comments, getCommentsRouter());
@@ -64,10 +61,8 @@ app.use(Routes.blogs, getBlogsRouter());
 app.use(Routes.security, getSecurityDevicesRouter());
 
 
+
 app.delete(Routes.testing, async (req: Request, res: Response) => {
-  db.videos = [];
-  db.posts = [];
-  // db.blogs = []
   await blogsRepository.deleteAllBlogs();
   await commentsRepository.deleteAllComments();
   await usersRepository.deleteAllUsers();

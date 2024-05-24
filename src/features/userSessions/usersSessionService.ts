@@ -1,9 +1,11 @@
 import {UserSession} from "./types";
 import {usersSessionsRepository} from "./usersSessionsRepository";
+import {ObjectId} from "mongodb";
 
 export class Session implements UserSession {
 
     constructor(userId:string,ip:string,title:string,lastActiveDate:string,deviceId:string,iatRefreshToken:string,expRefreshToken:string) {
+        this._id = new ObjectId()
         this.userId = userId
         this.ip = ip
         this.deviceId = deviceId
@@ -12,7 +14,7 @@ export class Session implements UserSession {
         this.expRefreshToken = expRefreshToken
         this.title = title
     }
-
+    _id:ObjectId;
     deviceId: string;
     expRefreshToken: string;
     iatRefreshToken: string;
@@ -40,7 +42,13 @@ export const usersSessionService = {
     },
 
     async deleteSessionByDeviceId(deviceId: string) {
-        return await usersSessionsRepository.deleteSessionByDeviceId(deviceId)
+        // return await usersSessionsRepository.deleteSessionByDeviceId(deviceId)
+        const result =  usersSessionsRepository.deleteSessionByDeviceId(deviceId)
+
+        console.log(result)
+
+        return result
+
     },
 
     async deleteOtherSession(userId: string, deviceId: string) {

@@ -1,7 +1,8 @@
 import { Request } from "express";
 import { BlogViewModel } from "./features/blogs/types/types";
 import { PostViewModel } from "./features/posts/types/types";
-import { VideoViewModel } from "./features/videos/model/VideoViewModel";
+import {ObjectId} from "mongodb";
+
 
 export type VideoType = {
   id: number;
@@ -14,11 +15,7 @@ export type VideoType = {
   availableResolutions?: AvailableResolutionsType[] | null;
 };
 
-export type RootDBType = {
-  videos: VideoViewModel[];
-  posts: PostViewModel[];
-  blogs: BlogViewModel[];
-};
+
 
 export type ErrorResponseType = {
   errorsMessages: Array<{ message: string; field: string }>;
@@ -36,6 +33,7 @@ export const enum AvailableResolutions {
 }
 
 export type TokenType = {
+  _id:ObjectId
   token:string
 }
 

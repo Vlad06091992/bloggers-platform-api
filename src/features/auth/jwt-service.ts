@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 import {WithId} from "mongodb";
 import {AuthRepository} from "./auth-repository";
 import {TokenType} from "../../types";
+import {usersSessionService} from "../userSessions/usersSessionService";
 
 const settings = {
     JWT_SECRET: process.env.JWT_SECRET || '234'
@@ -34,20 +35,31 @@ export const jwtService = {
         return {accessToken, refreshToken,refreshTokenData:{iatRefreshToken:iat,expRefreshToken:exp}}
     },
     async getUserDataByToken(token: string) {
-        debugger
         try {
-            debugger
             const tokenInBlackList = await AuthRepository.findToken(token)
             if (!!tokenInBlackList) {
                 return null
             }
-            const res: any = jwt.verify(token, settings.JWT_SECRET)
-            return res
+            const res:any = jwt.verify(token, settings.JWT_SECRET)
+            const session = await this.checkSession(res.deviceId)
+
+            if(session) return res
+            return null
         } catch (e) {
             return null
         }
     },
-    async putTokenInBlackList(data: TokenType) {
-        const {insertedId} = await AuthRepository.putTokenInBlackList(data)
+    async putTokenInBlackList(data: Omit<TokenType, "_id">) {
+
+
+        await AuthRepository.putTokenInBlackList(data)
+    },
+
+    async checkSession(deviceId:string) {
+        try {
+            return usersSessionService.getSessionByDeviceId(deviceId)
+        } catch (e) {
+            return null
+        }
     }
 }

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import {usersRepository} from "../users/users-repository";
 import moment from "moment";
-import {usersCollection} from "../../db-mongo";
+import {UsersModelClass} from "../../mongoose/models";
 import {usersService} from "../users/users-service";
 import {emailManager} from "../../managers/email-manager";
 import {UserCreateModel} from "../users/types/types";
@@ -23,7 +23,7 @@ export const authService = {
             const userViewModel = usersService.getUserWithPrefixIdToViewModel(user)
             await emailManager.sendEmailConfirmationMessage(userViewModel, confirmationCode)
             try {
-                let result = await usersCollection.updateOne(
+                let result = await UsersModelClass.updateOne(
                     {_id: user._id},
                     {
                         $set: {
@@ -50,7 +50,7 @@ export const authService = {
 
         if(user && !user.registrationData.isConfirmed && user.registrationData.expirationDate.toString() > moment().toString()){
             try {
-                let result = await usersCollection.updateOne(
+                let result = await UsersModelClass.updateOne(
                     { _id: user._id },
                     {$set: {'registrationData.isConfirmed': true}}
                 );

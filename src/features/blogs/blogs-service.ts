@@ -1,12 +1,14 @@
-import { blogsCollection } from "../../db-mongo";
 import { ObjectId, WithId } from "mongodb";
 import {BlogCreateModel, BlogType, BlogUpdateModel, QueryBlogModel} from "./types/types";
 import { BlogViewModel } from "./types/types";
 import {blogsRepository} from "./blogs-repository";
+import {BlogModelClass} from "../../mongoose/models";
+
 
 type ResultType = "object" | "boolean";
 
 class BlogCreateClass {
+    _id:ObjectId;
     name: string;
     websiteUrl: string;
     description: string;
@@ -14,6 +16,7 @@ class BlogCreateClass {
     createdAt: string;
 
     constructor({ name, websiteUrl, description }: BlogCreateModel) {
+        this._id = new ObjectId();
         this.name = name;
         this.description = description;
         this.websiteUrl = websiteUrl;
@@ -30,7 +33,7 @@ export const blogsService = {
 
     async findBlogById(id: string, result: ResultType = "boolean"):Promise<BlogViewModel | boolean> {
         try {
-            const blog = await blogsCollection.findOne({ _id: new ObjectId(id) });
+            const blog = await BlogModelClass.findOne({ _id: new ObjectId(id) });
             return result === "boolean" ? !!blog : blog ? this.getBlogWithPrefixIdToViewModel(blog) : false;
         } catch (e) {
             return false;
@@ -38,7 +41,7 @@ export const blogsService = {
     },
 
     async findBlogNameByBlogId(blogId: string) {
-        const blog = await blogsCollection.findOne({ _id: new ObjectId(blogId) });
+        const blog = await BlogModelClass.findOne({ _id: new ObjectId(blogId) });
         return blog?.name;
     },
 
@@ -53,7 +56,7 @@ export const blogsService = {
 
 
 
-    getBlogWithPrefixIdToViewModel(blog: WithId<BlogType>): BlogViewModel {
+    getBlogWithPrefixIdToViewModel(blog: BlogType): BlogViewModel {
         return {
             id: blog._id.toString(),
             createdAt: blog.createdAt,
