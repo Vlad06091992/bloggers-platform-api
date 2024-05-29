@@ -13,7 +13,7 @@ export const postsRepository = {
 
         const totalCount = await PostModelClass.countDocuments();
         //@ts-ignore
-        return await PostModelClass.pagination(filter, pageNumber, pageSize, sortBy, sortDirection, totalCount, postsService.getPostWithPrefixIdToViewModel)
+        return await PostModelClass.pagination({}, pageNumber, pageSize, sortBy, sortDirection, totalCount, postsService.getPostWithPrefixIdToViewModel)
 
 
     },

@@ -27,7 +27,7 @@ export const usersRepository = {
     },
 
     async findUserByLoginOrEmail(loginOrEmail: string) {
-        const user = await UsersModelClass.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]});
+        const user:UserType | null = await UsersModelClass.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]}).lean();
         return user;
     },
 

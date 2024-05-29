@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import {LikeStatusType} from "../../likes/types";
 
 export type CommentContent = {
     content:string
@@ -35,6 +36,11 @@ export type CommentViewModel = {
         "userLogin": string
 },
     "createdAt": string
+    likesInfo:{
+        likesCount:number,
+        dislikesCount:number,
+        myStatus:LikeStatusType
+    }
 
 }
 

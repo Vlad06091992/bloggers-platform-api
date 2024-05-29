@@ -1,24 +1,13 @@
-import express, {Response, Request} from "express";
-import {authMiddleware} from "../../middlewares/authMiddleware";
-import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {usersService} from "../users/users-service";
-import {RequestWithBody} from "../../types";
-import {AuthCreateModel, ConfirmationCode, RefreshTokensModel, ResendingEmail} from "./types/types";
-import {authService} from "../auth/auth-service";
-import {ObjectId, WithId} from "mongodb";
-import {UserCreateModel, UserType, UserViewModel} from "../users/types/types";
+import express from "express";
 import {validateAuthUserData} from "./validators/validateUserCredentials";
 import {validateErrors} from "../../middlewares/validateErrors";
-import {jwtService} from "./jwt-service";
 import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
-import {emailManager} from "../../managers/email-manager";
-import {v4 as uuidv4} from "uuid"
 import {validateCreateUserData} from "./validators/validateCreateUserData";
-import {check, checkSchema} from "express-validator";
-import {isString} from "util";
+import {check} from "express-validator";
 import {attemptsMiddleware} from "../../middlewares/attemptsMiddleware";
-import {Session, usersSessionService} from "../userSessions/usersSessionService";
-import moment from "moment";
+import {validatePasswordRecoverySchema} from "./validators/validatePasswordRecoverySchema";
+import {validateNewPasswordSchema} from "./validators/validateNewPasswordSchema";
+import {authController} from "../auth/composition-auth";
 
 
 export const getAuthRouter = () => {
@@ -28,44 +17,7 @@ export const getAuthRouter = () => {
         attemptsMiddleware,
         validateAuthUserData,
         validateErrors,
-        async (
-            req: RequestWithBody<AuthCreateModel>,
-            res: Response<any>,
-        ) => {
-            let user: WithId<UserType> = await usersService.findUserByLoginOrEmail(req.body.loginOrEmail, "object") as WithId<UserType>;
-            if (!user) {
-                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-            } else {
-                const result = await authService.checkPassword(user.password, req.body.password)
-                if (!result) {
-                    res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-                } else {
-                    const deviceId = uuidv4()
-                    const userId = user._id.toString()
-                    const {
-                        accessToken,
-                        refreshToken,
-                        refreshTokenData
-                    } = jwtService.generateTokensPair(userId, deviceId, {
-                        expiresInAccess: '10s',
-                        expiresInRefresh: '20s'
-                    })
-
-                    const session = new Session(userId,
-                        req.ip as any,
-                        req.headers["user-agent"] as any,
-                        moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]"),
-                        deviceId,
-                        moment(refreshTokenData.iatRefreshToken * 1000).utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]"),
-                        moment(refreshTokenData.expRefreshToken * 1000).utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]"),
-                    )
-                    await usersSessionService.createSession(session)
-
-                    res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
-                    res.send({accessToken}).status(HTTP_STATUSES.OK_200)
-                }
-            }
-        },
+        authController.login.bind(authController)
     );
 
     router.post(
@@ -73,83 +25,36 @@ export const getAuthRouter = () => {
         attemptsMiddleware,
         validateCreateUserData,
         validateErrors,
-        async (
-            req: RequestWithBody<UserCreateModel>,
-            res: Response<UserViewModel>,
-        ) => {
-            const confirmationCode = uuidv4()
-            await authService.createUser(req.body, confirmationCode)
-            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-        },
+        authController.registration.bind(authController)
+    );
+
+    router.post(
+        "/password-recovery",
+        attemptsMiddleware,
+        validatePasswordRecoverySchema,
+        validateErrors,
+        authController.passwordRecovery.bind(authController)
+    );
+
+
+    router.post(
+        "/new-password",
+        attemptsMiddleware,
+        validateNewPasswordSchema,
+        validateErrors,
+        authController.newPassword.bind(authController)
     );
 
 
     router.post(
         "/refresh-token",
-        async (
-            req: RequestWithBody<any>,
-            res: Response<RefreshTokensModel>,
-        ) => {
-            const refreshTokenOld = req.cookies.refreshToken
-
-            const result = await jwtService.getUserDataByToken(refreshTokenOld)
-
-            if (!result) {
-                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-                return
-            }
-
-            if (result.userId) {
-                await jwtService.putTokenInBlackList({token: refreshTokenOld})
-
-
-                const {accessToken, refreshToken} = jwtService.generateTokensPair(result.userId, result.deviceId, {
-                    expiresInAccess: '10s',
-                    expiresInRefresh: '20s'
-                })
-
-                const lastActiveDate = moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]")
-
-                await usersSessionService.updateSession(result.deviceId, lastActiveDate)
-
-                res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
-                res.send({accessToken}).status(HTTP_STATUSES.NO_CONTENT_204)
-            } else {
-                res.clearCookie('refreshToken');
-                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-            }
-        },
+        authController.refreshToken.bind(authController)
     );
 
 
     router.post(
         "/logout",
-        // validateCreateUserData,
-        // validateErrors,
-        async (
-            req: RequestWithBody<UserCreateModel>,
-            res: Response<RefreshTokensModel>,
-        ) => {
-            const refreshTokenOld = req.cookies.refreshToken
-
-            const result = await jwtService.getUserDataByToken(refreshTokenOld)
-
-            if (!result) {
-                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-                return
-            }
-
-            if (result.userId && result.deviceId) {
-                await jwtService.putTokenInBlackList({token: refreshTokenOld})
-                await usersSessionService.deleteSessionByDeviceId(result.deviceId)
-                res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-            } else {
-                res.clearCookie('refreshToken');
-                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-            }
-
-
-        },
+        authController.logout.bind(authController)
     );
 
 
@@ -158,24 +63,7 @@ export const getAuthRouter = () => {
         attemptsMiddleware,
         check('code').isString(),
         validateErrors,
-        async (
-            req: RequestWithBody<ConfirmationCode>,
-            res: Response<number | { errorsMessages: Array<{ message: string, field: string }> }>,
-        ) => {
-
-            let result = await authService.checkConfirmationCode(req.body.code)
-
-            if (result) {
-                res.send(HTTP_STATUSES.NO_CONTENT_204)
-            } else {
-                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({
-                    errorsMessages: [{
-                        message: 'user not found or code expired',
-                        field: 'code'
-                    }]
-                })
-            }
-        },
+        authController.registrationConfirmation.bind(authController)
     );
 
     router.post(
@@ -183,40 +71,14 @@ export const getAuthRouter = () => {
         attemptsMiddleware,
         check('email').isEmail(),
         validateErrors,
-        async (
-            req: RequestWithBody<ResendingEmail>,
-            res: Response<number | { errorsMessages: Array<{ message: string, field: string }> }>,
-        ) => {
-            let result = await authService.resendEmail(req.body.email)
-            if (result) {
-                res.send(HTTP_STATUSES.NO_CONTENT_204)
-            } else {
-                res.status(HTTP_STATUSES.BAD_REQUEST_400).send({
-                    errorsMessages: [{
-                        message: 'user not found or code expired',
-                        field: 'email'
-                    }]
-                })
-            }
-        },
+        authController.registrationEmailResending.bind(authController)
     );
 
     router.get(
         "/me",
         authBearerMiddleware,
-        async (
-            req: any,
-            res: Response<any>,
-        ) => {
-            let user: UserViewModel = req.user
-            if (!user) {
-                res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-            } else {
-                res.send(usersService.mapUserViewModelToAuthMeUser(user)).status(HTTP_STATUSES.OK_200)
-            }
-        },
+        authController.me.bind(authController)
     );
-
 
     return router
 }

@@ -4,7 +4,7 @@ import {
   RequestWithParams,
   RequestWithParamsAndBody,
   RequestWithQuery,
-} from "../../types";
+} from "../../types/types";
 import {validateCreateUserData} from "./validators/validateCreateUserData";
 import {usersService} from "../users/users-service";
 

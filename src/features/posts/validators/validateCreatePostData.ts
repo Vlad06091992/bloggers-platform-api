@@ -1,5 +1,5 @@
 import { checkSchema } from "express-validator";
-import {blogsService} from "../../blogs/blogs-service";
+import {blogsService} from "../../../features/blogs/composition-blogs";
 
 const schema = {
   title: {

@@ -1,13 +1,6 @@
 import dotenv from "dotenv";
 import {MongoClient} from "mongodb";
-import {PostType} from "./features/posts/types/types";
-import {CommentType} from "./features/comments/types/types";
-import {TokenType} from "./types";
-import {UserType} from "./features/users/types/types";
-import {UserSession} from "./features/userSessions/types";
-import {CallToAPI} from "./features/apiCallHistory/types";
 import mongoose from "mongoose"
-import {pagination} from "./utils";
 
 dotenv.config();
 

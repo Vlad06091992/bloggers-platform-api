@@ -5,7 +5,7 @@ import {
   RequestWithParamsAndBody,
   RequestWithQuery,
   RequestWithQueryAndParams,
-} from "../../types";
+} from "../../types/types";
 
 import {
   PostCreateModel,
@@ -26,6 +26,7 @@ import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
 import {validateCreateCommentData} from "../comments/validators/validateCreateCommentData";
 import {commentsService} from "../comments/comments-service";
 import {CommentCreateModel, URIParamsCommentsIdModel} from "../comments/types/types";
+import {checkUserByAccessToken} from "../../middlewares/checkUserByAccessToken";
 
 
 export const getPostsRouter = () => {
@@ -132,11 +133,19 @@ export const getPostsRouter = () => {
   router.get(
       "/:id/comments",
       isExistingPost,
+      checkUserByAccessToken,
       async (
           req: RequestWithQueryAndParams<URIParamsCommentsIdModel, QueryPostModel>,
           res: Response,
       ) => {
+        //@ts-ignore
+        const userId = req.userId
+
+
         let result = await commentsService.findCommentsForSpecificPost(req.query,req.params.id)
+
+
+
         res.status(HTTP_STATUSES.OK_200).send(result);
       },
   );

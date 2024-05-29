@@ -1,6 +1,4 @@
-import { Request } from "express";
-import { BlogViewModel } from "./features/blogs/types/types";
-import { PostViewModel } from "./features/posts/types/types";
+import {Request} from "express";
 import {ObjectId} from "mongodb";
 
 

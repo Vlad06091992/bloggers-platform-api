@@ -1,6 +1,6 @@
 import {ObjectId} from "mongodb";
 
-export type UserSession = {
+export type UserSessionType = {
     _id:ObjectId;
     userId:string,
     ip: string,
@@ -11,4 +11,4 @@ export type UserSession = {
     expRefreshToken:string
 }
 
-export type UserSessionViewModel = Omit<UserSession, "iatRefreshToken" | "expRefreshToken" | "userId" | "_id" >
+export type UserSessionViewModel = Omit<UserSessionType, "iatRefreshToken" | "expRefreshToken" | "userId" | "_id" >

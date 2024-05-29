@@ -3,18 +3,20 @@ import {BlogType} from "../features/blogs/types/types";
 import {
     APICallHistorySchema,
     BlogSchema,
-    CommentSchema,
-    PostSchema,
+    CommentSchema, LikesCommentSchema,
+    PostSchema, RecoveryPasswordsCodesSchema,
     TokensBlacklistSchema,
     UserSchema,
     UserSessionSchema
 } from "../mongoose/schemas";
 import {PostType} from "../features/posts/types/types";
 import {CommentType} from "../features/comments/types/types";
-import {UserType} from "../features/users/types/types";
-import {TokenType} from "../types";
-import {UserSession} from "../features/userSessions/types";
-import {CallToAPI} from "../features/apiCallHistory/types";
+import { UserType} from "../features/users/types/types";
+import {TokenType} from "../types/types";
+import {UserSessionType} from "../features/userSessions/types";
+import {CallToAPIType} from "../features/apiCallHistory/types";
+import {RecoveryPasswordsCodesType} from "../features/auth/types/types";
+import {LikesCommentType} from "../features/likes/types";
 
 export const BlogModelClass = mongoose.model<BlogType>('blogs', BlogSchema)
 export const PostModelClass = mongoose.model<PostType>("posts",PostSchema);
@@ -22,5 +24,7 @@ export const PostModelClass = mongoose.model<PostType>("posts",PostSchema);
 export const CommentsModelClass = mongoose.model<CommentType>("comments", CommentSchema);
 export const UsersModelClass = mongoose.model<UserType>("users", UserSchema);
 export const TokensBlacklistModelClass = mongoose.model<TokenType>("tokens", TokensBlacklistSchema);
-export const UserSessionModelClass = mongoose.model<UserSession>("usersSessions", UserSessionSchema);
-export const APICallHistoryModelClass = mongoose.model<CallToAPI>("APICallHistory",APICallHistorySchema);
+export const UserSessionModelClass = mongoose.model<UserSessionType>("usersSessions", UserSessionSchema);
+export const APICallHistoryModelClass = mongoose.model<CallToAPIType>("APICallHistory",APICallHistorySchema);
+export const RecoveryPasswordsCodesModelClass = mongoose.model<RecoveryPasswordsCodesType>("recoveryPasswordsCodes",RecoveryPasswordsCodesSchema);
+export const LikesCommentModelClass = mongoose.model<LikesCommentType>("likesComment",LikesCommentSchema);

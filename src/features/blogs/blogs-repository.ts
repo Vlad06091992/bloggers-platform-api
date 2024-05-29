@@ -7,11 +7,10 @@ import {
     ResponseBlogsModel
 } from "./types/types";
 import {ObjectId} from "mongodb";
-import {blogsService} from "../blogs/blogs-service";
 import {BlogModelClass} from "../../mongoose/models";
+import {blogsService} from "../../features/blogs/composition-blogs";
 
-
-export const blogsRepository = {
+ export class BlogsRepository  {
     async findBlogs(reqQuery: QueryBlogModel): Promise<ResponseBlogsModel> {
         let filter = {};
 
@@ -27,7 +26,7 @@ export const blogsRepository = {
         const totalCount = await BlogModelClass.countDocuments(filter);
         //@ts-ignore
         return await BlogModelClass.pagination(filter, pageNumber, pageSize, sortBy, sortDirection, totalCount, blogsService.getBlogWithPrefixIdToViewModel)
-    },
+    }
     async createBlog(data: BlogType): Promise<BlogViewModel> {
         const createdBlog = await BlogModelClass.create(data)
         return {
@@ -38,7 +37,7 @@ export const blogsRepository = {
             websiteUrl: data.websiteUrl,
             isMembership: data.isMembership,
         }
-    },
+    }
     async updateBlog(id: string, data: BlogUpdateModel) {
         try {
             let result = await BlogModelClass.updateOne(
@@ -49,7 +48,7 @@ export const blogsRepository = {
         } catch (e) {
             return false;
         }
-    },
+    }
 
     async deleteBlog(id: string) {
         try {
@@ -58,9 +57,10 @@ export const blogsRepository = {
         } catch (e) {
             return false;
         }
-    },
+    }
     async deleteAllBlogs() {
         await BlogModelClass.deleteMany({});
         return true;
-    },
+    }
 };
+

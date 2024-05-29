@@ -1,6 +1,6 @@
-import {UserSession, UserSessionViewModel} from "../userSessions/types";
+import {UserSessionType, UserSessionViewModel} from "../userSessions/types";
 
-export const mapSessionToViewModel = (session:UserSession): UserSessionViewModel => {
+export const mapSessionToViewModel = (session:UserSessionType): UserSessionViewModel => {
     return {
         deviceId:session.deviceId,
         title:session.title,

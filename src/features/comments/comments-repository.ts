@@ -12,10 +12,14 @@ import {commentsService} from "./comments-service";
 
 export const commentsRepository = {
 
-    async getCommentById(id: string) {
+    async getCommentById(id: string, userId?: string) {
         try {
-            let res = await CommentsModelClass.findOne({_id: new ObjectId(id)!})
-            return commentsService.mapCommentToViewModel(res!)
+            const res = await CommentsModelClass.findOne({_id: new ObjectId(id)!})
+            if (res) {
+                return commentsService.mapCommentToViewModel(res!, userId)
+            } else {
+                return null
+            }
         } catch (e) {
             return null;
         }
@@ -27,7 +31,12 @@ export const commentsRepository = {
             id: comment._id.toString(),
             createdAt: comment.createdAt,
             commentatorInfo: comment.commentatorInfo,
-            content: comment.content
+            content: comment.content,
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None"
+            }
         }
     },
 

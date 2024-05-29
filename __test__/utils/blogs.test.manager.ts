@@ -1,7 +1,7 @@
 import { HTTP_STATUSES } from "../../src/http_statuses/http_statuses";
 import request from "supertest";
 import { app, Routes } from "../../src/app";
-import { ErrorResponseType } from "../../src/types";
+import { ErrorResponseType } from "src/types./types";
 import { BlogViewModel } from "../../src/features/blogs/model/BlogViewModel";
 
 type AuthDataType = {

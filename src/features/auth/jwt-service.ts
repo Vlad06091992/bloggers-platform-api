@@ -1,19 +1,19 @@
 import {UserType} from "../users/types/types";
 import jwt from "jsonwebtoken"
 import {WithId} from "mongodb";
-import {AuthRepository} from "./auth-repository";
-import {TokenType} from "../../types";
+import {authRepository, AuthRepository} from "./auth-repository";
+import {TokenType} from "../../types/types";
 import {usersSessionService} from "../userSessions/usersSessionService";
 
 const settings = {
     JWT_SECRET: process.env.JWT_SECRET || '234'
 }
 
-export const jwtService = {
+export class JwtService  {
     createJWT(userId: string, deviceId: string, expiresIn: string = '1h') {
         const token = jwt.sign({userId, deviceId}, settings.JWT_SECRET, {expiresIn})
         return token
-    },
+    }
 
     generateTokensPair(userId: string, deviceId: string, {expiresInAccess, expiresInRefresh}: {
         expiresInAccess: string,
@@ -29,14 +29,13 @@ export const jwtService = {
     } {
         const accessToken = this.createJWT(userId,deviceId, expiresInAccess)
         const refreshToken = this.createJWT(userId,deviceId, expiresInRefresh)
-
         const {iat,exp}:any = jwt.decode(refreshToken)
 
         return {accessToken, refreshToken,refreshTokenData:{iatRefreshToken:iat,expRefreshToken:exp}}
-    },
+    }
     async getUserDataByToken(token: string) {
         try {
-            const tokenInBlackList = await AuthRepository.findToken(token)
+            const tokenInBlackList = await authRepository.findToken(token)
             if (!!tokenInBlackList) {
                 return null
             }
@@ -48,12 +47,12 @@ export const jwtService = {
         } catch (e) {
             return null
         }
-    },
+    }
     async putTokenInBlackList(data: Omit<TokenType, "_id">) {
 
 
-        await AuthRepository.putTokenInBlackList(data)
-    },
+        await authRepository.putTokenInBlackList(data)
+    }
 
     async checkSession(deviceId:string) {
         try {
@@ -63,3 +62,5 @@ export const jwtService = {
         }
     }
 }
+
+export const jwtService = new JwtService()

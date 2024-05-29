@@ -1,7 +1,7 @@
 import express, {Response, Request} from "express";
 import {usersSessionService} from "../userSessions/usersSessionService";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {RequestWithParams, RequestWithQuery} from "../../types";
+import {RequestWithParams, RequestWithQuery} from "../../types/types";
 import {jwtService} from "../../features/auth/jwt-service";
 import {mapSessionToViewModel} from "../userSessions/utils";
 

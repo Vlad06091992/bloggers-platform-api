@@ -1,4 +1,4 @@
-import {UserSession} from "./types";
+import {UserSessionType} from "./types";
 import {UserSessionModelClass} from "../../mongoose/models";
 
 export const usersSessionsRepository = {
@@ -11,7 +11,7 @@ export const usersSessionsRepository = {
         return UserSessionModelClass.findOne({deviceId});
     },
 
-    async createSession(session: UserSession) {
+    async createSession(session: UserSessionType) {
 
         const createdSession = await UserSessionModelClass.create(session)
         return createdSession

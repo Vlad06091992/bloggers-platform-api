@@ -1,8 +1,13 @@
-import {TokensBlacklistModelClass} from "../../mongoose/models";
+import {RecoveryPasswordsCodesModelClass, TokensBlacklistModelClass} from "../../mongoose/models";
 import {ObjectId} from "mongodb";
-import {TokenType} from "../../types";
+import {TokenType} from "../../types/types";
+import {RecoveryPasswordsCodesType} from "../../features/auth/types/types";
 
-export const AuthRepository = {
+export class AuthRepository  {
+    async addPasswordResetCode(data:RecoveryPasswordsCodesType){
+        await RecoveryPasswordsCodesModelClass.create(data)
+    }
+
     async findToken(token: string) {
         try {
             return await TokensBlacklistModelClass.findOne({token});
@@ -10,16 +15,18 @@ export const AuthRepository = {
         } catch (e) {
             return null
         }
-    },
+    }
     async putTokenInBlackList(data: Omit<TokenType, "_id">) {
         const tokenWithPrefixId = {
             _id: new ObjectId(),
             token: data.token
         }
         return await TokensBlacklistModelClass.create(tokenWithPrefixId);
-    },
+    }
     async clearAllBlackList() {
         return await TokensBlacklistModelClass.deleteMany({});
-        return true
     }
 }
+
+
+export const authRepository = new AuthRepository()

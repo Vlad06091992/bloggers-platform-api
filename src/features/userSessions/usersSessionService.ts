@@ -1,31 +1,45 @@
-import {UserSession} from "./types";
+import {UserSessionType} from "./types";
 import {usersSessionsRepository} from "./usersSessionsRepository";
 import {ObjectId} from "mongodb";
 
-export class Session implements UserSession {
+// export class Session implements UserSessionType {
+//
+//     constructor(userId:string,ip:string,title:string,lastActiveDate:string,deviceId:string,iatRefreshToken:string,expRefreshToken:string) {
+//         this._id = new ObjectId()
+//         this.userId = userId
+//         this.ip = ip
+//         this.deviceId = deviceId
+//         this.lastActiveDate = lastActiveDate
+//         this.iatRefreshToken = iatRefreshToken
+//         this.expRefreshToken = expRefreshToken
+//         this.title = title
+//     }
+//     _id:ObjectId;
+//     deviceId: string;
+//     expRefreshToken: string;
+//     iatRefreshToken: string;
+//     ip: string;
+//     lastActiveDate: string;
+//     title: string;
+//     userId: string;
+// }
 
-    constructor(userId:string,ip:string,title:string,lastActiveDate:string,deviceId:string,iatRefreshToken:string,expRefreshToken:string) {
-        this._id = new ObjectId()
-        this.userId = userId
-        this.ip = ip
-        this.deviceId = deviceId
-        this.lastActiveDate = lastActiveDate
-        this.iatRefreshToken = iatRefreshToken
-        this.expRefreshToken = expRefreshToken
-        this.title = title
-    }
+export class Session {
     _id:ObjectId;
-    deviceId: string;
-    expRefreshToken: string;
-    iatRefreshToken: string;
-    ip: string;
-    lastActiveDate: string;
-    title: string;
-    userId: string;
+
+    constructor(public userId:string,
+                public ip:string,
+                public title:string,
+                public lastActiveDate:string,
+                public deviceId:string,
+                public iatRefreshToken:string,
+                public expRefreshToken:string) {
+        this._id = new ObjectId()
+    }
 }
 
 export const usersSessionService = {
-    async createSession(session: UserSession) {
+    async createSession(session: UserSessionType) {
         return await usersSessionsRepository.createSession(session)
     },
 
