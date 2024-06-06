@@ -10,9 +10,11 @@ import {v4 as uuidv4} from "uuid";
 import {jwtService} from "../../features/auth/jwt-service";
 import {Session, usersSessionService} from "../../features/userSessions/usersSessionService";
 import moment from "moment/moment";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata"
+@injectable()
 export class AuthController {
-    constructor(protected authService: AuthService) {
+    constructor(@inject(AuthService) protected authService: AuthService) {
         this.authService = authService
     }
 

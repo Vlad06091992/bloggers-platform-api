@@ -7,8 +7,10 @@ import {check} from "express-validator";
 import {attemptsMiddleware} from "../../middlewares/attemptsMiddleware";
 import {validatePasswordRecoverySchema} from "./validators/validatePasswordRecoverySchema";
 import {validateNewPasswordSchema} from "./validators/validateNewPasswordSchema";
-import {authController} from "../auth/composition-auth";
+import {container} from "../auth/composition-auth";
+import {AuthController} from "../../features/auth/auth-controller";
 
+const authController = container.resolve(AuthController)
 
 export const getAuthRouter = () => {
     const router = express.Router();

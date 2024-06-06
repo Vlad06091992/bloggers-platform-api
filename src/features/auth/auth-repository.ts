@@ -2,7 +2,9 @@ import {RecoveryPasswordsCodesModelClass, TokensBlacklistModelClass} from "../..
 import {ObjectId} from "mongodb";
 import {TokenType} from "../../types/types";
 import {RecoveryPasswordsCodesType} from "../../features/auth/types/types";
-
+import {injectable} from "inversify";
+import "reflect-metadata"
+@injectable()
 export class AuthRepository  {
     async addPasswordResetCode(data:RecoveryPasswordsCodesType){
         await RecoveryPasswordsCodesModelClass.create(data)

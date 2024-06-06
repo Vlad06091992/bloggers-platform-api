@@ -9,12 +9,19 @@ import {v4 as uuidv4} from "uuid";
 import {RecoveryPasswordsCodesType} from "../../features/auth/types/types";
 import {AuthRepository} from "../../features/auth/auth-repository";
 import {ObjectId} from "mongodb";
-
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata"
+@injectable()
 export class AuthService  {
-    constructor(protected authRepository:AuthRepository) {
-        this.authRepository = authRepository
+    // constructor(protected authRepository:AuthRepository) {
+    //     this.authRepository = authRepository
+    // }
+
+    constructor(@inject(AuthRepository) protected authRepository:AuthRepository) {
+        // this.authRepository = authRepository
     }
+
+
 
     async recoveryPassword({recoveryCode, email, userId, expirationDate}: Omit<RecoveryPasswordsCodesType, '_id'>) {
         await emailManager.sendEmailRecoveryPassword(email, recoveryCode)

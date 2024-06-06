@@ -16,7 +16,7 @@ export const commentsRepository = {
         try {
             const res = await CommentsModelClass.findOne({_id: new ObjectId(id)!})
             if (res) {
-                return commentsService.mapCommentToViewModel(res!, userId)
+                return commentsService.mapCommentToViewModel(res!)
             } else {
                 return null
             }
