@@ -1,32 +1,27 @@
 import {ObjectId, WithId} from "mongodb";
-import {UserAuthMeModel, UserCreateModel, UserType, UserViewModel} from "./types/types";
-import {usersRepository} from "./users-repository";
+import {UserAuthMeModel, UserCreateModel, UserViewModel} from "../features/users/types/types";
+
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from "uuid"
 import moment, {Moment} from "moment";
+import {usersRepository} from "../infrastructure/repostitories/users-repository";
+import {UserType} from "../domain/users-types";
 
 type ResultType = "object" | "boolean";
 
-class User {
+export class User {
     _id:ObjectId;
-    email: string;
-    password: string;
-    login: string;
     createdAt: string;
     registrationData: {
         confirmationCode: string,
         expirationDate: any
         isConfirmed: boolean
     }
-
-    constructor({email, password, login, isConfirmed = false, confirmationCode}: UserCreateModel) {
+    constructor(public email:string,public login:string,public password:string,isConfirmed = false) {
         this._id = new ObjectId();
-        this.email = email;
-        this.password = password;
-        this.login = login;
         this.createdAt = new Date().toISOString();
         this.registrationData = {
-            confirmationCode: confirmationCode || uuidv4(),
+            confirmationCode:  uuidv4(),
             expirationDate: moment().add(1,'hour').toString(),
             isConfirmed: isConfirmed
         }
@@ -41,7 +36,8 @@ export const usersService = {
 
     async createUser(body: UserCreateModel) {
         const passwordHash = await this._createHash(body.password)
-        const result = new User({...body, password: passwordHash, isConfirmed:body.isConfirmed})
+        // const result = new User({...body, password: passwordHash, isConfirmed:body.isConfirmed})
+        const result = new User(body.email,body.login,body.password)
         return await usersRepository.createUser(result)
     },
 
@@ -60,14 +56,6 @@ export const usersService = {
         };
     },
 
-    getnewUserWithPrefixIdToViewModelWithConfirmationCode(user: WithId<UserType>): UserViewModel {
-        return {
-            id: user._id.toString(),
-            login: user.login,
-            createdAt: user.createdAt,
-            email: user.email,
-        };
-    },
 
 
     mapUserViewModelToAuthMeUser(user: UserViewModel): UserAuthMeModel {

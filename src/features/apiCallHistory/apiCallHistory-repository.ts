@@ -1,4 +1,4 @@
-import {APICallHistoryModelClass} from "../../mongoose/models";
+import {APICallHistoryModelClass} from "../../infrastructure/mongoose/models";
 import {CallToAPI} from "./types";
 import moment from "moment";
 

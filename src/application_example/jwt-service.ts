@@ -1,9 +1,7 @@
-import {UserType} from "../users/types/types";
 import jwt from "jsonwebtoken"
-import {WithId} from "mongodb";
-import {AuthRepository} from "./auth-repository";
-import {TokenType} from "../../types";
-import {usersSessionService} from "../userSessions/usersSessionService";
+import {AuthRepository} from "../features/auth/auth-repository";
+import {TokenType} from "../types";
+import {usersSessionService} from "../features/userSessions/usersSessionService";
 
 const settings = {
     JWT_SECRET: process.env.JWT_SECRET || '234'

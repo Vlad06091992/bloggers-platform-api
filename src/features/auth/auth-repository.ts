@@ -1,4 +1,4 @@
-import {TokensBlacklistModelClass} from "../../mongoose/models";
+import {TokensBlacklistModelClass} from "../../infrastructure/mongoose/models";
 import {ObjectId} from "mongodb";
 import {TokenType} from "../../types";
 

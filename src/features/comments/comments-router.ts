@@ -1,13 +1,10 @@
 import express, {Response} from "express";
 import {RequestWithParams,} from "../../types";
 import {validateCreateCommentData} from "../comments/validators/validateCreateCommentData";
-import {usersService} from "../users/users-service";
 
 import {validateErrors} from "../../middlewares/validateErrors";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-
-import {authMiddleware} from "../../middlewares/authMiddleware";
-import {ResponseUsersModel, URIParamsUserIdModel, UserViewModel} from "../users/types/types";
+import {ResponseUsersModel, UserViewModel} from "../users/types/types";
 import {commentsService} from "./comments-service";
 import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
 

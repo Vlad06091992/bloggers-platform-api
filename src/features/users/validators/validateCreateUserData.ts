@@ -1,6 +1,6 @@
 import { checkSchema } from "express-validator";
 import { blogsService } from "../../blogs/blogs-service";
-import {usersService} from "../users-service";
+import {usersService} from "../../../application_example/users-service";
 
 const schema = {
   login: {

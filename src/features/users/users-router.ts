@@ -1,19 +1,14 @@
-import express, { Response } from "express";
-import {
-  RequestWithBody,
-  RequestWithParams,
-  RequestWithParamsAndBody,
-  RequestWithQuery,
-} from "../../types";
+import express, {Response} from "express";
+import {RequestWithBody, RequestWithParams, RequestWithQuery,} from "../../types";
 import {validateCreateUserData} from "./validators/validateCreateUserData";
-import {usersService} from "../users/users-service";
+
 
 import {validateErrors} from "../../middlewares/validateErrors";
 import {QueryUserModel, ResponseUsersModel, URIParamsUserIdModel, UserCreateModel, UserViewModel} from "./types/types";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {usersRepository} from "./users-repository";
+import {usersRepository} from "../../infrastructure/repostitories/users-repository";
 import {authMiddleware} from "../../middlewares/authMiddleware";
-
+import {usersService} from "../../application_example/users-service";
 
 
 export const getUsersRouter = () => {

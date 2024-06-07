@@ -1,6 +1,6 @@
 import {PostType, PostUpdateModel, PostViewModel, QueryPostModel, ResponsePostsModel} from "./types/types";
 import {postsService} from '../posts/posts-service'
-import {PostModelClass} from "../../mongoose/models";
+import {PostModelClass} from "../../infrastructure/mongoose/models";
 import {ObjectId} from "mongodb";
 
 

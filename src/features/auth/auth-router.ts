@@ -1,24 +1,22 @@
-import express, {Response, Request} from "express";
-import {authMiddleware} from "../../middlewares/authMiddleware";
+import express, {Response} from "express";
 import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
-import {usersService} from "../users/users-service";
+import {usersService} from "../../application_example/users-service";
 import {RequestWithBody} from "../../types";
 import {AuthCreateModel, ConfirmationCode, RefreshTokensModel, ResendingEmail} from "./types/types";
-import {authService} from "../auth/auth-service";
-import {ObjectId, WithId} from "mongodb";
-import {UserCreateModel, UserType, UserViewModel} from "../users/types/types";
+import {authService} from "../../application_example/auth-service";
+import {WithId} from "mongodb";
+import {UserCreateModel, UserViewModel} from "../users/types/types";
 import {validateAuthUserData} from "./validators/validateUserCredentials";
 import {validateErrors} from "../../middlewares/validateErrors";
-import {jwtService} from "./jwt-service";
+import {jwtService} from "../../application_example/jwt-service";
 import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
-import {emailManager} from "../../managers/email-manager";
 import {v4 as uuidv4} from "uuid"
 import {validateCreateUserData} from "./validators/validateCreateUserData";
-import {check, checkSchema} from "express-validator";
-import {isString} from "util";
+import {check} from "express-validator";
 import {attemptsMiddleware} from "../../middlewares/attemptsMiddleware";
 import {Session, usersSessionService} from "../userSessions/usersSessionService";
 import moment from "moment";
+import {UserType} from "../../domain/users-types";
 
 
 export const getAuthRouter = () => {

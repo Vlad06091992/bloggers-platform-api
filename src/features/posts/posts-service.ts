@@ -3,7 +3,7 @@ import {ObjectId, WithId} from "mongodb";
 import {PostCreateModel, PostType, PostViewModel, QueryPostModel, ResponsePostsModel} from "./types/types";
 import {postsRepository} from "./posts-repository";
 import {blogsService} from "../blogs/blogs-service";
-import {PostModelClass} from "../../mongoose/models";
+import {PostModelClass} from "../../infrastructure/mongoose/models";
 
 type ResultType = "object" | "boolean";
 

@@ -1,6 +1,5 @@
 import express, {Request, Response} from "express";
 // import bodyParser from "body-parser";
-
 import {getBlogsRouter} from "./features/blogs/blogs-router";
 import {blogsRepository} from "./features/blogs/blogs-repository";
 // import {commentsRepository} from "./features/users/users-repository";
@@ -8,7 +7,7 @@ import {getPostsRouter} from "./features/posts/posts-router";
 import {postsRepository} from "./features/posts/posts-repository";
 import {getUsersRouter} from "./features/users/users-router";
 import {getAuthRouter} from "./features/auth/auth-router";
-import {usersRepository} from "./features/users/users-repository";
+
 import {commentsRepository} from "./features/comments/comments-repository";
 import {getCommentsRouter} from "./features/comments/comments-router";
 import cookieParser from 'cookie-parser'
@@ -16,6 +15,7 @@ import {getSecurityDevicesRouter} from "./features/security_devices/security-dev
 import {usersSessionsRepository} from "./features/userSessions/usersSessionsRepository";
 import {ApiCallHistoryRepository} from "./features/apiCallHistory/apiCallHistory-repository";
 import {AuthRepository} from "./features/auth/auth-repository";
+import {usersRepository} from "./infrastructure/repostitories/users-repository";
 
 const bodyParser = require("body-parser");
 var cors = require('cors')

@@ -1,6 +1,6 @@
 import { app } from "./app";
-import { runDb } from "./db-mongo";
-import {emailAdapter} from "./adapters/email-adapter";
+import { runDb } from "./infrastructure/repostitories/db-mongo";
+import {emailAdapter} from "./infrastructure/adapters/email-adapter";
 
 const port = 3000 ;
 app.listen(port, async () => {

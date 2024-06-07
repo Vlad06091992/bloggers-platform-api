@@ -1,6 +1,5 @@
-import {emailAdapter,sendEmailOptions} from "../adapters/email-adapter";
-import {WithId} from "mongodb";
-import {UserType, UserViewModel} from "../features/users/types/types";
+import {emailAdapter, sendEmailOptions} from "../../infrastructure/adapters/email-adapter";
+import {UserViewModel} from "../../features/users/types/types";
 
 export const emailManager = {
     async sendEmailRecoveryPassword(options:sendEmailOptions){

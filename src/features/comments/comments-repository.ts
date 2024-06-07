@@ -1,5 +1,5 @@
 // import {PostCreateModel, PostViewModel, UserCreateModel} from "./types/types";
-import {CommentsModelClass, PostModelClass} from "../../mongoose/models";
+import {CommentsModelClass, PostModelClass} from "../../infrastructure/mongoose/models";
 import {ObjectId} from "mongodb";
 import {CommentType, CommentUpdateModel, CommentViewModel} from "./types/types";
 import {commentsService} from "./comments-service";

@@ -1,5 +1,5 @@
 import {UserSession} from "./types";
-import {UserSessionModelClass} from "../../mongoose/models";
+import {UserSessionModelClass} from "../../infrastructure/mongoose/models";
 
 export const usersSessionsRepository = {
     async updateSession(deviceId: string, lastActiveDate: string) {

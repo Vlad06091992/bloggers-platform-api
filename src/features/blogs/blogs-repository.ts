@@ -8,7 +8,7 @@ import {
 } from "./types/types";
 import {ObjectId} from "mongodb";
 import {blogsService} from "../blogs/blogs-service";
-import {BlogModelClass} from "../../mongoose/models";
+import {BlogModelClass} from "../../infrastructure/mongoose/models";
 
 
 export const blogsRepository = {

@@ -1,18 +1,7 @@
 import {Moment} from "moment/moment";
 import {ObjectId} from "mongodb";
 
-export type UserType = {
-    _id:ObjectId;
-    email: string;
-    password: string;
-    login: string;
-    createdAt: string;
-    registrationData: {
-        confirmationCode: string,
-        expirationDate: Moment
-        isConfirmed: boolean
-    }
-}
+
 
 
 export type UserViewModel =  {

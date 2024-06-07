@@ -2,7 +2,7 @@ import { ObjectId, WithId } from "mongodb";
 import {BlogCreateModel, BlogType, BlogUpdateModel, QueryBlogModel} from "./types/types";
 import { BlogViewModel } from "./types/types";
 import {blogsRepository} from "./blogs-repository";
-import {BlogModelClass} from "../../mongoose/models";
+import {BlogModelClass} from "../../infrastructure/mongoose/models";
 
 
 type ResultType = "object" | "boolean";
