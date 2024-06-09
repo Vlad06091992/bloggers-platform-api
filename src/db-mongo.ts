@@ -25,9 +25,9 @@ export async function runDb() {
     await mongoose.connect(URL);
     console.log("Connected successfully mongoose");
     //Connect client to the server
-    await client.connect();
+    // await client.connect();
     //Establish ane verify connection
-    await db.command({ ping: 1 });
+    // await db.command({ ping: 1 });
     console.log("Connected successfully to mongo server");
   } catch {
     //Ensures that the client will close when your finish/error
