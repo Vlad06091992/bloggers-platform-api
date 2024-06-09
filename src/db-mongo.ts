@@ -4,7 +4,8 @@ import mongoose from "mongoose"
 
 dotenv.config();
 
-const URL = process.env.MONGO_URL || "mongodb://localhost:27017";
+const URL =  "mongodb+srv://smirnovru92:ZPELzjX1CckwoEDw@cluster0.d3ysfam.mongodb.net/base-backend?retryWrites=true&w=majority";
+// const URL = process.env.MONGO_URL || "mongodb://localhost:27017";
 
 if (!URL) {
   throw new Error("URL not found");
