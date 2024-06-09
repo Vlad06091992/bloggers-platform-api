@@ -4,7 +4,7 @@ import mongoose from "mongoose"
 
 dotenv.config();
 
-const URL =  "mongodb+srv://smirnovru92:ZPELzjX1CckwoEDw@cluster0.d3ysfam.mongodb.net/base-backend?retryWrites=true&w=majority";
+const URL =  "mongodb+srv://vercel-admin-user:z1JoxrFzu2V8Kvb2@cluster0.d3ysfam.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 // const URL = process.env.MONGO_URL || "mongodb://localhost:27017";
 
 if (!URL) {
