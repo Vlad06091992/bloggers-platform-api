@@ -92,9 +92,14 @@ export class BlogsController {
 
     async findPostsForSpecificBlog(req: RequestWithQueryAndParams<URIParamsBlogIdModel, QueryPostModel>,
                                    res: Response,) {
+
+        //@ts-ignore
+        const userId = req.userId
+
         let result = await postsService.findPostsForSpecificBlog(
             req.query,
             req.params.id,
+            req.userId
         );
         res.status(HTTP_STATUSES.OK_200).send(result);
     }

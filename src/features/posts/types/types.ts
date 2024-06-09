@@ -38,7 +38,18 @@ export type URIParamsPostIdModel = {
   id: string;
 };
 
-export type PostViewModel =Omit< PostType & { id: string; }, '_id'>;
+export type PostViewModel =Omit< PostType & { id: string; }, '_id'> & {
+  extendedLikesInfo:{
+    likesCount: number,
+    dislikesCount: number,
+    myStatus: "None" | "Like" | "Dislike"
+    newestLikes: Array<{
+      addedAt: string,
+      userId: string,
+      login: string
+    }>
+  }
+}
 
 export type ResponsePostsModel = {
   pagesCount: number;

@@ -3,6 +3,7 @@ import {PostCreateModel, PostType, PostViewModel, QueryPostModel, ResponsePostsM
 import {postsRepository} from "./posts-repository";
 import {blogsService} from "../../features/blogs/composition-blogs";
 import {PostModelClass} from "../../mongoose/models";
+import {likesPostsService} from "../likes/application/likes-posts-service";
 
 type ResultType = "object" | "boolean";
 
@@ -13,6 +14,7 @@ type CreatePostForClass = PostCreateModel & {
 class Post {
     _id: ObjectId;
     createdAt: string;
+
     constructor(
         public blogId: string,
         public title: string,
@@ -27,8 +29,8 @@ class Post {
 
 export const postsService = {
 
-    async findPosts(params: QueryPostModel) {
-        return await postsRepository.findPosts(params);
+    async findPosts(params: QueryPostModel, userId: string) {
+        return await postsRepository.findPosts(params, userId);
     },
 
 
@@ -38,18 +40,18 @@ export const postsService = {
     },
 
     async createPost(body: PostCreateModel) {
-        const{blogId,shortDescription,content,title} = body
+        const {blogId, shortDescription, content, title} = body
         const blogName = (await blogsService.findBlogNameByBlogId(body.blogId))!;
-        const newPostTemplate = new Post(blogId,title,blogName,shortDescription,content)
+        const newPostTemplate = new Post(blogId, title, blogName, shortDescription, content)
         return await postsRepository.createPost(newPostTemplate)
     },
 
-    async getPostById(id: string) {
-        return await postsRepository.getPostById(id)
+    async getPostById(id: string, userId: string | null) {
+        return await postsRepository.getPostById(id, userId)
     },
 
 
-    async findPostsForSpecificBlog(reqQuery: QueryPostModel, id: string) {
+    async findPostsForSpecificBlog(reqQuery: QueryPostModel, id: string, userId:string | null) {
         const sortBy = reqQuery.sortBy || "createdAt";
         const sortDirection = reqQuery.sortDirection || "desc";
         const pageNumber = reqQuery.pageNumber || 1;
@@ -57,15 +59,17 @@ export const postsService = {
         const totalCount = await PostModelClass.countDocuments({blogId: id});
 
         //@ts-ignore
-        return await PostModelClass.pagination({blogId: id}, pageNumber, pageSize, sortBy, sortDirection, totalCount, this.getPostWithPrefixIdToViewModel)
+        return await PostModelClass.pagination({blogId: id}, pageNumber, pageSize, sortBy, sortDirection, totalCount, this.getPostWithPrefixIdToViewModel,userId)
     },
 
     async deletePost(id: string) {
         return await postsRepository.deletePost(id)
     },
 
-    getPostWithPrefixIdToViewModel(post: WithId<PostType>): PostViewModel {
+    async getPostWithPrefixIdToViewModel(post: WithId<PostType>, userId: string | null): Promise<PostViewModel> {
         debugger
+        console.log(arguments)
+
         return {
             id: post._id.toString(),
             blogId: post.blogId,
@@ -74,6 +78,7 @@ export const postsService = {
             shortDescription: post.shortDescription,
             content: post.content,
             createdAt: post.createdAt,
+            extendedLikesInfo: await likesPostsService.getExtendedLikesInfo(post._id.toString(), userId)
         };
     },
 };

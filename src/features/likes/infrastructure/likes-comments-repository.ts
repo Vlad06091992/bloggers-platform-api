@@ -1,6 +1,6 @@
-import {APICallHistoryModelClass, LikesCommentModelClass} from "../../mongoose/models";
+import {LikesCommentModelClass} from "../../../mongoose/models";
 import {ObjectId} from "mongodb";
-import {LikesCommentType, LikeStatusType} from "./types";
+import {LikesCommentType, LikeStatusType} from "../../../features/likes/likes-comments-types";
 
 
 export const likesCommentsRepository = {

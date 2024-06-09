@@ -7,6 +7,7 @@ import {isExistingBlog} from "../../middlewares/isExistingBlog";
 import {validateCreatePostData} from "../posts/validators/validateCreatePostData";
 import {authMiddleware} from "../../middlewares/authMiddleware";
 import {blogsController} from "../../features/blogs/composition-blogs";
+import {checkUserByAccessToken} from "../../middlewares/checkUserByAccessToken";
 
 
 
@@ -57,6 +58,7 @@ export const getBlogsRouter = () => {
     router.get(
         "/:id/posts",
         isExistingBlog,
+        checkUserByAccessToken,
         blogsController.findPostsForSpecificBlog.bind(blogsController)
     );
     return router;

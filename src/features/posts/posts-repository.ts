@@ -5,7 +5,7 @@ import {ObjectId} from "mongodb";
 
 
 export const postsRepository = {
-    async findPosts(reqQuery: QueryPostModel): Promise<ResponsePostsModel> {
+    async findPosts(reqQuery: QueryPostModel,userId:string): Promise<ResponsePostsModel> {
         const sortBy = reqQuery.sortBy || "createdAt";
         const sortDirection = reqQuery.sortDirection || "desc";
         const pageNumber = reqQuery.pageNumber || 1;
@@ -13,14 +13,14 @@ export const postsRepository = {
 
         const totalCount = await PostModelClass.countDocuments();
         //@ts-ignore
-        return await PostModelClass.pagination({}, pageNumber, pageSize, sortBy, sortDirection, totalCount, postsService.getPostWithPrefixIdToViewModel)
+        return await PostModelClass.pagination({}, pageNumber, pageSize, sortBy, sortDirection, totalCount, postsService.getPostWithPrefixIdToViewModel, userId)
 
 
     },
-    async getPostById(id: string) {
+    async getPostById(id: string,userId:string | null) {
         try {
             let res = await PostModelClass.findOne({_id: new ObjectId(id)});
-            return postsService.getPostWithPrefixIdToViewModel(res!);
+            return await postsService.getPostWithPrefixIdToViewModel(res!,userId);
         } catch (e) {
             return null;
         }
@@ -34,7 +34,13 @@ export const postsRepository = {
             blogName: data.blogName,
             shortDescription: data.shortDescription,
             content: data.content,
-            createdAt: data.createdAt
+            createdAt: data.createdAt,
+            extendedLikesInfo:{
+                likesCount:0,
+                dislikesCount:0,
+                newestLikes:[],
+                myStatus:"None"
+            }
         }
     },
     async updatePost(id: string, data: PostUpdateModel) {

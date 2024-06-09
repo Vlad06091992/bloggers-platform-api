@@ -17,4 +17,4 @@ const schema = {
 
 
 
-export const validateUpdateLikeStatus = checkSchema(schema,['body']);
+export const validateUpdateLikeCommentStatus = checkSchema(schema,['body']);

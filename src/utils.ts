@@ -12,7 +12,7 @@ export function createErrorResponse(errors: CustomValidationError) {
   };
 }
 
-export async function pagination (filter:any,pageNumber:string,pageSize:string,sortBy:string,sortDirection:string,totalCount:string,map_callbak:Function) {
+export async function pagination (filter:any,pageNumber:string,pageSize:string,sortBy:string,sortDirection:string,totalCount:string,map_callback:Function) {
 //@ts-ignore
   const res = await this.find(filter)
       .skip((+pageNumber - 1) * +pageSize)
@@ -26,20 +26,19 @@ export async function pagination (filter:any,pageNumber:string,pageSize:string,s
     page: +pageNumber,
     pageSize: +pageSize,
     totalCount: +totalCount,
-    items:res.map(map_callbak),
+    items:res.map( await map_callback),
   };
 };
 
 
-export async function postCommentsPagination (filter:any,pageNumber:string,pageSize:string,sortBy:string,sortDirection:string,totalCount:string,map_callbak:Function) {
+export async function paginationWithPromissForMappingItems (filter:any, pageNumber:string, pageSize:string, sortBy:string, sortDirection:string, totalCount:string, map_callback:Function, userId?:string) {
 //@ts-ignore
   const res = await this.find(filter)
       .skip((+pageNumber - 1) * +pageSize)
       .limit(+pageSize)
       .sort({ [sortBy]: sortDirection == "asc" ? 1 : -1 }).lean()
 
-  const Promisses = res.map(map_callbak)
-
+  const Promisses = res.map((el:any)=>map_callback(el,userId))
   const resolved = await Promise.all(Promisses)
 
   return {

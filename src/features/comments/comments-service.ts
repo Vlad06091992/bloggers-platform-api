@@ -2,9 +2,7 @@ import {CommentContent, CommentCreateModel, CommentType, CommentViewModel, Query
 import {commentsRepository} from "../comments/comments-repository";
 import {CommentsModelClass} from "../../mongoose/models";
 import {ObjectId, WithId} from "mongodb";
-import {postsService} from "../../features/posts/posts-service";
-import {likesCommentsService} from "../../features/likes/likes-comments-service";
-
+import {likesCommentsService} from "../.././features/likes/application/likes-comments-service";
 
 
 class Comment {

@@ -7,12 +7,10 @@ import {HTTP_STATUSES} from "../../http_statuses/http_statuses";
 import {UserViewModel} from "../users/types/types";
 import {commentsService} from "./comments-service";
 import {authBearerMiddleware} from "../../middlewares/bearerAuthMiddleware";
-import {validateUpdateLikeStatus} from "./validators/validateUpdateLikeStatus";
+import {validateUpdateLikeCommentStatus} from "../.././features/comments/validators/validateUpdateLikeCommentStatus";
 import {CommentViewModel} from "./types/types";
-import {likesCommentsService} from "../../features/likes/likes-comments-service";
-// import {checkUserByAccessToken} from "../../../middlewares/checkUserByAccessToken";
+import {likesCommentsService} from "../.././features/likes/application/likes-comments-service";
 import {checkUserByAccessToken} from "../../middlewares/checkUserByAccessToken";
-
 
 
 export const getCommentsRouter = () => {
@@ -79,7 +77,7 @@ export const getCommentsRouter = () => {
     router.put(
         "/:commentId/like-status",
         authBearerMiddleware,
-        validateUpdateLikeStatus,
+        validateUpdateLikeCommentStatus,
         validateErrors,
         async (
             req: RequestWithParamsAndBody<{ commentId: string }, { likeStatus: "Like" | "Dislike" | "None" }>,

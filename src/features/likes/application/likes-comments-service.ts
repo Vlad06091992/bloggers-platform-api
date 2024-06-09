@@ -1,7 +1,8 @@
-import {LikesCommentModelClass} from "../../mongoose/models";
+import {LikesCommentModelClass} from "../../../mongoose/models";
 import {ObjectId} from "mongodb";
-import {LikeStatusType} from "./types";
-import {likesCommentsRepository} from "../../features/likes/likes-comments-repository";
+import {LikeStatusType} from "../../../features/likes/likes-comments-types";
+import {likesCommentsRepository} from "../../../features/likes/infrastructure/likes-comments-repository";
+
 
 
 // export type LikeStatusCreateRecord = Omit<LikeStatusType,"None">

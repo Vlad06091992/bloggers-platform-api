@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb";
-import {LikeStatusType} from "../../likes/types";
+import {LikeStatusType} from "../../likes/likes-comments-types";
 
 export type CommentContent = {
     content:string

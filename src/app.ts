@@ -12,8 +12,9 @@ import cookieParser from 'cookie-parser'
 import {getSecurityDevicesRouter} from "./features/security_devices/security-devaices-router";
 import {usersSessionsRepository} from "./features/userSessions/usersSessionsRepository";
 import {apiCallHistoryRepository} from "./features/apiCallHistory/api-call-history-repository";
-import {authRepository, AuthRepository} from "./features/auth/auth-repository";
-import {likesCommentsRepository} from "./features/likes/likes-comments-repository";
+import {authRepository} from "./features/auth/auth-repository";
+import {likesCommentsRepository} from "./features/likes/infrastructure/likes-comments-repository";
+import {likesPostsRepository} from "./features/likes/infrastructure/likes-posts-repository";
 
 const bodyParser = require("body-parser");
 var cors = require('cors')
@@ -66,5 +67,6 @@ app.delete(Routes.testing, async (req: Request, res: Response) => {
     await usersSessionsRepository.deleteAllSessions()
     await apiCallHistoryRepository.deleteAllRecords()
     await likesCommentsRepository.deleteAllRecords()
+    await likesPostsRepository.deleteAllRecords()
     res.sendStatus(204);
 });

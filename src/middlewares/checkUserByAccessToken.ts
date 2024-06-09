@@ -4,6 +4,7 @@ import {usersService} from "../features/users/users-service";
 import {HTTP_STATUSES} from "../http_statuses/http_statuses";
 
 export const checkUserByAccessToken = async (req:any, res: Response, next: NextFunction) => {
+ debugger
     if (!req.headers.authorization) {
         req.userId = null
         req.user = null
