@@ -99,7 +99,7 @@ export class BlogsController {
         let result = await postsService.findPostsForSpecificBlog(
             req.query,
             req.params.id,
-            req.userId
+            userId
         );
         res.status(HTTP_STATUSES.OK_200).send(result);
     }
